@@ -1,0 +1,319 @@
+[buildPlans.niosevka]           # Niosevka: normal spaced, Pragmata Pro sytled font with higher underscore
+family = "Niosevka"             # Font menu family name
+spacing = "normal"              # Optional; Values: `normal`, `term`, `fontconfig-mono`, or `fixed`
+serifs = "sans"                 # Optional; Values: `sans` or `slab`
+
+###################################################################################################
+# Configure variants
+
+# Optional; Whether to inherit a `ss##` variant
+[buildPlans.niosevka.variants]
+inherits = "ss08"
+
+# Optional; Configure single character's variant
+[buildPlans.niosevka.variants.design]
+cv45 = 1                        # Higher underscore _, placed right below baseline
+
+# End variant section
+###################################################################################################
+
+###################################################################################################
+# Configure ligations
+
+[buildPlans.niosevka.ligations]
+inherits = "default-calt"       # Optional; inherits an existing ligation set
+disables = []                   # Optional; disable specific ligation groups, overrides inherited ligation set
+enables  = []                   # Optional; enable specific ligation groups, overrides inherited ligation set
+
+# End ligation section
+###################################################################################################
+
+
+###################################################################################################
+# Override default building weights
+# When buildPlans.<plan name>.weights is absent, all weights would built and mapped to
+# default values.
+# IMPORTANT : Currently "menu" and "css" property only support numbers between 0 and 1000.
+#             and "shape" properly only supports number between 100 and 900 (inclusive).
+#             If you decide to use custom weights you have to define all the weights you
+#             plan to use otherwise they will not be built.
+[buildPlans.niosevka.weights.light]
+shape = 300     # Weight for glyph shapes.
+menu  = 300     # Weight for the font's names.
+css   = 300     # Weight for webfont CSS.
+
+[buildPlans.niosevka.weights.regular]
+shape = 400
+menu  = 400
+css   = 400
+
+[buildPlans.niosevka.weights.medium]
+shape = 500
+menu  = 500
+css   = 500
+
+[buildPlans.niosevka.weights.semibold]
+shape = 600
+menu  = 600
+css   = 600
+
+[buildPlans.niosevka.weights.bold]
+shape = 700
+menu  = 700
+css   = 700
+
+# End weight section
+###################################################################################################
+
+###################################################################################################
+# Override default building slope sets
+# Format: <upright|italic|oblique> = <"normal"|"italic"|"oblique">
+# When this section is absent, all slopes would be built.
+
+# I don't need oblique
+[buildPlans.niosevka.slopes]
+upright = "normal"
+italic = "italic"
+# oblique = "oblique"
+
+# End slope section
+###################################################################################################
+
+###################################################################################################
+# Override default building widths
+# When buildPlans.<plan name>.widths is absent, all widths would built and mapped to
+# default values.
+# IMPORTANT : Currently "shape" property only supports numbers between 434 and 664 (inclusive),
+#             while "menu" only supports integers between 1 and 9 (inclusive).
+#             The "shape" parameter specifies the unit width, measured in 1/1000 em. The glyphs'
+#             width are equal to, or a simple multiple of the unit width.
+#             If you decide to use custom widths you have to define all the widths you plan to use,
+#             otherwise they will not be built.
+
+# normal width is enough for me
+[buildPlans.niosevka.widths.normal]
+shape = 500        # Unit Width, measured in 1/1000 em.
+menu  = 5          # Width grade for the font's names.
+css   = "normal"   # "font-stretch' property of webfont CSS.
+
+# End width section
+###################################################################################################
+
+
+
+
+
+
+
+
+
+[buildPlans.niosevka-fixed]     # niosevka-fixed: fixed spaced, Pragmata Pro sytled font with higher underscore
+family = "Niosevka Fixed"       # Font menu family name
+spacing = "fixed"               # Optional; Values: `normal`, `term`, `fontconfig-mono`, or `fixed`
+serifs = "sans"                 # Optional; Values: `sans` or `slab`
+
+###################################################################################################
+# Configure variants
+
+# Optional; Whether to inherit a `ss##` variant
+[buildPlans.niosevka-fixed.variants]
+inherits = "ss08"
+
+# Optional; Configure single character's variant
+[buildPlans.niosevka-fixed.variants.design]
+cv45 = 1                        # Higher underscore _, placed right below baseline
+
+# End variant section
+###################################################################################################
+
+###################################################################################################
+# Configure ligations
+
+# No ligatures for fixed spacing
+# [buildPlans.niosevka-fixed.ligations]
+# inherits = "default-calt"       # Optional; inherits an existing ligation set
+# disables = []                   # Optional; disable specific ligation groups, overrides inherited ligation set
+# enables  = []                   # Optional; enable specific ligation groups, overrides inherited ligation set
+
+# End ligation section
+###################################################################################################
+
+
+###################################################################################################
+# Override default building weights
+# When buildPlans.<plan name>.weights is absent, all weights would built and mapped to
+# default values.
+# IMPORTANT : Currently "menu" and "css" property only support numbers between 0 and 1000.
+#             and "shape" properly only supports number between 100 and 900 (inclusive).
+#             If you decide to use custom weights you have to define all the weights you
+#             plan to use otherwise they will not be built.
+[buildPlans.niosevka-fixed.weights.light]
+shape = 300     # Weight for glyph shapes.
+menu  = 300     # Weight for the font's names.
+css   = 300     # Weight for webfont CSS.
+
+[buildPlans.niosevka-fixed.weights.regular]
+shape = 400
+menu  = 400
+css   = 400
+
+[buildPlans.niosevka-fixed.weights.medium]
+shape = 500
+menu  = 500
+css   = 500
+
+[buildPlans.niosevka-fixed.weights.semibold]
+shape = 600
+menu  = 600
+css   = 600
+
+[buildPlans.niosevka-fixed.weights.bold]
+shape = 700
+menu  = 700
+css   = 700
+
+# End weight section
+###################################################################################################
+
+###################################################################################################
+# Override default building slope sets
+# Format: <upright|italic|oblique> = <"normal"|"italic"|"oblique">
+# When this section is absent, all slopes would be built.
+
+# I don't need oblique
+[buildPlans.niosevka-fixed.slopes]
+upright = "normal"
+italic = "italic"
+# oblique = "oblique"
+
+# End slope section
+###################################################################################################
+
+###################################################################################################
+# Override default building widths
+# When buildPlans.<plan name>.widths is absent, all widths would built and mapped to
+# default values.
+# IMPORTANT : Currently "shape" property only supports numbers between 434 and 664 (inclusive),
+#             while "menu" only supports integers between 1 and 9 (inclusive).
+#             The "shape" parameter specifies the unit width, measured in 1/1000 em. The glyphs'
+#             width are equal to, or a simple multiple of the unit width.
+#             If you decide to use custom widths you have to define all the widths you plan to use,
+#             otherwise they will not be built.
+
+# normal width is enough for me
+[buildPlans.niosevka-fixed.widths.normal]
+shape = 500        # Unit Width, measured in 1/1000 em.
+menu  = 5          # Width grade for the font's names.
+css   = "normal"   # "font-stretch' property of webfont CSS.
+
+# End width section
+###################################################################################################
+
+
+
+
+
+
+
+
+
+[buildPlans.niosevka-term]      # niosevka-term: term spaced, Pragmata Pro sytled font with higher underscore
+family = "Niosevka Term"        # Font menu family name
+spacing = "term"                # Optional; Values: `normal`, `term`, `fontconfig-mono`, or `fixed`
+serifs = "sans"                 # Optional; Values: `sans` or `slab`
+
+###################################################################################################
+# Configure variants
+
+# Optional; Whether to inherit a `ss##` variant
+[buildPlans.niosevka-term.variants]
+inherits = "ss08"
+
+# Optional; Configure single character's variant
+[buildPlans.niosevka-term.variants.design]
+cv45 = 1                        # Higher underscore _, placed right below baseline
+
+# End variant section
+###################################################################################################
+
+###################################################################################################
+# Configure ligations
+
+[buildPlans.niosevka-term.ligations]
+inherits = "default-calt"       # Optional; inherits an existing ligation set
+disables = []                   # Optional; disable specific ligation groups, overrides inherited ligation set
+enables  = []                   # Optional; enable specific ligation groups, overrides inherited ligation set
+
+# End ligation section
+###################################################################################################
+
+
+###################################################################################################
+# Override default building weights
+# When buildPlans.<plan name>.weights is absent, all weights would built and mapped to
+# default values.
+# IMPORTANT : Currently "menu" and "css" property only support numbers between 0 and 1000.
+#             and "shape" properly only supports number between 100 and 900 (inclusive).
+#             If you decide to use custom weights you have to define all the weights you
+#             plan to use otherwise they will not be built.
+[buildPlans.niosevka-term.weights.light]
+shape = 300     # Weight for glyph shapes.
+menu  = 300     # Weight for the font's names.
+css   = 300     # Weight for webfont CSS.
+
+[buildPlans.niosevka-term.weights.regular]
+shape = 400
+menu  = 400
+css   = 400
+
+[buildPlans.niosevka-term.weights.medium]
+shape = 500
+menu  = 500
+css   = 500
+
+[buildPlans.niosevka-term.weights.semibold]
+shape = 600
+menu  = 600
+css   = 600
+
+[buildPlans.niosevka-term.weights.bold]
+shape = 700
+menu  = 700
+css   = 700
+
+# End weight section
+###################################################################################################
+
+###################################################################################################
+# Override default building slope sets
+# Format: <upright|italic|oblique> = <"normal"|"italic"|"oblique">
+# When this section is absent, all slopes would be built.
+
+# I don't need oblique
+[buildPlans.niosevka-term.slopes]
+upright = "normal"
+italic = "italic"
+# oblique = "oblique"
+
+# End slope section
+###################################################################################################
+
+###################################################################################################
+# Override default building widths
+# When buildPlans.<plan name>.widths is absent, all widths would built and mapped to
+# default values.
+# IMPORTANT : Currently "shape" property only supports numbers between 434 and 664 (inclusive),
+#             while "menu" only supports integers between 1 and 9 (inclusive).
+#             The "shape" parameter specifies the unit width, measured in 1/1000 em. The glyphs'
+#             width are equal to, or a simple multiple of the unit width.
+#             If you decide to use custom widths you have to define all the widths you plan to use,
+#             otherwise they will not be built.
+
+# normal width is enough for me
+[buildPlans.niosevka-term.widths.normal]
+shape = 500        # Unit Width, measured in 1/1000 em.
+menu  = 5          # Width grade for the font's names.
+css   = "normal"   # "font-stretch' property of webfont CSS.
+
+# End width section
+###################################################################################################
