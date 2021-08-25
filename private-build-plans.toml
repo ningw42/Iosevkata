@@ -11,6 +11,9 @@ no-cv-ss = true
   inherits = "ss08"
 
     [buildPlans.niosevka.variants.design]
+    capital-b = "more-asymmetric-unilateral-serifed"
+    capital-d = "more-rounded-unilateral-serifed"
+    asterisk = "hex-low"
     underscore = "above-baseline"
 
 [buildPlans.niosevka.weights.light]
@@ -58,6 +61,9 @@ no-cv-ss = true
   inherits = "ss08"
 
     [buildPlans.niosevka-fixed.variants.design]
+    capital-b = "more-asymmetric-unilateral-serifed"
+    capital-d = "more-rounded-unilateral-serifed"
+    asterisk = "hex-low"
     underscore = "above-baseline"
 
 [buildPlans.niosevka-fixed.weights.light]
@@ -104,6 +110,9 @@ no-cv-ss = true
   inherits = "ss08"
 
     [buildPlans.niosevka-term.variants.design]
+    capital-b = "more-asymmetric-unilateral-serifed"
+    capital-d = "more-rounded-unilateral-serifed"
+    asterisk = "hex-low"
     underscore = "above-baseline"
 
 [buildPlans.niosevka-term.weights.light]
