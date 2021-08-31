@@ -7,7 +7,7 @@ import subprocess
 variants = ['niosevka', 'niosevka-fixed']
 private_build_plan_repo_path = '/home/ning/data/iosevka/plans'
 font_dist_path = f'{private_build_plan_repo_path}/dist'
-version_file = f'{private_build_plan_repo_path}/dist/version'
+version_file_path = f'{private_build_plan_repo_path}/dist/version'
 telegram_bot_token = ''
 telegram_chat_id = ''
 
@@ -21,15 +21,15 @@ def get_latest_version():
     return v
 
 def get_last_built_version():
-    if not os.path.exists(version_file):
+    if not os.path.exists(version_file_path):
         v = 'Not found'
     else:
-        with open (version_file, 'r') as f:
+        with open (version_file_path, 'r') as f:
             v = ''.join(f.readlines())
     console.log('Last built version:', v)
     return v
 
-def save_build_version(version, version_file_path):
+def save_build_version(version):
     console.log(f'Saving built version {version} to {version_file_path}')
     with open(version_file_path, 'w') as f:
         f.write(version)
