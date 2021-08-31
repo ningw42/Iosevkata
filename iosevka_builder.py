@@ -29,10 +29,10 @@ def get_last_built_version():
     console.log('Last built version:', v)
     return v
 
-def save_build_version(v):
-    console.log(f'Saving built version {v} to {version_file}')
-    with open(version_file, 'w') as f:
-        f.write(v)
+def save_build_version(version, version_file_path):
+    console.log(f'Saving built version {version} to {version_file_path}')
+    with open(version_file_path, 'w') as f:
+        f.write(version)
 
 def execute_command(cmd, cwd=None):
     cmd_str = ' '.join(cmd)
@@ -48,25 +48,24 @@ def execute_command(cmd, cwd=None):
 def send_message_via_telegram(msg):
     requests.get(f'https://api.telegram.org/{telegram_bot_token}/sendMessage?chat_id={telegram_chat_id}&text={msg}')
 
-def send_artifacts_via_telegram():
+def send_artifacts_via_telegram(version):
     # TODO replace with Python native
     for variant in variants:
-        src = f'{font_dist_path}/{variant}'
-        dst = f'{font_dist_path}/{variant}.zip'
-        lst = f'{font_dist_path}/{variant}.zip.last'
-        execute_command(['zip', '-r', dst, src])
-        execute_command(['curl', '-v', '-F', f'document=@{dst}', f'https://api.telegram.org/{telegram_bot_token}/sendDocument?chat_id={telegram_chat_id}'])
-        execute_command(['rm', lst])
-        execute_command(['mv', dst, lst])
-        execute_command(['rm', '-rf', src])
+        src = variant
+        dst = f'{variant}_{version}.zip'
+        execute_command(['zip', '-r', dst, src], font_dist_path)
+        execute_command(['curl', '-v', '-F', f'document=@{dst}', f'https://api.telegram.org/{telegram_bot_token}/sendDocument?chat_id={telegram_chat_id}'], font_dist_path)
+        execute_command(['rm', '-rf', src], font_dist_path)
+        execute_command(['rm', dst], font_dist_path)
 
 # check if a new build is necessary
 latest_version = get_latest_version()
 last_built_version = get_last_built_version()
 
 if last_built_version == latest_version:
-    console.log('No updates since last build, exiting.')
-    send_message_via_telegram(f'Latest: {latest_version}, Last: {last_built_version}, Exit.')
+    msg = f'No updates since last build. Latest: {latest_version}, last built: {last_built_version}, exiting.'
+    console.log(msg)
+    send_message_via_telegram(msg)
     exit(0)
 
 # get prepared for building
@@ -89,4 +88,4 @@ if r != 0:
 save_build_version(latest_version)
 
 # send artifacts via Telegram Bot
-send_artifacts_via_telegram()
+send_artifacts_via_telegram(latest_version)
