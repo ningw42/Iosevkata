@@ -150,3 +150,51 @@ css = 700
 shape = 500
 menu  = 5
 css   = "normal"
+
+## Niosevka Quasi-Proportional, quasi-proportional spacing variant of Niosevka.
+[buildPlans.niosevka-quasi-proportional]
+family = "Niosevka Quasi-Proportional"
+spacing = "quasi-proportional"
+serifs = "sans"
+no-cv-ss = true
+
+  [buildPlans.niosevka-quasi-proportional.variants]
+  inherits = "ss08"
+
+    [buildPlans.niosevka-quasi-proportional.variants.design]
+    capital-b = "standard-unilateral-serifed"
+    capital-d = "more-rounded-unilateral-serifed"
+    capital-p = "closed-motion-serifed"
+    capital-r = "curly-motion-serifed"
+    asterisk = "hex-low"
+    underscore = "above-baseline"
+
+[buildPlans.niosevka-quasi-proportional.weights.light]
+shape = 300
+menu = 300
+css = 300
+
+[buildPlans.niosevka-quasi-proportional.weights.regular]
+shape = 400
+menu = 400
+css = 400
+
+[buildPlans.niosevka-quasi-proportional.weights.medium]
+shape = 500
+menu = 500
+css = 500
+
+[buildPlans.niosevka-quasi-proportional.weights.semibold]
+shape = 600
+menu = 600
+css = 600
+
+[buildPlans.niosevka-quasi-proportional.weights.bold]
+shape = 700
+menu = 700
+css = 700
+
+[buildPlans.niosevka-quasi-proportional.widths.normal]
+shape = 500
+menu  = 5
+css   = "normal"
