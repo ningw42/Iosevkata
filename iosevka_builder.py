@@ -4,7 +4,7 @@ from rich.console import Console
 import subprocess
 
 # parameters
-variants = ['niosevka', 'niosevka-fixed']
+variants = ['niosevka', 'niosevka-fixed', 'niosevka-term', 'niosevka-quasi-proportional']
 private_build_plan_repo_path = '/home/ning/data/iosevka/plans'
 font_dist_path = f'{private_build_plan_repo_path}/dist'
 version_file_path = f'{private_build_plan_repo_path}/dist/version'
