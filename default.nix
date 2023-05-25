@@ -3,49 +3,7 @@
 , lib ? pkgs.lib
 , buildNpmPackage ? pkgs.buildNpmPackage
 , fetchFromGitHub ? pkgs.fetchFromGitHub
-, remarshal ? pkgs.remarshal
 , ttfautohint-nox ? pkgs.ttfautohint-nox
-  # Custom font set options.
-  # See https://typeof.net/Iosevka/customizer
-  # Can be a raw TOML string, or a Nix attrset.
-
-  # Ex:
-  # privateBuildPlan = ''
-  #   [buildPlans.iosevka-custom]
-  #   family = "Iosevka Custom"
-  #   spacing = "normal"
-  #   serifs = "sans"
-  #
-  #   [buildPlans.iosevka-custom.variants.design]
-  #   capital-j = "serifless"
-  #
-  #   [buildPlans.iosevka-custom.variants.italic]
-  #   i = "tailed"
-  # '';
-
-  # Or:
-  # privateBuildPlan = {
-  #   family = "Iosevka Custom";
-  #   spacing = "normal";
-  #   serifs = "sans";
-  #
-  #   variants = {
-  #     design.capital-j = "serifless";
-  #     italic.i = "tailed";
-  #   };
-  # }
-, privateBuildPlan ? null
-  # Extra parameters. Can be used for ligature mapping.
-  # It must be a raw TOML string.
-
-  # Ex:
-  # extraParameters = ''
-  #   [[iosevka.compLig]]
-  #   unicode = 57808 # 0xe1d0
-  #   featureTag = 'XHS0'
-  #   sequence = "+>"
-  # '';
-, extraParameters ? null
 }:
 
 buildNpmPackage rec {
@@ -62,40 +20,118 @@ buildNpmPackage rec {
   npmDepsHash = "sha256-/zutJ4kwGqBe3snMxyvReJdvlcsm+02ZZyFMdNN6gmc=";
 
   nativeBuildInputs = [
-    remarshal
     ttfautohint-nox
   ];
 
-  buildPlan =
-    if builtins.isAttrs privateBuildPlan then
-      builtins.toJSON { buildPlans.${pname} = privateBuildPlan; }
-    else
-      privateBuildPlan;
+  privateBuildPlan = ''
+    # Built with https://typeof.net/Iosevka/customizer
 
-  inherit extraParameters;
-  passAsFile = [ "extraParameters" ] ++ lib.optionals
-    (
-      !(builtins.isString privateBuildPlan
-        && lib.hasPrefix builtins.storeDir privateBuildPlan)
-    ) [ "buildPlan" ];
+    ## Niosevka, a PragmataPro styled variant with higher underscore, trimed weights and normal width.
+    [buildPlans.niosevka]
+      family = "Niosevka"
+      spacing = "normal"
+      serifs = "sans"
+      no-cv-ss = true
+
+    [buildPlans.niosevka.variants]
+      inherits = "ss08"
+
+    [buildPlans.niosevka.variants.design]
+      capital-b = "standard-unilateral-serifed"
+      capital-d = "more-rounded-unilateral-serifed"
+      capital-p = "closed-motion-serifed"
+      capital-r = "curly-motion-serifed"
+      asterisk = "hex-low"
+      underscore = "above-baseline"
+
+    [buildPlans.niosevka.weights.light]
+      shape = 300
+      menu = 300
+      css = 300
+
+    [buildPlans.niosevka.weights.regular]
+      shape = 400
+      menu = 400
+      css = 400
+
+    [buildPlans.niosevka.weights.medium]
+      shape = 500
+      menu = 500
+      css = 500
+
+    [buildPlans.niosevka.weights.semibold]
+      shape = 600
+      menu = 600
+      css = 600
+
+    [buildPlans.niosevka.weights.bold]
+      shape = 700
+      menu = 700
+      css = 700
+
+    # normal width is enough for me
+    [buildPlans.niosevka.widths.normal]
+      shape = 500        # Unit Width, measured in 1/1000 em.
+      menu  = 5          # Width grade for the font's names.
+      css   = "normal"   # "font-stretch' property of webfont CSS.
+
+
+
+
+    ## Niosevka Fixed, fixed spacing variant of Niosevka
+    [buildPlans.niosevka-fixed]
+      family = "Niosevka Fixed"
+      spacing = "fixed"
+      serifs = "sans"
+      no-cv-ss = true
+
+    [buildPlans.niosevka-fixed.variants]
+      inherits = "ss08"
+
+    [buildPlans.niosevka-fixed.variants.design]
+      capital-b = "standard-unilateral-serifed"
+      capital-d = "more-rounded-unilateral-serifed"
+      capital-p = "closed-motion-serifed"
+      capital-r = "curly-motion-serifed"
+      asterisk = "hex-low"
+      underscore = "above-baseline"
+
+    [buildPlans.niosevka-fixed.weights.light]
+      shape = 300
+      menu = 300
+      css = 300
+
+    [buildPlans.niosevka-fixed.weights.regular]
+      shape = 400
+      menu = 400
+      css = 400
+
+    [buildPlans.niosevka-fixed.weights.medium]
+      shape = 500
+      menu = 500
+      css = 500
+
+    [buildPlans.niosevka-fixed.weights.semibold]
+      shape = 600
+      menu = 600
+      css = 600
+
+    [buildPlans.niosevka-fixed.weights.bold]
+      shape = 700
+      menu = 700
+      css = 700
+
+    [buildPlans.niosevka-fixed.widths.normal]
+      shape = 500
+      menu  = 5
+      css   = "normal"
+    '';
+
+  passAsFile = [ "privateBuildPlan" ];
 
   configurePhase = ''
     runHook preConfigure
-    ${lib.optionalString (builtins.isAttrs privateBuildPlan) ''
-      remarshal -i "$buildPlanPath" -o private-build-plans.toml -if json -of toml
-    ''}
-    ${lib.optionalString (builtins.isString privateBuildPlan
-      && (!lib.hasPrefix builtins.storeDir privateBuildPlan)) ''
-        cp "$buildPlanPath" private-build-plans.toml
-      ''}
-    ${lib.optionalString (builtins.isString privateBuildPlan
-      && (lib.hasPrefix builtins.storeDir privateBuildPlan)) ''
-        cp "$buildPlan" private-build-plans.toml
-      ''}
-    ${lib.optionalString (extraParameters != null) ''
-      echo -e "\n" >> params/parameters.toml
-      cat "$extraParametersPath" >> params/parameters.toml
-    ''}
+    cp "$privateBuildPlanPath" private-build-plans.toml
     runHook postConfigure
   '';
 
