@@ -8,16 +8,16 @@
 
 buildNpmPackage rec {
   pname = "niosevka";
-  version = "23.0.0";
+  version = "24.0.0";
 
   src = fetchFromGitHub {
     owner = "be5invis";
     repo = "iosevka";
     rev = "v${version}";
-    hash = "sha256-j7JE9UHG4xho0a4TqG5rpCJkYyVxgoLxBuRtNMGfkrw=";
+    hash = "sha256-M0olHHr3DiIlKwsPe97Oh6eRM9uTk7235MZwZN9c0NY=";
   };
 
-  npmDepsHash = "sha256-/zutJ4kwGqBe3snMxyvReJdvlcsm+02ZZyFMdNN6gmc=";
+  npmDepsHash = "sha256-W4a7uPBvQ+tcZ3nkGEKE8uW/5wsGVUxah+VQPyYerhQ=";
 
   nativeBuildInputs = [
     ttfautohint-nox
