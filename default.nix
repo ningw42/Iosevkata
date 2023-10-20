@@ -40,7 +40,7 @@ buildNpmPackage rec {
       capital-b = "standard-unilateral-serifed"
       capital-d = "more-rounded-unilateral-serifed"
       capital-p = "closed-motion-serifed"
-      capital-r = "curly-motion-serifed"
+      capital-r = "curly-top-left-serifed"
       asterisk = "hex-low"
       underscore = "above-baseline"
 
@@ -92,7 +92,7 @@ buildNpmPackage rec {
       capital-b = "standard-unilateral-serifed"
       capital-d = "more-rounded-unilateral-serifed"
       capital-p = "closed-motion-serifed"
-      capital-r = "curly-motion-serifed"
+      capital-r = "curly-top-left-serifed"
       asterisk = "hex-low"
       underscore = "above-baseline"
 
