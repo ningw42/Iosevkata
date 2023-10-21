@@ -32,6 +32,7 @@ buildNpmPackage rec {
       spacing = "normal"
       serifs = "sans"
       no-cv-ss = true
+      export-glyph-names = false
 
     [buildPlans.niosevka.variants]
       inherits = "ss08"
@@ -41,6 +42,7 @@ buildNpmPackage rec {
       capital-d = "more-rounded-unilateral-serifed"
       capital-p = "closed-motion-serifed"
       capital-r = "curly-top-left-serifed"
+      zero = "oval-dotted"
       asterisk = "hex-low"
       underscore = "above-baseline"
 
@@ -84,6 +86,7 @@ buildNpmPackage rec {
       spacing = "fixed"
       serifs = "sans"
       no-cv-ss = true
+      export-glyph-names = false
 
     [buildPlans.niosevka-fixed.variants]
       inherits = "ss08"
@@ -93,6 +96,7 @@ buildNpmPackage rec {
       capital-d = "more-rounded-unilateral-serifed"
       capital-p = "closed-motion-serifed"
       capital-r = "curly-top-left-serifed"
+      zero = "oval-dotted"
       asterisk = "hex-low"
       underscore = "above-baseline"
 
