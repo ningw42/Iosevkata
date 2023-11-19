@@ -121,26 +121,19 @@
   in
   {
     packages.x86_64-linux.niosevka = pkgs.buildNpmPackage {
+      inherit version npmDepsHash privateBuildPlan;
       pname = "niosevka";
-      # version = "27.2.1";
-      version = version;
 
       src = pkgs.fetchFromGitHub {
+        inherit hash;
         owner = "be5invis";
         repo = "iosevka";
         rev = "v${version}";
-        # hash = "sha256-+d6pONsAoA0iI7VCuDHBGGjZPaxgLToouQpFTaX6edY=";
-        hash = hash;
       };
-
-      # npmDepsHash = "sha256-c/QvrDjjoq2o1le++e7D0Lb18wyZc/q6ct++rkgYtzg=";
-      npmDepsHash = npmDepsHash;
 
       nativeBuildInputs = [
         pkgs.ttfautohint-nox
       ];
-
-      privateBuildPlan = privateBuildPlan;
 
       passAsFile = [ "privateBuildPlan" ];
 
