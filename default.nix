@@ -124,6 +124,7 @@ pkgs.buildNpmPackage rec {
 
   nativeBuildInputs = [
     pkgs.ttfautohint-nox
+    pkgs.zip
   ];
 
   passAsFile = [ "privateBuildPlan" ];
@@ -144,10 +145,11 @@ pkgs.buildNpmPackage rec {
 
   installPhase = ''
     runHook preInstall
-    dist="$out/share/niosevka"
-    mkdir -p "$dist"
-    cp -r "dist/niosevka/ttf"/* "$dist"
-    cp -r "dist/niosevka-fixed/ttf"/* "$dist"
+    dist="$out/share"
+    mkdir -p "$dist/niosevka"
+    mkdir -p "$dist/niosevka-fixed"
+    cp -r "dist/niosevka/ttf"/* "$dist/niosevka"
+    cp -r "dist/niosevka-fixed/ttf"/* "$dist/niosevka-fixed"
     runHook postInstall
   '';
 
