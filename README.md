@@ -8,6 +8,10 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
+# TODOs
+
+- [] Add a `Iosevkata NF` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
+
 # Build Instructions
 
 You will need [Nix or NixOS](https://nixos.org/).
