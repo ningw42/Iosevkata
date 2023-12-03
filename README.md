@@ -25,5 +25,5 @@ nix-build default.nix
 2. [PragmataPro](https://fsd.it/shop/fonts/pragmatapro/)
 3. [Menlo](https://en.wikipedia.org/wiki/Menlo_(typeface))
 4. [mononoki](https://github.com/madmalik/mononoki)
-5. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Iosevka` variant **without** my personal preferences.
-6. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant **with** the author's personal preferences.
+5. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant **without** my personal preferences.
+6. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Iosevka` variant **with** the author's personal preferences.
