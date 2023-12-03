@@ -92,6 +92,7 @@
 
       nativeBuildInputs = [
         pkgs.ttfautohint-nox
+        pkgs.zip
       ];
 
       passAsFile = [ "privateBuildPlan" ];
@@ -111,9 +112,18 @@
 
       installPhase = ''
         runHook preInstall
+
+        # create distination directories
         dist="$out/share"
         mkdir -p "$dist/Iosevkata"
-        cp -r "dist/iosevkata/ttf"/* "$dist/Iosevkata"
+
+        # copy built fonts
+        cp -r "dist/iosevkata/ttf" "$dist/Iosevkata"
+
+        # add built fonts to build artifact
+        cd "$dist/Iosevkata"
+        zip -r "$out/Iosevkata-$version.zip" *
+
         runHook postInstall
       '';
 
