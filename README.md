@@ -13,10 +13,10 @@ A `PragmataPro` styled `Iosevka` variant with my own tweaks.
 You will need [Nix or NixOS](https://nixos.org/).
 
 ```nix
+# with flake
 nix build .#iosevkata
 
-# or
-
+# or without
 nix-build default.nix
 ```
 
