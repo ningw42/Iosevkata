@@ -118,28 +118,6 @@
       '';
 
       enableParallelBuilding = true;
-
-      meta = with pkgs.lib; {
-        homepage = "https://typeof.net/Iosevka/";
-        downloadPage = "https://github.com/be5invis/Iosevka/releases";
-        description = "Versatile typeface for code, from code.";
-        longDescription = ''
-          Iosevka is an open-source, sans-serif + slab-serif, monospace +
-          quasi‑proportional typeface family, designed for writing code, using in
-          terminals, and preparing technical documents.
-        '';
-        license = licenses.ofl;
-        platforms = platforms.all;
-        maintainers = with maintainers; [
-          cstrahan
-          jfrankenau
-          ttuegel
-          babariviere
-          rileyinman
-          AluisioASG
-          lunik1
-        ];
-      };
     };
   };
 }
