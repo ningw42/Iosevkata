@@ -6,12 +6,12 @@ let
   privateBuildPlan = ''
     # Built with https://typeof.net/Iosevka/customizer
 
-    # Iosevkata, a PragmataPro styled variant with my own tweaks.
-    # 1) A fixed spacing, no ligature. I once liked ligature, but it's distracting.
-    # 2) A higher underscore. To make underscore-connected characters feels connected, like `Menlo`.
-    # 3) A lower hex asterisk. To place it at the center of the line, like `Menlo`.
-    # 4) An oval-dottet zero. `PragmataPro`'s diamond shaped zero is too sharp for me.
-    # 5) A few decorations mimicking `mononoki`, for 'B', 'D', 'P' and 'R'.
+    # A `PragmataPro` styled `Iosevka` variant with my own tweaks.
+    # 1. **A fixed spacing, no ligature.** I once liked ligature, but it's distracting.
+    # 2. **A higher underscore.** To make underscore-connected characters feels connected, like `Menlo`.
+    # 3. **A lower hex asterisk.** To place it at the center of the line, like `Menlo`.
+    # 4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
+    # 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
     # Reference:
     # The metric-override subsection is copied from Pragmasevka and Iosvmata
