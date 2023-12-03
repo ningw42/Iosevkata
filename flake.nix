@@ -14,7 +14,7 @@
     privateBuildPlan = ''
       # Built with https://typeof.net/Iosevka/customizer
 
-      # A `PragmataPro` styled `Iosevka` variant with my own tweaks.
+      # A `PragmataPro` styled `Iosevka` variant with my tweaks.
       # 1. **A fixed spacing, no ligature.** I once liked ligature, but it's distracting.
       # 2. **A higher underscore.** To make underscore-connected characters feels connected, like `Menlo`.
       # 3. **A lower hex asterisk.** To place it at the center of the line, like `Menlo`.

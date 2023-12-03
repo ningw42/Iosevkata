@@ -1,6 +1,6 @@
-# Iosevkata 
+# Iosevkata
 
-A `PragmataPro` styled `Iosevka` variant with my own tweaks.
+A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 1. **A fixed spacing, no ligature.** I once liked ligature, but it's distracting.
 2. **A higher underscore.** To make underscore-connected characters feels connected, like `Menlo`.
@@ -8,7 +8,7 @@ A `PragmataPro` styled `Iosevka` variant with my own tweaks.
 4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
-# Build
+# Build Instructions
 
 You will need [Nix or NixOS](https://nixos.org/).
 
@@ -25,5 +25,8 @@ nix-build default.nix
 2. [PragmataPro](https://fsd.it/shop/fonts/pragmatapro/)
 3. [Menlo](https://en.wikipedia.org/wiki/Menlo_(typeface))
 4. [mononoki](https://github.com/madmalik/mononoki)
-5. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant **without** my personal preferences.
-6. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Iosevka` variant **with** the author's personal preferences.
+
+# Other Similar Variants
+
+1. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant solely intended to immitate `PragmataPro`.
+2. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Pragmasevka` based `Iosevka` variant.
