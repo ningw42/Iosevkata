@@ -10,6 +10,8 @@ A `PragmataPro` styled `Iosevka` variant with my own tweaks.
 
 # Build
 
+You will need [Nix or NixOS](https://nixos.org/).
+
 ```nix
 nix build .#iosevkata
 
@@ -23,5 +25,5 @@ nix-build default.nix
 2. [PragmataPro](https://fsd.it/shop/fonts/pragmatapro/)
 3. [Menlo](https://en.wikipedia.org/wiki/Menlo_(typeface))
 4. [mononoki](https://github.com/madmalik/mononoki)
-5. [Iosvmata](https://github.com/N-R-K/Iosvmata)
-6. [Pragmasevka](https://github.com/shytikov/pragmasevka)
+5. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Iosevka` variant **without** my personal preferences.
+6. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant **with** the author's personal preferences.
