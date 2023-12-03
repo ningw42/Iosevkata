@@ -1,5 +1,5 @@
 {
-  description = "Niosevka, a customized variant of Iosevka";
+  description = "Iosevkata, a customized variant of Iosevka";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -14,115 +14,74 @@
     privateBuildPlan = ''
       # Built with https://typeof.net/Iosevka/customizer
 
-      ## Niosevka, a PragmataPro styled variant with higher underscore, trimed weights and normal width.
-      [buildPlans.niosevka]
-        family = "Niosevka"
-        spacing = "normal"
-        serifs = "sans"
-        no-cv-ss = true
-        export-glyph-names = false
+      # Iosevkata, a PragmataPro styled variant with
+      # 1) A fixed spacing, no ligature. I once liked ligature, but it's distracting.
+      # 2) A higher underscore. To make underscore-connected characters feels connected, like `Menlo`.
+      # 3) A lower hex asterisk. To place it at the center of the line, like `Menlo`.
+      # 4) An oval-dottet zero. PragmataPro's diamond shaped zero is too sharp for me.
+      # 5) A few decorations mimicking `mononoki`, for 'B', 'D', 'P' and 'R'.
 
-      [buildPlans.niosevka.variants]
-        inherits = "ss08"
+      # Reference:
+      # The metric-override subsection is copied from Pragmasevka and Iosvmata
 
-      [buildPlans.niosevka.variants.design]
-        capital-b = "standard-unilateral-serifed"
-        capital-d = "more-rounded-unilateral-serifed"
-        capital-p = "closed-motion-serifed"
-        capital-r = "curly-top-left-serifed"
-        zero = "oval-dotted"
-        asterisk = "hex-low"
-        underscore = "above-baseline"
+      [buildPlans.iosevkata]
+      family = "Iosevkata"
+      spacing = "fixed"
+      serifs = "sans"
+      no-cv-ss = true
+      export-glyph-names = false
 
-      [buildPlans.niosevka.weights.light]
-        shape = 300
-        menu = 300
-        css = 300
+      [buildPlans.iosevkata.variants]
+      inherits = "ss08"
 
-      [buildPlans.niosevka.weights.regular]
-        shape = 400
-        menu = 400
-        css = 400
+      [buildPlans.iosevkata.variants.design]
+      underscore = "above-baseline"
+      asterisk = "hex-low"
+      zero = "oval-dotted"
+      capital-b = "standard-unilateral-serifed"
+      capital-d = "more-rounded-unilateral-serifed"
+      capital-p = "closed-motion-serifed"
+      capital-r = "curly-top-left-serifed"
 
-      [buildPlans.niosevka.weights.medium]
-        shape = 500
-        menu = 500
-        css = 500
+      [buildPlans.iosevkata.widths.normal]
+      shape = 500         # Unit Width, measured in 1/1000 em.
+      menu  = 5           # Width grade for the font's names.
+      css   = "normal"    # "font-stretch' property of webfont CSS.
 
-      [buildPlans.niosevka.weights.semibold]
-        shape = 600
-        menu = 600
-        css = 600
+      [buildPlans.iosevkata.metric-override]
+      leading = 1100      # a smaller line height. built-in line height, default is 1250.
+      xHeight = 550       # a taller 'x'. height of 'x', default is 520.
 
-      [buildPlans.niosevka.weights.bold]
-        shape = 700
-        menu = 700
-        css = 700
+      [buildPlans.iosevkata.weights.light]
+      shape = 300
+      menu  = 300
+      css   = 300
 
-      # normal width is enough for me
-      [buildPlans.niosevka.widths.normal]
-        shape = 500        # Unit Width, measured in 1/1000 em.
-        menu  = 5          # Width grade for the font's names.
-        css   = "normal"   # "font-stretch' property of webfont CSS.
+      [buildPlans.iosevkata.weights.regular]
+      shape = 400
+      menu  = 400
+      css   = 400
 
+      [buildPlans.iosevkata.weights.medium]
+      shape = 500
+      menu  = 500
+      css   = 500
 
+      [buildPlans.iosevkata.weights.semibold]
+      shape = 600
+      menu  = 600
+      css   = 600
 
-
-      ## Niosevka Fixed, fixed spacing variant of Niosevka
-      [buildPlans.niosevka-fixed]
-        family = "Niosevka Fixed"
-        spacing = "fixed"
-        serifs = "sans"
-        no-cv-ss = true
-        export-glyph-names = false
-
-      [buildPlans.niosevka-fixed.variants]
-        inherits = "ss08"
-
-      [buildPlans.niosevka-fixed.variants.design]
-        capital-b = "standard-unilateral-serifed"
-        capital-d = "more-rounded-unilateral-serifed"
-        capital-p = "closed-motion-serifed"
-        capital-r = "curly-top-left-serifed"
-        zero = "oval-dotted"
-        asterisk = "hex-low"
-        underscore = "above-baseline"
-
-      [buildPlans.niosevka-fixed.weights.light]
-        shape = 300
-        menu = 300
-        css = 300
-
-      [buildPlans.niosevka-fixed.weights.regular]
-        shape = 400
-        menu = 400
-        css = 400
-
-      [buildPlans.niosevka-fixed.weights.medium]
-        shape = 500
-        menu = 500
-        css = 500
-
-      [buildPlans.niosevka-fixed.weights.semibold]
-        shape = 600
-        menu = 600
-        css = 600
-
-      [buildPlans.niosevka-fixed.weights.bold]
-        shape = 700
-        menu = 700
-        css = 700
-
-      [buildPlans.niosevka-fixed.widths.normal]
-        shape = 500
-        menu  = 5
-        css   = "normal"
+      [buildPlans.iosevkata.weights.bold]
+      shape = 700
+      menu  = 700
+      css   = 700
     '';
   in
   {
-    packages.x86_64-linux.niosevka = pkgs.buildNpmPackage {
+    packages.x86_64-linux.iosevkata = pkgs.buildNpmPackage {
       inherit version npmDepsHash privateBuildPlan;
-      pname = "niosevka";
+      pname = "iosevkata";
 
       src = pkgs.fetchFromGitHub {
         inherit hash;
@@ -146,18 +105,15 @@
       buildPhase = ''
         export HOME=$TMPDIR
         runHook preBuild
-        npm run build --no-update-notifier -- --verbose=9 ttf::niosevka
-        npm run build --no-update-notifier -- --verbose=9 ttf::niosevka-fixed
+        npm run build --no-update-notifier -- --verbose=9 ttf::iosevkata
         runHook postBuild
       '';
 
       installPhase = ''
         runHook preInstall
         dist="$out/share"
-        mkdir -p "$dist/niosevka"
-        mkdir -p "$dist/niosevka-fixed"
-        cp -r "dist/niosevka/ttf"/* "$dist/niosevka"
-        cp -r "dist/niosevka-fixed/ttf"/* "$dist/niosevka-fixed"
+        mkdir -p "$dist/Iosevkata"
+        cp -r "dist/iosevkata/ttf"/* "$dist/Iosevkata"
         runHook postInstall
       '';
 
