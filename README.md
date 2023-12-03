@@ -10,7 +10,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 # TODOs
 
-- [] Add a `Iosevkata NF` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
+- [ ] Add a `Iosevkata NF` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
 
 # Build Instructions
 
