@@ -14,14 +14,10 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 # Build Instructions
 
-You will need [Nix or NixOS](https://nixos.org/).
+You will need [Nix or NixOS](https://nixos.org/), and [Flake](https://nixos.wiki/wiki/Flakes).
 
 ```nix
-# with flake
 nix build .#iosevkata
-
-# or without
-nix-build default.nix
 ```
 
 # References
