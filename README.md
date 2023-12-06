@@ -10,14 +10,18 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 # TODOs
 
-- [ ] Add a `Iosevkata NF` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
+- [x] Add a `Iosevkata Nerd Font` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
 
 # Build Instructions
 
 You will need [Nix or NixOS](https://nixos.org/), and [Flake](https://nixos.wiki/wiki/Flakes).
 
 ```nix
+# Iosevkata only
 nix build .#iosevkata
+
+# Iosevkata and Iosevkata Nerd Font
+nix build .#iosevkata-nerd-font
 ```
 
 # References
