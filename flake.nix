@@ -80,7 +80,6 @@
       ];
 
       nativeBuildInputs = [
-        pkgs.autoPatchelfHook
         pkgs.zip
         pkgs.ttfautohint-nox # Iosevka
         pkgs.fontforge # NerdFont
