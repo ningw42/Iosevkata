@@ -123,6 +123,14 @@
           python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete $file --outputdir $nerdfontdir
         done
 
+        # patch nerd font mono
+        nerdfontmonodir="dist/iosevkata/nerdfontmono"
+        mkdir $nerdfontmonodir
+        find dist/iosevkata/ttf -type f -name "*.ttf" | while read file; do
+          echo "patching file: $file"
+          python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete $file --outputdir $nerdfontmonodir
+        done
+
         runHook postBuild
       '';
 
@@ -134,6 +142,8 @@
         zip -r "$out/Iosevkata-$version.zip" *
         cd ../nerdfont
         zip -r "$out/IosevkataNerdFont-$version.zip" *
+        cd ../nerdfontmono
+        zip -r "$out/IosevkataNerdFontMono-$version.zip" *
         runHook postInstall
       '';
 
