@@ -14,8 +14,8 @@
 family = "Iosevkata"
 spacing = "fixed"
 serifs = "sans"
-no-cv-ss = true
-export-glyph-names = false
+noCvSs = true
+exportGlyphNames = false
 
 [buildPlans.iosevkata.variants]
 inherits = "ss08"
@@ -34,7 +34,7 @@ shape = 500         # Unit Width, measured in 1/1000 em.
 menu  = 5           # Width grade for the font's names.
 css   = "normal"    # "font-stretch' property of webfont CSS.
 
-[buildPlans.iosevkata.metric-override]
+[buildPlans.iosevkata.metricOverride]
 leading = 1100      # a smaller line height. built-in line height, default is 1250.
 xHeight = 550       # a taller 'x'. height of 'x', default is 520.
 

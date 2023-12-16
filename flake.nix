@@ -21,9 +21,9 @@
 
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    version = "27.3.5";
-    hash = "sha256-dqXr/MVOuEmAMueaRWsnzY9MabhnyBRtLR9IDVLN79I=";
-    npmDepsHash = "sha256-bux8aFBP1Pi5pAQY1jkNTqD2Ny2j+QQs+QRaXWJj6xg=";
+    version = "28.0.0";
+    hash = "sha256-xicXPIIsaYouYc6yzaH36R5d6+73wkSCpJzSXV6ekHI=";
+    npmDepsHash = "sha256-9FSG8pnEVb5K4wR0Xsr9Cq+dnorP8rxPwraKWBBDlCA=";
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
     fontPatcherVersion = "3.1.1";
     fontPatcherHash = "sha256-H2dPUs6HVKJcjxy5xtz9nL3SSPXKQF3w30/0l7A0PeY=";
@@ -99,7 +99,7 @@
           if [ "$WITH_NERD_FONT" = "true" ]; then
             nerdfontdir="dist/iosevkata/nerdfont"
             mkdir $nerdfontdir
-            find dist/iosevkata/ttf -type f -name "*.ttf" | while read file; do
+            find dist/iosevkata/TTF -type f -name "*.ttf" | while read file; do
               echo "patching file: $file"
               python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete $file --outputdir $nerdfontdir
             done
@@ -109,7 +109,7 @@
           if [ "$WITH_NERD_FONT_MONO" = "true" ]; then
             nerdfontmonodir="dist/iosevkata/nerdfontmono"
             mkdir $nerdfontmonodir
-            find dist/iosevkata/ttf -type f -name "*.ttf" | while read file; do
+            find dist/iosevkata/TTF -type f -name "*.ttf" | while read file; do
               echo "patching file: $file"
               python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete $file --outputdir $nerdfontmonodir
             done
@@ -124,7 +124,7 @@
 
           # pack Iosevkata
           mkdir -p $out
-          cd dist/iosevkata/ttf
+          cd dist/iosevkata/TTF
           zip -r "$out/Iosevkata-$version.zip" *
 
           # pack Iosevkata Nerd Font if necessary
