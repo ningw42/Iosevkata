@@ -92,7 +92,7 @@
           runHook preBuild
 
           # build Iosevkata
-          npm run build --no-update-notifier -- --verbose=9 ttf::iosevkata
+          npm run build --no-update-notifier -- --verbose=9 --jCmd=$NIX_BUILD_CORES ttf::iosevkata
 
           # patch nerd font if necessary
           ${pkgs.lib.optionalString withNerdFont ''
