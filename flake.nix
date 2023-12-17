@@ -59,6 +59,7 @@
           pkgs.ttfautohint-nox
         ] ++ pkgs.lib.optionals needNerdFontPatcher [
           # optional build inputs for NerdFontPatcher
+          pkgs.parallel # for parallel font patching
           pkgs.fontforge
           (pkgs.python3.withPackages (ps: [ ps.fontforge ps.configargparse]))
         ];
@@ -87,8 +88,6 @@
         # Build Phase: build Iosevkata first, and then patch with NerdFont.
         buildPhase = ''
           export HOME=$TMPDIR
-          export WITH_NERD_FONT=${if withNerdFont then "true" else "false"}
-          export WITH_NERD_FONT_MONO=${if withNerdFontMono then "true" else "false"}
 
           runHook preBuild
 
@@ -96,24 +95,18 @@
           npm run build --no-update-notifier -- --verbose=9 ttf::iosevkata
 
           # patch nerd font if necessary
-          if [ "$WITH_NERD_FONT" = "true" ]; then
+          ${pkgs.lib.optionalString withNerdFont ''
             nerdfontdir="dist/iosevkata/nerdfont"
             mkdir $nerdfontdir
-            find dist/iosevkata/TTF -type f -name "*.ttf" | while read file; do
-              echo "patching file: $file"
-              python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete $file --outputdir $nerdfontdir
-            done
-          fi
+            parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/iosevkata/TTF/*
+          ''}
 
           # patch nerd font mono if necessary
-          if [ "$WITH_NERD_FONT_MONO" = "true" ]; then
+          ${pkgs.lib.optionalString withNerdFontMono ''
             nerdfontmonodir="dist/iosevkata/nerdfontmono"
             mkdir $nerdfontmonodir
-            find dist/iosevkata/TTF -type f -name "*.ttf" | while read file; do
-              echo "patching file: $file"
-              python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete $file --outputdir $nerdfontmonodir
-            done
-          fi
+            parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/iosevkata/TTF/*
+          ''}
 
           runHook postBuild
         '';
@@ -128,16 +121,16 @@
           zip -r "$out/Iosevkata-$version.zip" *
 
           # pack Iosevkata Nerd Font if necessary
-          if [ "$WITH_NERD_FONT" = "true" ]; then
+          ${pkgs.lib.optionalString withNerdFont ''
             cd ../nerdfont
             zip -r "$out/IosevkataNerdFont-$version.zip" *
-          fi
+          ''}
 
           # pack Iosevkata Nerd Font Mono if necessary
-          if [ "$WITH_NERD_FONT_MONO" = "true" ]; then
+          ${pkgs.lib.optionalString withNerdFontMono ''
             cd ../nerdfontmono
             zip -r "$out/IosevkataNerdFontMono-$version.zip" *
-          fi
+          ''}
 
           runHook postInstall
         '';
