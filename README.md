@@ -12,7 +12,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 - [x] Add a `Iosevkata Nerd Font` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
 - [x] A unified builder.
-- [ ] Run NerdFontPatcher in parallel.
+- [x] Run NerdFontPatcher in parallel. Now we need just 4 minutes on an AMD Ryzen 9 3900X compare to the previous 15 minutes.
 
 # Build Instructions
 
