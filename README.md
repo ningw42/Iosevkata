@@ -8,11 +8,19 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
+# Sub Variants
+
+1. Iosevkata, vanilla.
+2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **without** option `--mono`.
+3. Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **with** option `--mono`. See the option's [documentation](https://github.com/ryanoasis/nerd-fonts/wiki/ScriptOptions).
+
 # TODOs
 
 - [x] Add a `Iosevkata Nerd Font` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
 - [x] A unified builder.
-- [x] Run NerdFontPatcher in parallel. Now we need just 4 minutes on an AMD Ryzen 9 3900X compare to the previous 15 minutes.
+- [x] Run NerdFontPatcher in parallel. Now we just need 4 minutes on an AMD Ryzen 9 3900X compare to 15 minutes when patching is done sequentially.
+- [x] Honor `NIX_BUILD_CORES`.
+- [ ] Consider using `zstd` to compress the final artifacts.
 
 # Build Instructions
 
