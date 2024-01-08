@@ -6,17 +6,32 @@
   };
 
   outputs = { self, nixpkgs }: rec {
-    # Packages
+    # Packages: Iosevkata
     packages.x86_64-linux.iosevkata = buildIosevkata {
       inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
       withNerdFont = false;
       withNerdFontMono = false;
     };
 
+    # Packages: IosevkataNerdFont
     packages.x86_64-linux.iosevkata-nerd-font = buildIosevkata {
       inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
       withNerdFont = true;
       withNerdFontMono = true;
+    };
+
+    # Shells: default development shell
+    devShells.x86_64-linux.default = pkgs.mkShell {
+      packages = [
+        pkgs.fontforge
+        pkgs.prefetch-npm-deps
+        (pkgs.python3.withPackages (ps: [ ps.fontforge ps.configargparse ]))
+      ];
+    };
+
+    # Shells: prefetch shell for npmDepsHash
+    devShells.x86_64-linux.prefetch = pkgs.mkShell {
+      packages = [ pkgs.prefetch-npm-deps ];
     };
 
     # Metadata
