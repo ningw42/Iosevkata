@@ -22,6 +22,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] A unified builder.
 - [x] Run NerdFontPatcher in parallel. Now we just need 3 minutes on an AMD Ryzen 9 3900X compare to 15 minutes when patching is done sequentially.
 - [x] Honor `NIX_BUILD_CORES`.
+- [x] Add preview image.
 - [ ] Consider using `zstd` to compress the final artifacts.
 
 # Build Instructions
