@@ -1,5 +1,7 @@
 # Iosevkata
 
+![Preview](preview.png)
+
 A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 1. **A fixed spacing, no ligature.** I once liked ligature, but it's distracting.
