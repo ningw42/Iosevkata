@@ -17,7 +17,7 @@
     packages.x86_64-linux.iosevkata-nerd-font = buildIosevkata {
       inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
       withNerdFont = true;
-      withNerdFontMono = true;
+      withNerdFontMono = false;
     };
 
     # Shells: default development shell
