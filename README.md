@@ -14,7 +14,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 1. Iosevkata, vanilla.
 2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **without** option `--mono`.
-3. Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **with** option `--mono`. See the option's [documentation](https://github.com/ryanoasis/nerd-fonts/wiki/ScriptOptions).
+3. ~~Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **with** option `--mono`. See the option's [documentation](https://github.com/ryanoasis/nerd-fonts/wiki/ScriptOptions).~~
 
 # TODOs
 
