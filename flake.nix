@@ -6,6 +6,15 @@
   };
 
   outputs = { self, nixpkgs }: rec {
+    # Metadata
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    version = "28.1.0";
+    hash = "sha256-cYnGJ7Z0PDRZtC/vz8hX/+mqk7iVkajFTfNGgRW+edQ=";
+    npmDepsHash = "sha256-bzQ7dc7UiC++0DxnQHusu6Ym7rd7GgeA6bGSnnla1nk=";
+    privateBuildPlan = builtins.readFile ./private-build-plans.toml;
+    fontPatcherVersion = "3.1.1";
+    fontPatcherHash = "sha256-H2dPUs6HVKJcjxy5xtz9nL3SSPXKQF3w30/0l7A0PeY=";
+
     # Packages: Iosevkata
     packages.x86_64-linux.iosevkata = buildIosevkata {
       inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
@@ -33,15 +42,6 @@
     devShells.x86_64-linux.prefetch = pkgs.mkShell {
       packages = [ pkgs.prefetch-npm-deps ];
     };
-
-    # Metadata
-    pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    version = "28.0.6";
-    hash = "sha256-S0qt54Avei/zVkwFRuO3oolB/H+dHi8bJzSGZyr10RA=";
-    npmDepsHash = "sha256-QpAs0/hCbFglb9dLX9zAxip86lhsjo3DXQj1DEfPa8E=";
-    privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-    fontPatcherVersion = "3.1.1";
-    fontPatcherHash = "sha256-H2dPUs6HVKJcjxy5xtz9nL3SSPXKQF3w30/0l7A0PeY=";
 
     # Builder
     buildIosevkata = { pkgs, version, hash, npmDepsHash, privateBuildPlan, fontPatcherVersion, fontPatcherHash, withNerdFont, withNerdFontMono }:
