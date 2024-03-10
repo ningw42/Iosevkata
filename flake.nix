@@ -8,9 +8,9 @@
   outputs = { self, nixpkgs }: rec {
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    version = "28.1.0";
-    hash = "sha256-cYnGJ7Z0PDRZtC/vz8hX/+mqk7iVkajFTfNGgRW+edQ=";
-    npmDepsHash = "sha256-bzQ7dc7UiC++0DxnQHusu6Ym7rd7GgeA6bGSnnla1nk=";
+    version = "29.0.0";
+    hash = "sha256-GZE0SxRzZjbYlhke6Bc3EF6z6llLDNFwNdxOKr4frr4=";
+    npmDepsHash = "sha256-hrFv6fmzOlG8vO1fManwyORDF7WUiA7MK2GKATvdmfw=";
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
     fontPatcherVersion = "3.1.1";
     fontPatcherHash = "sha256-H2dPUs6HVKJcjxy5xtz9nL3SSPXKQF3w30/0l7A0PeY=";
