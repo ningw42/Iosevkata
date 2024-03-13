@@ -24,6 +24,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Honor `NIX_BUILD_CORES`.
 - [x] Add preview image.
 - [ ] Consider using `zstd` to compress the final artifacts.
+- [ ] Generate preview automatically.
 
 # Build Instructions
 
