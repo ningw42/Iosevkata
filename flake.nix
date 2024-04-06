@@ -8,12 +8,12 @@
   outputs = { self, nixpkgs }: rec {
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    version = "29.0.0";
-    hash = "sha256-GZE0SxRzZjbYlhke6Bc3EF6z6llLDNFwNdxOKr4frr4=";
-    npmDepsHash = "sha256-hrFv6fmzOlG8vO1fManwyORDF7WUiA7MK2GKATvdmfw=";
+    version = "29.1.0";
+    hash = "sha256-LtbkumAAx77sG2Mw5gkjFK+wtwibKP6uVT2buEkERik=";
+    npmDepsHash = "sha256-hC5283V5olhZlwY8PgTywTrbx93acclc4N0YrZTaV7Y=";
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-    fontPatcherVersion = "3.1.1";
-    fontPatcherHash = "sha256-H2dPUs6HVKJcjxy5xtz9nL3SSPXKQF3w30/0l7A0PeY=";
+    fontPatcherVersion = "3.2.0";
+    fontPatcherHash = "sha256-gW+TQvwyb+932skNxMZ2TdbobpZ2MK1oJe+Z5IR0nkQ=";
 
     # Packages: Iosevkata
     packages.x86_64-linux.iosevkata = buildIosevkata {
@@ -107,7 +107,7 @@
           runHook preBuild
 
           # build Iosevkata
-          npm run build --no-update-notifier -- --jCmd=$NIX_BUILD_CORES --verbose=9 ttf::iosevkata
+          npm run build --no-update-notifier --targets ttf::iosevkata -- --jCmd=$NIX_BUILD_CORES --verbose=9
 
           # patch nerd font if necessary
           ${pkgs.lib.optionalString withNerdFont ''
