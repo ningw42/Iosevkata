@@ -8,12 +8,12 @@
   outputs = { self, nixpkgs }: rec {
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    version = "29.1.0";
-    hash = "sha256-LtbkumAAx77sG2Mw5gkjFK+wtwibKP6uVT2buEkERik=";
-    npmDepsHash = "sha256-hC5283V5olhZlwY8PgTywTrbx93acclc4N0YrZTaV7Y=";
+    version = "29.2.0";
+    hash = "sha256-7g0eogqiBdfTwg8btkHExrY4fpqf0hUZbvlElFtKrB8=";
+    npmDepsHash = "sha256-lSKh16qN4EAmC0wtBokkFyl6Vung85vPTyr8Icc4rU0=";
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-    fontPatcherVersion = "3.2.0";
-    fontPatcherHash = "sha256-gW+TQvwyb+932skNxMZ2TdbobpZ2MK1oJe+Z5IR0nkQ=";
+    fontPatcherVersion = "3.2.1";
+    fontPatcherHash = "sha256-3s0vcRiNA/pQrViYMwU2nnkLUNUcqXja/jTWO49x3BU=";
 
     # Packages: Iosevkata
     packages.x86_64-linux.iosevkata = buildIosevkata {
