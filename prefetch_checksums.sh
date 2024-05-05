@@ -12,6 +12,7 @@ nerdfontpatcher_checksum=$(nix-prefetch --option extra-experimental-features fla
 filename=$(mktemp)
 curl -s -L "https://raw.githubusercontent.com/be5invis/Iosevka/v$iosevka_version/package-lock.json" -o "$filename"
 iosevka_npmdeps_checksum=$(prefetch-npm-deps "$filename")
+rm "$filename"
 
 # Output
 formatted_output=$(cat << EOF
@@ -23,4 +24,6 @@ formatted_output=$(cat << EOF
 EOF
 )
 
-echo "$formatted_output"
+echo -e "\033[1;33m------ Ignore the output above ------\033[0m"
+echo -e "\033[1;33m------ Paste the text below to flake.nix ------\033[0m"
+echo -e "\033[1;32m$formatted_output\033[0m"

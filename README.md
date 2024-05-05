@@ -41,9 +41,12 @@ nix build .#iosevkata-nerd-font
 
 # Update
 ```bash
-# get the sha256 checksums
+# enter nix shell with necessary dependencies
 nix develop .
-./get_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./get_checksums.sh 30.0.0 3.2.1
+
+# prefetch checksums
+./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.0.0 3.2.1
+
 # paste the output to flake.nix
 ```
 
