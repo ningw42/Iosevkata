@@ -23,19 +23,28 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Run NerdFontPatcher in parallel. Now we just need 3 minutes on an AMD Ryzen 9 3900X compare to 15 minutes when patching is done sequentially.
 - [x] Honor `NIX_BUILD_CORES`.
 - [x] Add preview image.
+- [x] Prefetch script.
 - [ ] Consider using `zstd` to compress the final artifacts.
 - [ ] Generate preview automatically.
 
-# Build Instructions
+# Build
 
 You will need [Nix or NixOS](https://nixos.org/), and [Flake](https://nixos.wiki/wiki/Flakes).
 
-```nix
+```bash
 # Iosevkata only
 nix build .#iosevkata
 
-# Iosevkata, Iosevkata Nerd Font and Iosevkata Nerd Font Mono
+# Iosevkata and Iosevkata Nerd Font
 nix build .#iosevkata-nerd-font
+```
+
+# Update
+```bash
+# get the sha256 checksums
+nix develop .
+./get_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./get_checksums.sh 30.0.0 3.2.1
+# paste the output to flake.nix
 ```
 
 # References

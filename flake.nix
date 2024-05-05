@@ -8,10 +8,10 @@
   outputs = { self, nixpkgs }: rec {
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    version = "29.2.0";
-    hash = "sha256-7g0eogqiBdfTwg8btkHExrY4fpqf0hUZbvlElFtKrB8=";
-    npmDepsHash = "sha256-lSKh16qN4EAmC0wtBokkFyl6Vung85vPTyr8Icc4rU0=";
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
+    version = "30.0.0";
+    hash = "sha256-V+oRmrqeIdYDaHmX7zCt7+So9tHOsJbqF0cBhCoctSU=";
+    npmDepsHash = "sha256-vRk7yUL+st/1kwNItLhypF22A8YuOG7e3vfoZwB0+oo=";
     fontPatcherVersion = "3.2.1";
     fontPatcherHash = "sha256-3s0vcRiNA/pQrViYMwU2nnkLUNUcqXja/jTWO49x3BU=";
 
@@ -32,15 +32,12 @@
     # Shells: default development shell
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = [
+        pkgs.busybox
         pkgs.fontforge
+        pkgs.nix-prefetch
         pkgs.prefetch-npm-deps
         (pkgs.python3.withPackages (ps: [ ps.fontforge ps.configargparse ]))
       ];
-    };
-
-    # Shells: prefetch shell for npmDepsHash
-    devShells.x86_64-linux.prefetch = pkgs.mkShell {
-      packages = [ pkgs.prefetch-npm-deps ];
     };
 
     # Builder
