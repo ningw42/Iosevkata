@@ -47,7 +47,7 @@ nix develop .
 # prefetch checksums
 ./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.0.0 3.2.1
 
-# paste the output to flake.nix
+# review the updated flake.nix
 ```
 
 # References

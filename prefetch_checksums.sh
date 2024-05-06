@@ -25,5 +25,28 @@ EOF
 )
 
 echo -e "\033[1;33m------ Ignore the output above ------\033[0m"
-echo -e "\033[1;33m------ Paste the text below to flake.nix ------\033[0m"
+
+echo -e "\033[1;33m------ Prefetched hashes ------\033[0m"
 echo -e "\033[1;32m$formatted_output\033[0m"
+echo -e "\033[1;33m------ Prefetched hashes ------\033[0m"
+
+# Update line numbers when the metadata section is on different lines
+metadata_begin_line=12
+metadata_end_line=16
+new_flake_file=$(mktemp)
+
+echo -e "\033[1;32m------ Updating flake.nix ------\033[0m"
+
+awk -v start=$metadata_begin_line -v end=$metadata_end_line -v newlines="$formatted_output" '
+NR == start {
+    print newlines
+    next
+}
+NR > start && NR <= end {
+    next
+}
+{
+    print
+}' flake.nix > "$new_flake_file" && mv "$new_flake_file" flake.nix
+
+echo -e "\033[1;32m------ The text above has been written to flake.nix ------\033[0m"
