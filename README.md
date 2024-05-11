@@ -44,7 +44,9 @@ nix build .#iosevkata-nerd-font
 # enter nix shell with necessary dependencies
 nix develop .
 
-# prefetch checksums
+# prefetch checksums with the latest Iosevka and nerd-fonts
+./prefetch_checksums.sh
+# prefetch checksums with the specified Iosevka and nerd-fonts
 ./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.0.0 3.2.1
 
 # review the updated flake.nix
