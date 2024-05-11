@@ -1,8 +1,29 @@
 #!/run/current-system/sw/bin/bash
 
+# Check if the number of arguments is not 0 or 2
+if [[ $# -ne 0 && $# -ne 2 ]]; then
+    echo "Usage:"
+    echo "  1. prefetch_checksums.sh, to prefetch checksums for the latest Iosevka and nerd-fonts."
+    echo "  2. prefetch_checksums.sh iosevka_version nerdfontpatcher_version, to prefetch checksums for the specified versions."
+    exit 1
+fi
+
 # Versions
-iosevka_version="$1"
-nerdfontpatcher_version="$2"
+iosevka_version=""
+nerdfontpatcher_version=""
+if [[ $# -eq 0 ]]; then
+  iosevka_version_tag=$(curl -s https://api.github.com/repos/be5invis/Iosevka/releases/latest | jq -r '.tag_name')
+  nerdfontpatcher_version_tag=$(curl -s https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest | jq -r '.tag_name')
+  iosevka_version=${iosevka_version_tag:1}
+  nerdfontpatcher_version=${nerdfontpatcher_version_tag:1}
+fi
+if [[ $# -eq 2 ]]; then
+  iosevka_version="$1"
+  nerdfontpatcher_version="$2"
+fi
+
+echo "Iosevka: $iosevka_version"
+echo "nerd-fonts: $nerdfontpatcher_version"
 
 # Direct checksums
 iosevka_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchFromGitHub --owner be5invis --repo iosevka --rev "v$iosevka_version" --check-store)
