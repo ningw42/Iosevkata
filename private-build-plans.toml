@@ -10,56 +10,78 @@
 # Reference:
 # The metric-override subsection is copied from Pragmasevka and Iosvmata
 
-[buildPlans.iosevkata]
+[buildPlans.Iosevkata]
 family = "Iosevkata"
 spacing = "fixed"
 serifs = "sans"
 noCvSs = true
 exportGlyphNames = false
 
-[buildPlans.iosevkata.variants]
+[buildPlans.Iosevkata.variants]
 inherits = "ss08"
 
-[buildPlans.iosevkata.variants.design]
-underscore = "above-baseline"
-asterisk = "hex-low"
-zero = "oval-dotted"
+[buildPlans.Iosevkata.variants.design]
 capital-b = "standard-unilateral-serifed"
 capital-d = "more-rounded-unilateral-serifed"
 capital-p = "closed-motion-serifed"
 capital-r = "curly-top-left-serifed"
+zero = "oval-dotted"
+asterisk = "hex-low"
+underscore = "above-baseline"
 
-[buildPlans.iosevkata.widths.normal]
-shape = 500         # Unit Width, measured in 1/1000 em.
-menu  = 5           # Width grade for the font's names.
-css   = "normal"    # "font-stretch' property of webfont CSS.
-
-[buildPlans.iosevkata.metricOverride]
-leading = 1100      # a smaller line height. built-in line height, default is 1250.
-xHeight = 550       # a taller 'x'. height of 'x', default is 520.
-
-[buildPlans.iosevkata.weights.light]
+[buildPlans.Iosevkata.weights.Light]
 shape = 300
 menu  = 300
 css   = 300
 
-[buildPlans.iosevkata.weights.regular]
+[buildPlans.Iosevkata.weights.Regular]
 shape = 400
 menu  = 400
 css   = 400
 
-[buildPlans.iosevkata.weights.medium]
+[buildPlans.Iosevkata.weights.Medium]
 shape = 500
 menu  = 500
 css   = 500
 
-[buildPlans.iosevkata.weights.semibold]
+[buildPlans.Iosevkata.weights.SemiBold]
 shape = 600
 menu  = 600
 css   = 600
 
-[buildPlans.iosevkata.weights.bold]
+[buildPlans.Iosevkata.weights.Bold]
 shape = 700
 menu  = 700
 css   = 700
 
+[buildPlans.Iosevkata.widths.Normal]
+shape = 500         # Unit Width, measured in 1/1000 em.
+menu  = 5           # Width grade for the font's names.
+css   = "normal"    # "font-stretch' property of webfont CSS.
+
+# drop Oblique because we already have Italic
+[buildPlans.Iosevkata.slopes.Upright]
+angle = 0
+shape = "upright"
+menu = "upright"
+css = "normal"
+
+[buildPlans.Iosevkata.slopes.Italic]
+angle = 9.4
+shape = "italic"
+menu = "italic"
+css = "italic"
+
+[buildPlans.Iosevkata.metricOverride]
+# a smaller line height. built-in line height, default is 1250.
+leading = 1100
+# a taller 'x'. height of 'x', default is 520.
+xHeight = 550
+# heavier punctuation with the mapping below.
+# font weight name  - font weight   - punctuation "weight"  - ratio
+# Light             - 300           - 400                   - 1.33
+# Regular           - 400           - 500                   - 1.25
+# Medium            - 500           - 600                   - 1.2
+# SemiBold          - 600           - 700                   - 1.17
+# Bold              - 700           - 800                   - 1.14
+periodSize = 'blend(weight, [300, default_periodSize * 1.33], [400, default_periodSize * 1.25], [500, default_periodSize * 1.2], [600, default_periodSize * 1.17], [700, default_periodSize * 1.14])'

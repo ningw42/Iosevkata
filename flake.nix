@@ -51,9 +51,9 @@
         srcs = [
           (pkgs.fetchFromGitHub {
             inherit hash;
-            name = "iosevka";
+            name = "Iosevka";
             owner = "be5invis";
-            repo = "iosevka";
+            repo = "Iosevka";
             rev = "v${version}";
           })
         ] ++ pkgs.lib.optionals needNerdFontPatcher [
@@ -78,7 +78,7 @@
 
         passAsFile = [ "privateBuildPlan" ];
 
-        sourceRoot = "iosevka";
+        sourceRoot = "Iosevka";
 
         # Optional Patch Phase: replace `argparse` with `configargparse` because argparse isn't available in nixpkgs.
         prePatch = pkgs.lib.optionalString needNerdFontPatcher ''
@@ -87,7 +87,7 @@
         '';
         patches = pkgs.lib.optionals needNerdFontPatcher [ ./patches/configargparse.patch ];
         postPatch = pkgs.lib.optionalString needNerdFontPatcher ''
-          cd ../iosevka
+          cd ../Iosevka
         '';
 
         # Configure Phase: simply copy the build plan file.
@@ -104,20 +104,20 @@
           runHook preBuild
 
           # build Iosevkata
-          npm run build --no-update-notifier --targets ttf::iosevkata -- --jCmd=$NIX_BUILD_CORES --verbose=9
+          npm run build --no-update-notifier --targets ttf::Iosevkata -- --jCmd=$NIX_BUILD_CORES --verbose=9
 
           # patch nerd font if necessary
           ${pkgs.lib.optionalString withNerdFont ''
-            nerdfontdir="dist/iosevkata/nerdfont"
+            nerdfontdir="dist/Iosevkata/nerdfont"
             mkdir $nerdfontdir
-            parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/iosevkata/TTF/*
+            parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
           ''}
 
           # patch nerd font mono if necessary
           ${pkgs.lib.optionalString withNerdFontMono ''
-            nerdfontmonodir="dist/iosevkata/nerdfontmono"
+            nerdfontmonodir="dist/Iosevkata/nerdfontmono"
             mkdir $nerdfontmonodir
-            parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/iosevkata/TTF/*
+            parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
           ''}
 
           runHook postBuild
@@ -129,7 +129,7 @@
 
           # pack Iosevkata
           mkdir -p $out
-          cd dist/iosevkata/TTF
+          cd dist/Iosevkata/TTF
           zip -r "$out/Iosevkata-$version.zip" *
 
           # pack Iosevkata Nerd Font if necessary
