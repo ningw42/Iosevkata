@@ -25,8 +25,8 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Add preview image.
 - [x] Prefetch script.
 - [x] Larger period size in punctuation.
-- [ ] Consider using `zstd` to compress the final artifacts.
-- [ ] Generate preview automatically.
+- [ ] Add `zstd` compressed artifacts.
+- [ ] Generate preview automatically with colorscheme applied.
 
 # Build
 
@@ -48,7 +48,7 @@ nix develop .
 # prefetch checksums with the latest Iosevka and nerd-fonts
 ./prefetch_checksums.sh
 # prefetch checksums with the specified Iosevka and nerd-fonts
-./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.0.0 3.2.1
+./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.3.0 3.2.1
 
 # review the updated flake.nix
 ```
