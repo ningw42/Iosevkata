@@ -130,18 +130,18 @@
           # pack Iosevkata
           mkdir -p $out
           cd dist/Iosevkata/TTF
-          zip -r "$out/Iosevkata-$version.zip" *
+          zip -r "$out/Iosevkata-v$version.zip" *
 
           # pack Iosevkata Nerd Font if necessary
           ${pkgs.lib.optionalString withNerdFont ''
             cd ../nerdfont
-            zip -r "$out/IosevkataNerdFont-$version.zip" *
+            zip -r "$out/IosevkataNerdFont-v$version.zip" *
           ''}
 
           # pack Iosevkata Nerd Font Mono if necessary
           ${pkgs.lib.optionalString withNerdFontMono ''
             cd ../nerdfontmono
-            zip -r "$out/IosevkataNerdFontMono-$version.zip" *
+            zip -r "$out/IosevkataNerdFontMono-v$version.zip" *
           ''}
 
           runHook postInstall

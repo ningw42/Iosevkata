@@ -27,6 +27,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Larger period size in punctuation.
 - [ ] Add `zstd` compressed artifacts.
 - [ ] Generate preview automatically with colorscheme applied.
+- [ ] Build with GitHub Actions.
 
 # Build
 
