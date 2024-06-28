@@ -25,9 +25,9 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Add preview image.
 - [x] Prefetch script.
 - [x] Larger period size in punctuation.
+- [x] Build and release with GitHub Actions.
 - [ ] Add `zstd` compressed artifacts.
-- [ ] Generate preview automatically with colorscheme applied.
-- [ ] Build with GitHub Actions.
+- [ ] Generate preview automatically in GitHub Actions with colorscheme applied.
 
 # Build
 
