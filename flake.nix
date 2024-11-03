@@ -9,9 +9,9 @@
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-    version = "31.9.1";
-    hash = "sha256-eAC4afBfHfiteYCzBNGFG2U/oCA7C5CdUlQVSO9Dg6E=";
-    npmDepsHash = "sha256-xwGR21+CpZRFdZYz8SQrSf1tkp3fjGudoMmP5TGgEe8=";
+    version = "32.0.0";
+    hash = "sha256-axXCqVKwSC6qOEKPwR+GAol77r4mgLyA4o5d4wZCNS8=";
+    npmDepsHash = "sha256-oZMh3HkNCRheeHHDGlbH5AKInEcxwoS5Fy6Im6NImQw=";
     fontPatcherVersion = "3.2.1";
     fontPatcherHash = "sha256-3s0vcRiNA/pQrViYMwU2nnkLUNUcqXja/jTWO49x3BU=";
 
