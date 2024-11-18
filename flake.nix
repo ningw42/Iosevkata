@@ -9,11 +9,11 @@
     # Metadata
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
     privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-    version = "32.0.1";
-    hash = "sha256-5+rHHm2wwBw/Ii8hwVaJNV63kAjQ3TkicFzy/X1/zoU=";
-    npmDepsHash = "sha256-nDFqIS5E7yAMoL3Ag92yL4NBl0CMXAOK9d6fQAiTZpk=";
-    fontPatcherVersion = "3.2.1";
-    fontPatcherHash = "sha256-3s0vcRiNA/pQrViYMwU2nnkLUNUcqXja/jTWO49x3BU=";
+    version = "32.1.0";
+    hash = "sha256-bLB85rla5hN62EGOSVkW6FZM0+U2hkg50LMg2NsMXkU=";
+    npmDepsHash = "sha256-lBLz/BsSVh6szJxunoTj31oxB/3yqd1oWjSzTmQFGv8=";
+    fontPatcherVersion = "3.3.0";
+    fontPatcherHash = "sha256-/LbO8+ZPLFIUjtZHeyh6bQuplqRfR6SZRu9qPfVZ0Mw=";
 
     # Packages: Iosevkata
     packages.x86_64-linux.iosevkata = buildIosevkata {
