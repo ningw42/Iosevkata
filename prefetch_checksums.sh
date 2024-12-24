@@ -26,7 +26,8 @@ echo "Iosevka: $iosevka_version"
 echo "nerd-fonts: $nerdfontpatcher_version"
 
 # Direct checksums
-iosevka_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchFromGitHub --owner be5invis --repo iosevka --rev "v$iosevka_version" --check-store)
+# iosevka_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchFromGitHub --owner be5invis --repo iosevka --rev "v$iosevka_version" --check-store)
+iosevka_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchzip --url "https://github.com/be5invis/Iosevka/archive/refs/tags/v$iosevka_version.zip" --check-store)
 nerdfontpatcher_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchzip --url "https://github.com/ryanoasis/nerd-fonts/releases/download/v$nerdfontpatcher_version/FontPatcher.zip" --no-stripRoot --check-store)
 
 # NPM dependencies checksum
