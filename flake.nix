@@ -33,6 +33,7 @@
     devShells.x86_64-linux.default = pkgs.mkShell {
       packages = [
         pkgs.busybox
+        pkgs.difftastic
         pkgs.fontforge
         pkgs.nix-prefetch
         pkgs.prefetch-npm-deps
