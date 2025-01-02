@@ -35,8 +35,8 @@ if [[ $# -eq 2 ]]; then
 fi
 
 # Current versions
-current_iosevka_version=$(cat flake.nix | grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-current_nerdfontpatcher_version=$(cat flake.nix | grep -oE 'fontPatcherVersion = "[0-9]+\.[0-9]+\.[0-9]+"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+current_iosevka_version=$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' < flake.nix | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+current_nerdfontpatcher_version=$(grep -oE 'fontPatcherVersion = "[0-9]+\.[0-9]+\.[0-9]+"' < flake.nix | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
 # Compare versions
 if [[ "$current_iosevka_version" != "$iosevka_version" ]]; then
