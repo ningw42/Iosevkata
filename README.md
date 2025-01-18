@@ -13,8 +13,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 # Sub Variants
 
 1. Iosevkata, vanilla.
-2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **without** option `--mono`.
-3. ~~Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched **with** option `--mono`. See the option's [documentation](https://github.com/ryanoasis/nerd-fonts/wiki/ScriptOptions).~~
+2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched in the same way as the official "Nerd Font" variant, "a somehow monospaced variant, maybe". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
 
 # TODOs
 
@@ -28,6 +27,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Build and release with GitHub Actions.
 - [ ] Add `zstd` compressed artifacts.
 - [ ] Generate preview automatically in GitHub Actions with colorscheme applied.
+- [ ] Put the glyphs from Nerd Fonts at the horizontal center of the cell/grid. See [ryanoasis/nerd-fonts#1644](https://github.com/ryanoasis/nerd-fonts/discussions/1644#discussioncomment-9600894).
 
 # Build
 
