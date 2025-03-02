@@ -1,5 +1,6 @@
 builds:
   exclude: []
   include:
+  - packages.x86_64-linux.iosevkata
   - packages.x86_64-linux.iosevkata-nerd-font
   branch: master
