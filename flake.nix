@@ -18,15 +18,36 @@
     # Packages: Iosevkata
     packages.x86_64-linux.iosevkata = buildIosevkata {
       inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
-      withNerdFont = false;
-      withNerdFontMono = false;
+      variants = [ "Iosevkata" ];
+      forRelease = false;
     };
 
     # Packages: IosevkataNerdFont
     packages.x86_64-linux.iosevkata-nerd-font = buildIosevkata {
       inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
-      withNerdFont = true;
-      withNerdFontMono = false;
+      variants = [ "IosevkataNerdFont" ];
+      forRelease = false;
+    };
+
+    # Packages: IosevkataNerdFontMono
+    packages.x86_64-linux.iosevkata-nerd-font-mono = buildIosevkata {
+      inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
+      variants = [ "IosevkataNerdFontMono" ];
+      forRelease = false;
+    };
+
+    # Packages: all variants
+    packages.x86_64-linux.iosevkata-all = buildIosevkata {
+      inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
+      variants = [ "Iosevkata" "IosevkataNerdFont" "IosevkataNerdFontMono" ];
+      forRelease = false;
+    };
+
+    # Packages: all variants for GitHub release
+    packages.x86_64-linux.iosevkata-all-release = buildIosevkata {
+      inherit pkgs version hash npmDepsHash privateBuildPlan fontPatcherVersion fontPatcherHash;
+      variants = [ "Iosevkata" "IosevkataNerdFont" "IosevkataNerdFontMono" ];
+      forRelease = true;
     };
 
     # Shells: default development shell
@@ -42,10 +63,10 @@
     };
 
     # Builder
-    buildIosevkata = { pkgs, version, hash, npmDepsHash, privateBuildPlan, fontPatcherVersion, fontPatcherHash, withNerdFont, withNerdFontMono }:
+    buildIosevkata = { pkgs, version, hash, npmDepsHash, privateBuildPlan, fontPatcherVersion, fontPatcherHash, variants, forRelease }:
       pkgs.buildNpmPackage rec {
         inherit version npmDepsHash privateBuildPlan;
-        needNerdFontPatcher = withNerdFont || withNerdFontMono;
+        needNerdFontPatcher = builtins.elem "IosevkataNerdFont" variants || builtins.elem "IosevkataNerdFontMono" variants;
 
         pname = "iosevkata";
 
@@ -94,7 +115,9 @@
         # Configure Phase: simply copy the build plan file.
         configurePhase = ''
           runHook preConfigure
+
           cp "$privateBuildPlanPath" private-build-plans.toml
+
           runHook postConfigure
         '';
 
@@ -104,19 +127,20 @@
 
           runHook preBuild
 
-          # build Iosevkata
-          npm run build --no-update-notifier --targets ttf::Iosevkata -- --jCmd=$NIX_BUILD_CORES --verbose=9
+          # build Iosevkata vanilla
+          # pipe to cat to disable progress bar
+          npm run build --no-update-notifier --targets ttf::Iosevkata -- --jCmd=$NIX_BUILD_CORES --verbose=9 | cat
 
           # patch nerd font if necessary
-          ${pkgs.lib.optionalString withNerdFont ''
-            nerdfontdir="dist/Iosevkata/nerdfont"
+          ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants) ''
+            nerdfontdir="dist/Iosevkata/NerdFont"
             mkdir $nerdfontdir
             parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
           ''}
 
           # patch nerd font mono if necessary
-          ${pkgs.lib.optionalString withNerdFontMono ''
-            nerdfontmonodir="dist/Iosevkata/nerdfontmono"
+          ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants) ''
+            nerdfontmonodir="dist/Iosevkata/NerdFontMono"
             mkdir $nerdfontmonodir
             parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
           ''}
@@ -124,25 +148,36 @@
           runHook postBuild
         '';
 
-        # Install Phase: just add artifacts to zip.
         installPhase = ''
           runHook preInstall
 
-          # pack Iosevkata
+          # setup directories
           mkdir -p $out
-          cd dist/Iosevkata/TTF
-          zip -r "$out/Iosevkata-v$version.zip" *
+          fontdir="$out/share/fonts/truetype"
+          install -d "$fontdir"
 
-          # pack Iosevkata Nerd Font if necessary
-          ${pkgs.lib.optionalString withNerdFont ''
-            cd ../nerdfont
-            zip -r "$out/IosevkataNerdFont-v$version.zip" *
+          # vanilla
+          ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && forRelease) ''
+            zip -r "$out/Iosevkata-v$version.zip" "dist/Iosevkata/TTF/"*
+          ''}
+          ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && !forRelease) ''
+            install "dist/Iosevkata/TTF"/* "$fontdir"
           ''}
 
-          # pack Iosevkata Nerd Font Mono if necessary
-          ${pkgs.lib.optionalString withNerdFontMono ''
-            cd ../nerdfontmono
-            zip -r "$out/IosevkataNerdFontMono-v$version.zip" *
+          # NerdFont
+          ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && forRelease) ''
+            zip -r "$out/IosevkataNerdFont-v$version.zip" "dist/Iosevkata/NerdFont"/*
+          ''}
+          ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && !forRelease) ''
+            install "dist/Iosevkata/NerdFont"/* "$fontdir"
+          ''}
+
+          # NerdFontMono
+          ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && forRelease) ''
+            zip -r "$out/IosevkataNerdFontMono-v$version.zip" "dist/Iosevkata/NerdFontMono"/*
+          ''}
+          ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && !forRelease) ''
+            install "dist/Iosevkata/NerdFontMono"/* "$fontdir"
           ''}
 
           runHook postInstall
