@@ -3,7 +3,7 @@ name: "Build & Release Iosevkata"
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*.*.*.*" # calendar versioning, vYYYY.MM.DD.Micro, e.g. v2025.01.01.0
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Iosevkata-${{ github.ref_name }} # Iosevkata-v${SEMVER}
+        name: Iosevkata-${{ github.ref_name }} # Iosevkata-v${YYYY.MM.DD.Micro}
         path: ./result
         if-no-files-found: error
         retention-days: 1

@@ -16,8 +16,8 @@ if [[ $# -ne 0 && $# -ne 2 ]]; then
 fi
 
 # Metadata line range
-metadata_begin_line=12
-metadata_end_line=16
+metadata_begin_line=13
+metadata_end_line=17
 
 # Requested versions
 iosevka_version=""
@@ -74,7 +74,7 @@ rm "$filename"
 
 # Updated hashes
 updated_hashes=$(cat << EOF
-    version = "$iosevka_version";
+    iosevkaVersion = "$iosevka_version";
     hash = "$iosevka_checksum";
     npmDepsHash = "$iosevka_npmdeps_checksum";
     fontPatcherVersion = "$nerdfontpatcher_version";
