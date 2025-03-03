@@ -157,7 +157,7 @@
           fontdir="$out/share/fonts/truetype"
           install -d "$fontdir"
 
-          # vanilla
+          # Iosevkata
           ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && forRelease) ''
             zip --recurse-paths --junk-paths "$out/Iosevkata-v${version}.zip" "dist/Iosevkata/TTF/"*
           ''}
@@ -165,7 +165,7 @@
             install "dist/Iosevkata/TTF"/* "$fontdir"
           ''}
 
-          # NerdFont
+          # IosevkataNerdFont
           ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && forRelease) ''
             zip --recurse-paths --junk-paths "$out/IosevkataNerdFont-v${version}.zip" "dist/Iosevkata/NerdFont"/*
           ''}
@@ -173,7 +173,7 @@
             install "dist/Iosevkata/NerdFont"/* "$fontdir"
           ''}
 
-          # NerdFontMono
+          # IosevkataNerdFontMono
           ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && forRelease) ''
             zip --recurse-paths --junk-paths "$out/IosevkataNerdFontMono-v${version}.zip" "dist/Iosevkata/NerdFontMono"/*
           ''}

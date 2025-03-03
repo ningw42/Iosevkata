@@ -10,9 +10,9 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
-# Sub Variants
+# Variants
 
-1. Iosevkata, vanilla.
+1. Iosevkata, vanilla Iosevka with the tweaks above.
 2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs are patched in the same way as the official "Nerd Font" variant, "a somehow monospaced variant, maybe". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
 3. Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs are patched in the same way as the official "Nerd Font Mono" variant, "a strictly monospaced variant". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
 
@@ -43,10 +43,13 @@ nix build .#iosevkata
 nix build .#iosevkata-nerd-font
 
 # Iosevkata Nerd Font Mono
-nix build .#iosevkata-nerd-font
+nix build .#iosevkata-nerd-font-mono
 
-# All variants at once
+# All variants at once for zip artifacts
 nix build .#iosevkata-all-release
+
+# All variants at once for nix package
+nix build .#iosevkata-all
 ```
 
 # Update
