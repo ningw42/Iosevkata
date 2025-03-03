@@ -13,7 +13,8 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 # Sub Variants
 
 1. Iosevkata, vanilla.
-2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs patched in the same way as the official "Nerd Font" variant, "a somehow monospaced variant, maybe". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
+2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs are patched in the same way as the official "Nerd Font" variant, "a somehow monospaced variant, maybe". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
+3. Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs are patched in the same way as the official "Nerd Font Mono" variant, "a strictly monospaced variant". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
 
 # TODOs
 
@@ -25,7 +26,7 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [x] Prefetch script.
 - [x] Larger period size in punctuation.
 - [x] Build and release with GitHub Actions.
-- [ ] Switch to [calendar versioning](https://calver.org/) to decouple from Iosevka's semantic versioning.
+- [x] Switch to [calendar versioning](https://calver.org/) to decouple from Iosevka's semantic versioning.
 - [ ] Add `zstd` compressed artifacts.
 - [ ] Generate preview automatically in GitHub Actions with colorscheme applied.
 - [ ] Put the glyphs from Nerd Fonts at the horizontal center of the cell/grid. See [ryanoasis/nerd-fonts#1644](https://github.com/ryanoasis/nerd-fonts/discussions/1644#discussioncomment-9600894).
@@ -35,11 +36,17 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 You will need [Nix or NixOS](https://nixos.org/), and [Flake](https://nixos.wiki/wiki/Flakes).
 
 ```bash
-# Iosevkata only
+# Iosevkata
 nix build .#iosevkata
 
-# Iosevkata and Iosevkata Nerd Font
+# Iosevkata Nerd Font
 nix build .#iosevkata-nerd-font
+
+# Iosevkata Nerd Font Mono
+nix build .#iosevkata-nerd-font
+
+# All variants at once
+nix build .#iosevkata-all-release
 ```
 
 # Update

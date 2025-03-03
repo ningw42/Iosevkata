@@ -159,7 +159,7 @@
 
           # vanilla
           ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && forRelease) ''
-            zip -r "$out/Iosevkata-v$iosevkaVersion.zip" "dist/Iosevkata/TTF/"*
+            zip --recurse-paths --junk-paths "$out/Iosevkata-v${iosevkaVersion}.zip" "dist/Iosevkata/TTF/"*
           ''}
           ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && !forRelease) ''
             install "dist/Iosevkata/TTF"/* "$fontdir"
@@ -167,7 +167,7 @@
 
           # NerdFont
           ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && forRelease) ''
-            zip -r "$out/IosevkataNerdFont-v$iosevkaVersion.zip" "dist/Iosevkata/NerdFont"/*
+            zip --recurse-paths --junk-paths "$out/IosevkataNerdFont-v${iosevkaVersion}.zip" "dist/Iosevkata/NerdFont"/*
           ''}
           ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && !forRelease) ''
             install "dist/Iosevkata/NerdFont"/* "$fontdir"
@@ -175,7 +175,7 @@
 
           # NerdFontMono
           ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && forRelease) ''
-            zip -r "$out/IosevkataNerdFontMono-v$iosevkaVersion.zip" "dist/Iosevkata/NerdFontMono"/*
+            zip --recurse-paths --junk-paths "$out/IosevkataNerdFontMono-v${iosevkaVersion}.zip" "dist/Iosevkata/NerdFontMono"/*
           ''}
           ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && !forRelease) ''
             install "dist/Iosevkata/NerdFontMono"/* "$fontdir"
