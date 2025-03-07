@@ -16,8 +16,8 @@ if [[ $# -ne 0 && $# -ne 2 ]]; then
 fi
 
 # Metadata line range
-metadata_begin_line=15
-metadata_end_line=19
+metadata_begin_line=18
+metadata_end_line=22
 
 # Requested versions
 iosevka_version=""

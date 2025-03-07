@@ -3,20 +3,30 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
   outputs =
-    { self, nixpkgs }:
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+      ...
+    }:
     let
-      # Metadata
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-      version = "2025.03.03.2";
+      # Dependencies, Iosevka and NerdFonts
       iosevkaVersion = "33.0.1";
       hash = "sha256-Yosl6dqbYLsX1whkSazHHlbZ4zhJ5jSZmrdi22BLBJM=";
       npmDepsHash = "sha256-/a2VVz8w2a2KfOgWAg0AWmdbPqQ7bN6rBHhv6b1TwYg=";
       fontPatcherVersion = "3.3.0";
       fontPatcherHash = "sha256-/LbO8+ZPLFIUjtZHeyh6bQuplqRfR6SZRu9qPfVZ0Mw=";
+
+      # Build plans and version
+      privateBuildPlan = builtins.readFile ./private-build-plans.toml;
+      version = "2025.03.03.2";
+
+      # This is the system specific nixpkgs that builds Iosevkata
+      systemAgnosticPkgs = nixpkgs.legacyPackages.x86_64-linux;
 
       # Builder
       buildIosevkata =
@@ -162,123 +172,117 @@
           enableParallelBuilding = true;
         };
     in
-    rec {
-      # x86_64-linux Packages: Iosevkata
-      packages.x86_64-linux.iosevkata = buildIosevkata {
-        inherit
-          pkgs
-          version
-          iosevkaVersion
-          hash
-          npmDepsHash
-          privateBuildPlan
-          fontPatcherVersion
-          fontPatcherHash
-          ;
-        variants = [ "Iosevkata" ];
-        forRelease = false;
-      };
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      perSystem =
+        {
+          config,
+          self',
+          inputs',
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          # Iosevkata packages.
+          # They are system agnostic, so, they are built with x86_64-linux, and aliased to other systems.
+          packages.iosevkata = buildIosevkata {
+            inherit
+              version
+              iosevkaVersion
+              hash
+              npmDepsHash
+              privateBuildPlan
+              fontPatcherVersion
+              fontPatcherHash
+              ;
+            pkgs = systemAgnosticPkgs;
+            variants = [ "Iosevkata" ];
+            forRelease = false;
+          };
+          packages.iosevkata-nerd-font = buildIosevkata {
+            inherit
+              version
+              iosevkaVersion
+              hash
+              npmDepsHash
+              privateBuildPlan
+              fontPatcherVersion
+              fontPatcherHash
+              ;
+            pkgs = systemAgnosticPkgs;
+            variants = [ "IosevkataNerdFont" ];
+            forRelease = false;
+          };
+          packages.iosevkata-nerd-font-mono = buildIosevkata {
+            inherit
+              version
+              iosevkaVersion
+              hash
+              npmDepsHash
+              privateBuildPlan
+              fontPatcherVersion
+              fontPatcherHash
+              ;
+            pkgs = systemAgnosticPkgs;
+            variants = [ "IosevkataNerdFontMono" ];
+            forRelease = false;
+          };
+          packages.iosevkata-all = buildIosevkata {
+            inherit
+              version
+              iosevkaVersion
+              hash
+              npmDepsHash
+              privateBuildPlan
+              fontPatcherVersion
+              fontPatcherHash
+              ;
+            pkgs = systemAgnosticPkgs;
+            variants = [
+              "Iosevkata"
+              "IosevkataNerdFont"
+              "IosevkataNerdFontMono"
+            ];
+            forRelease = false;
+          };
+          packages.iosevkata-all-release = buildIosevkata {
+            inherit
+              version
+              iosevkaVersion
+              hash
+              npmDepsHash
+              privateBuildPlan
+              fontPatcherVersion
+              fontPatcherHash
+              ;
+            pkgs = systemAgnosticPkgs;
+            variants = [
+              "Iosevkata"
+              "IosevkataNerdFont"
+              "IosevkataNerdFontMono"
+            ];
+            forRelease = true;
+          };
 
-      # x86_64-linux Packages: IosevkataNerdFont
-      packages.x86_64-linux.iosevkata-nerd-font = buildIosevkata {
-        inherit
-          pkgs
-          version
-          iosevkaVersion
-          hash
-          npmDepsHash
-          privateBuildPlan
-          fontPatcherVersion
-          fontPatcherHash
-          ;
-        variants = [ "IosevkataNerdFont" ];
-        forRelease = false;
-      };
-
-      # x86_64-linux Packages: IosevkataNerdFontMono
-      packages.x86_64-linux.iosevkata-nerd-font-mono = buildIosevkata {
-        inherit
-          pkgs
-          version
-          iosevkaVersion
-          hash
-          npmDepsHash
-          privateBuildPlan
-          fontPatcherVersion
-          fontPatcherHash
-          ;
-        variants = [ "IosevkataNerdFontMono" ];
-        forRelease = false;
-      };
-
-      # x86_64-linux Packages: all variants
-      packages.x86_64-linux.iosevkata-all = buildIosevkata {
-        inherit
-          pkgs
-          version
-          iosevkaVersion
-          hash
-          npmDepsHash
-          privateBuildPlan
-          fontPatcherVersion
-          fontPatcherHash
-          ;
-        variants = [
-          "Iosevkata"
-          "IosevkataNerdFont"
-          "IosevkataNerdFontMono"
-        ];
-        forRelease = false;
-      };
-
-      # x86_64-linux Packages: all variants for GitHub release
-      packages.x86_64-linux.iosevkata-all-release = buildIosevkata {
-        inherit
-          pkgs
-          version
-          iosevkaVersion
-          hash
-          npmDepsHash
-          privateBuildPlan
-          fontPatcherVersion
-          fontPatcherHash
-          ;
-        variants = [
-          "Iosevkata"
-          "IosevkataNerdFont"
-          "IosevkataNerdFontMono"
-        ];
-        forRelease = true;
-      };
-
-      # x86_64-darwin Packages
-      # We are building a font which is platform/arch agnostic
-      packages.x86_64-darwin.iosevkata = packages.x86_64-linux.iosevkata;
-      packages.x86_64-darwin.iosevkata-nerd-font = packages.x86_64-linux.iosevkata-nerd-font;
-      packages.x86_64-darwin.iosevkata-nerd-font-mono = packages.x86_64-linux.iosevkata-nerd-font-mono;
-      packages.x86_64-darwin.iosevkata-all = packages.x86_64-linux.iosevkata-all;
-      packages.x86_64-darwin.iosevkata-all-release = packages.x86_64-linux.iosevkata-all-release;
-
-      # aarch64-darwin Packages
-      packages.aarch64-darwin.iosevkata = packages.x86_64-linux.iosevkata;
-      packages.aarch64-darwin.iosevkata-nerd-font = packages.x86_64-linux.iosevkata-nerd-font;
-      packages.aarch64-darwin.iosevkata-nerd-font-mono = packages.x86_64-linux.iosevkata-nerd-font-mono;
-      packages.aarch64-darwin.iosevkata-all = packages.x86_64-linux.iosevkata-all;
-      packages.aarch64-darwin.iosevkata-all-release = packages.x86_64-linux.iosevkata-all-release;
-
-      # Shells: default development shell
-      devShells.x86_64-linux.default = pkgs.mkShell {
-        packages = [
-          pkgs.busybox
-          pkgs.difftastic
-          pkgs.fontforge
-          pkgs.nix-prefetch
-          pkgs.prefetch-npm-deps
-          (pkgs.python3.withPackages (ps: [
-            ps.fontforge
-            ps.configargparse
-          ]))
-        ];
-      };
+          # Shells: default development shell, which is system specific.
+          devShells.default = pkgs.mkShell {
+            packages = [
+              pkgs.busybox
+              pkgs.difftastic
+              pkgs.fontforge
+              pkgs.nix-prefetch
+              pkgs.prefetch-npm-deps
+              (pkgs.python3.withPackages (ps: [
+                ps.fontforge
+                ps.configargparse
+              ]))
+            ];
+          };
+        };
     };
 }
