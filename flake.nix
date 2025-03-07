@@ -162,8 +162,8 @@
           enableParallelBuilding = true;
         };
     in
-    {
-      # Packages: Iosevkata
+    rec {
+      # x86_64-linux Packages: Iosevkata
       packages.x86_64-linux.iosevkata = buildIosevkata {
         inherit
           pkgs
@@ -179,7 +179,7 @@
         forRelease = false;
       };
 
-      # Packages: IosevkataNerdFont
+      # x86_64-linux Packages: IosevkataNerdFont
       packages.x86_64-linux.iosevkata-nerd-font = buildIosevkata {
         inherit
           pkgs
@@ -195,7 +195,7 @@
         forRelease = false;
       };
 
-      # Packages: IosevkataNerdFontMono
+      # x86_64-linux Packages: IosevkataNerdFontMono
       packages.x86_64-linux.iosevkata-nerd-font-mono = buildIosevkata {
         inherit
           pkgs
@@ -211,7 +211,7 @@
         forRelease = false;
       };
 
-      # Packages: all variants
+      # x86_64-linux Packages: all variants
       packages.x86_64-linux.iosevkata-all = buildIosevkata {
         inherit
           pkgs
@@ -231,7 +231,7 @@
         forRelease = false;
       };
 
-      # Packages: all variants for GitHub release
+      # x86_64-linux Packages: all variants for GitHub release
       packages.x86_64-linux.iosevkata-all-release = buildIosevkata {
         inherit
           pkgs
@@ -250,6 +250,20 @@
         ];
         forRelease = true;
       };
+
+      # x86_64-darwin Packages
+      packages.x86_64-darwin.iosevkata = packages.x86_64-linux.iosevkata;
+      packages.x86_64-darwin.iosevkata-nerd-font = packages.x86_64-linux.iosevkata-nerd-font;
+      packages.x86_64-darwin.iosevkata-nerd-font-mono = packages.x86_64-linux.iosevkata-nerd-font-mono;
+      packages.x86_64-darwin.iosevkata-all = packages.x86_64-linux.iosevkata-all;
+      packages.x86_64-darwin.iosevkata-all-release = packages.x86_64-linux.iosevkata-all-release;
+
+      # aarch64-darwin Packages
+      packages.aarch64-darwin.iosevkata = packages.x86_64-linux.iosevkata;
+      packages.aarch64-darwin.iosevkata-nerd-font = packages.x86_64-linux.iosevkata-nerd-font;
+      packages.aarch64-darwin.iosevkata-nerd-font-mono = packages.x86_64-linux.iosevkata-nerd-font-mono;
+      packages.aarch64-darwin.iosevkata-all = packages.x86_64-linux.iosevkata-all;
+      packages.aarch64-darwin.iosevkata-all-release = packages.x86_64-linux.iosevkata-all-release;
 
       # Shells: default development shell
       devShells.x86_64-linux.default = pkgs.mkShell {
