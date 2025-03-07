@@ -1,5 +1,7 @@
 # Iosevkata
 
+[![built with garnix](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fningw42%2FIosevkata%3Fbranch%3Dmaster)](https://garnix.io/repo/ningw42/Iosevkata)
+
 ![Preview](preview.png)
 
 A `PragmataPro` styled `Iosevka` variant with my tweaks.
