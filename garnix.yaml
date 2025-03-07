@@ -3,4 +3,5 @@ builds:
   include:
   - packages.x86_64-linux.iosevkata-all
   - packages.x86_64-darwin.iosevkata-all
+  - packages.aarch64-darwin.iosevkata-all
   branch: master

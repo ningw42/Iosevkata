@@ -252,6 +252,7 @@
       };
 
       # x86_64-darwin Packages
+      # We are building a font which is platform/arch agnostic
       packages.x86_64-darwin.iosevkata = packages.x86_64-linux.iosevkata;
       packages.x86_64-darwin.iosevkata-nerd-font = packages.x86_64-linux.iosevkata-nerd-font;
       packages.x86_64-darwin.iosevkata-nerd-font-mono = packages.x86_64-linux.iosevkata-nerd-font-mono;
