@@ -23,7 +23,7 @@
 
       # Build plans and version
       privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-      version = "2025.03.03.2";
+      version = "2025.03.07.0";
 
       # This is the system specific nixpkgs that builds Iosevkata
       systemAgnosticPkgs = nixpkgs.legacyPackages.x86_64-linux;
