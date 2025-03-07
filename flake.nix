@@ -32,13 +32,6 @@
       buildIosevkata =
         {
           pkgs,
-          version,
-          iosevkaVersion,
-          hash,
-          npmDepsHash,
-          privateBuildPlan,
-          fontPatcherVersion,
-          fontPatcherHash,
           variants,
           forRelease,
         }:
@@ -191,57 +184,21 @@
           # Iosevkata packages.
           # They are system agnostic, so, they are built with x86_64-linux, and aliased to other systems.
           packages.iosevkata = buildIosevkata {
-            inherit
-              version
-              iosevkaVersion
-              hash
-              npmDepsHash
-              privateBuildPlan
-              fontPatcherVersion
-              fontPatcherHash
-              ;
             pkgs = systemAgnosticPkgs;
             variants = [ "Iosevkata" ];
             forRelease = false;
           };
           packages.iosevkata-nerd-font = buildIosevkata {
-            inherit
-              version
-              iosevkaVersion
-              hash
-              npmDepsHash
-              privateBuildPlan
-              fontPatcherVersion
-              fontPatcherHash
-              ;
             pkgs = systemAgnosticPkgs;
             variants = [ "IosevkataNerdFont" ];
             forRelease = false;
           };
           packages.iosevkata-nerd-font-mono = buildIosevkata {
-            inherit
-              version
-              iosevkaVersion
-              hash
-              npmDepsHash
-              privateBuildPlan
-              fontPatcherVersion
-              fontPatcherHash
-              ;
             pkgs = systemAgnosticPkgs;
             variants = [ "IosevkataNerdFontMono" ];
             forRelease = false;
           };
           packages.iosevkata-all = buildIosevkata {
-            inherit
-              version
-              iosevkaVersion
-              hash
-              npmDepsHash
-              privateBuildPlan
-              fontPatcherVersion
-              fontPatcherHash
-              ;
             pkgs = systemAgnosticPkgs;
             variants = [
               "Iosevkata"
@@ -251,15 +208,6 @@
             forRelease = false;
           };
           packages.iosevkata-all-release = buildIosevkata {
-            inherit
-              version
-              iosevkaVersion
-              hash
-              npmDepsHash
-              privateBuildPlan
-              fontPatcherVersion
-              fontPatcherHash
-              ;
             pkgs = systemAgnosticPkgs;
             variants = [
               "Iosevkata"
