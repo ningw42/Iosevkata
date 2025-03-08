@@ -25,8 +25,8 @@
       privateBuildPlan = builtins.readFile ./private-build-plans.toml;
       version = "2025.03.07.0";
 
-      # This is the system specific nixpkgs that builds Iosevkata
-      systemAgnosticPkgs = nixpkgs.legacyPackages.x86_64-linux;
+      # This is the system specific (x86_64-linux) nixpkgs that builds Iosevkata as a system agnostic package
+      x64LinuxPkgs = nixpkgs.legacyPackages.x86_64-linux;
 
       # Builder
       buildIosevkata =
@@ -182,24 +182,24 @@
         }:
         {
           # Iosevkata packages.
-          # They are system agnostic, so, they are built with x86_64-linux, and aliased to other systems.
+          # They are system agnostic, so, they are built with a specific system (x86_64-linux), and aliased to other systems.
           packages.iosevkata = buildIosevkata {
-            pkgs = systemAgnosticPkgs;
+            pkgs = x64LinuxPkgs;
             variants = [ "Iosevkata" ];
             forRelease = false;
           };
           packages.iosevkata-nerd-font = buildIosevkata {
-            pkgs = systemAgnosticPkgs;
+            pkgs = x64LinuxPkgs;
             variants = [ "IosevkataNerdFont" ];
             forRelease = false;
           };
           packages.iosevkata-nerd-font-mono = buildIosevkata {
-            pkgs = systemAgnosticPkgs;
+            pkgs = x64LinuxPkgs;
             variants = [ "IosevkataNerdFontMono" ];
             forRelease = false;
           };
           packages.iosevkata-all = buildIosevkata {
-            pkgs = systemAgnosticPkgs;
+            pkgs = x64LinuxPkgs;
             variants = [
               "Iosevkata"
               "IosevkataNerdFont"
@@ -208,7 +208,7 @@
             forRelease = false;
           };
           packages.iosevkata-all-release = buildIosevkata {
-            pkgs = systemAgnosticPkgs;
+            pkgs = x64LinuxPkgs;
             variants = [
               "Iosevkata"
               "IosevkataNerdFont"
@@ -225,6 +225,7 @@
               pkgs.fontforge
               pkgs.nix-prefetch
               pkgs.prefetch-npm-deps
+              pkgs.silicon
               (pkgs.python3.withPackages (ps: [
                 ps.fontforge
                 ps.configargparse
