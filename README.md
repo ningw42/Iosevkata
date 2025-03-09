@@ -1,11 +1,22 @@
 # Iosevkata
 
+A `PragmataPro` styled `Iosevka` variant with my tweaks.
+
 [![Garnix Build](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fningw42%2FIosevkata%3Fbranch%3Dmaster)](https://garnix.io/repo/ningw42/Iosevkata)
 ![GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml/badge.svg)
 
 ![Preview](preview.png)
 
-A `PragmataPro` styled `Iosevka` variant with my tweaks.
+## Usage
+
+This repository produces artifacts:
+1. ZIP files with TTF fonts. Download and install on your system. This should be most common/universal use case.
+2. A nix package for `x86_64-linux`, `x86_64-darwin` and `aarch64-darwin`. Add `ningw42/Iosevkata` to your flake.
+    a. Use the package `packages.<system>.iosevkata-all` directly, which comes with all the variants.
+    b. Use overlay `overlays.default` from the flake when importing nixpkgs, which adds `iosevkata` (an alias of `iosevkata-all`) to your nixpkgs.
+    c. If you want pre-built packages, follow [garnix's guide for adding garnix's public binary caching server](https://garnix.io/docs/caching).
+
+## Customization
 
 1. **A fixed spacing, no ligature.** I once liked ligature, but it's distracting.
 2. **A higher underscore.** To make underscore-connected characters feels connected, like `Menlo`.
@@ -13,13 +24,13 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
-# Variants
+## Variants
 
 1. Iosevkata, vanilla Iosevka with the tweaks above.
 2. Iosevkata Nerd Font, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs are patched in the same way as the official "Nerd Font" variant, "a somehow monospaced variant, maybe". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
 3. Iosevkata Nerd Font Mono, [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) glyphs are patched in the same way as the official "Nerd Font Mono" variant, "a strictly monospaced variant". See [ryanoasis/nerd-fonts#1103](https://github.com/ryanoasis/nerd-fonts/discussions/1103).
 
-# TODOs
+## TODOs
 
 - [x] Add a `Iosevkata Nerd Font` with [Nerd Fonts Patcher](https://github.com/ryanoasis/nerd-fonts#font-patcher).
 - [x] A unified builder.
@@ -34,18 +45,18 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 - [ ] Generate preview automatically in GitHub Actions with colorscheme applied.
 - [ ] Put the glyphs from Nerd Fonts at the horizontal center of the cell/grid. See [ryanoasis/nerd-fonts#1644](https://github.com/ryanoasis/nerd-fonts/discussions/1644#discussioncomment-9600894).
 
-# Build
+## Build
 
 You will need [Nix or NixOS](https://nixos.org/), and [Flake](https://nixos.wiki/wiki/Flakes).
 
 ```bash
-# Iosevkata
+# Iosevkata, it's a nix package, not a zip
 nix build .#iosevkata
 
-# Iosevkata Nerd Font
+# Iosevkata Nerd Font, also a nix package, not a zip
 nix build .#iosevkata-nerd-font
 
-# Iosevkata Nerd Font Mono
+# Iosevkata Nerd Font Mono, still a nix package, not a zip
 nix build .#iosevkata-nerd-font-mono
 
 # All variants at once for zip artifacts
@@ -55,26 +66,27 @@ nix build .#iosevkata-all-release
 nix build .#iosevkata-all
 ```
 
-# Update
+## Update
 ```bash
 # enter nix shell with necessary dependencies
 nix develop .
 
 # prefetch checksums with the latest Iosevka and nerd-fonts
 ./prefetch_checksums.sh
+
 # prefetch checksums with the specified Iosevka and nerd-fonts
 ./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.3.0 3.2.1
 
 # review the updated flake.nix
 ```
 
-# References
+## References
 1. [Iosevka](https://github.com/be5invis/Iosevka)
 2. [PragmataPro](https://fsd.it/shop/fonts/pragmatapro/)
 3. [Menlo](https://en.wikipedia.org/wiki/Menlo_(typeface))
 4. [mononoki](https://github.com/madmalik/mononoki)
 
-# Other Similar Variants
+## Other Similar Fonts
 
 1. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant solely intended to immitate `PragmataPro`.
 2. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Pragmasevka` based `Iosevka` variant.
