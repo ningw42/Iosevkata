@@ -9,12 +9,12 @@ A `PragmataPro` styled `Iosevka` variant with my tweaks.
 
 ## Usage
 
-This repository produces artifacts:
-1. ZIP files with TTF fonts. Download and install on your system. This should be most common/universal use case.
+This repository produces two types of artifact:
+1. Zipballs with TTF fonts. [Download the latest release](https://github.com/ningw42/Iosevkata/releases/latest) and install on your system. This should be most common/universal use case.
 2. A nix package for `x86_64-linux`, `x86_64-darwin` and `aarch64-darwin`. Add `ningw42/Iosevkata` to your flake.
-    a. Use the package `packages.<system>.iosevkata-all` directly, which comes with all the variants.
-    b. Use overlay `overlays.default` from the flake when importing nixpkgs, which adds `iosevkata` (an alias of `iosevkata-all`) to your nixpkgs.
-    c. If you want pre-built packages, follow [garnix's guide for adding garnix's public binary caching server](https://garnix.io/docs/caching).
+    1. Use the package `packages.<system>.iosevkata-all` directly, which comes with all the variants.
+    2. Use overlay `overlays.default` from the flake when importing nixpkgs, which adds `iosevkata` (an alias of `iosevkata-all`) to your nixpkgs.
+    3. If you want pre-built packages, follow [garnix's guide for adding garnix's public binary caching server](https://garnix.io/docs/caching).
 
 ## Customization
 
