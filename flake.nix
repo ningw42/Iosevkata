@@ -166,6 +166,12 @@
         };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
+      flake = {
+        overlays = {
+          # a default flake to add all variants
+          default = final: prev: { iosevkata = self.packages.${prev.system}.iosevkata-all; };
+        };
+      };
       systems = [
         "x86_64-linux"
         "x86_64-darwin"
