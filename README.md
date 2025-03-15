@@ -77,6 +77,15 @@ nix develop .
 # review the updated flake.nix
 ```
 
+## Versions
+
+Iosevkata has decoupled its version for calendar versioning from Iosevka's semantic versioning since Iosevka v33.0.1. Here is the version mapping.
+
+| Iosevkata | Iosevka | nerd-fonts |
+| :-------- | :------ | :--------- |
+| v25.03.0  | v33.0.1 | v3.3.0     |
+
+
 ## References
 1. [Iosevka](https://github.com/be5invis/Iosevka)
 2. [PragmataPro](https://fsd.it/shop/fonts/pragmatapro/)
