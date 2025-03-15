@@ -169,7 +169,7 @@
       flake = {
         overlays = {
           # a default flake to add all variants
-          default = final: prev: { iosevkata = self.packages.${prev.system}.iosevkata-all; };
+          default = final: prev: { iosevkata = self.packages.${prev.system}.iosevkata; };
         };
       };
       systems = [
@@ -187,24 +187,9 @@
           ...
         }:
         {
-          # Iosevkata packages.
           # They are system agnostic, so, they are built with a specific system (x86_64-linux), and aliased to other systems.
+          # iosevkata builds all variants for a nix package
           packages.iosevkata = buildIosevkata {
-            pkgs = x64LinuxPkgs;
-            variants = [ "Iosevkata" ];
-            forRelease = false;
-          };
-          packages.iosevkata-nerd-font = buildIosevkata {
-            pkgs = x64LinuxPkgs;
-            variants = [ "IosevkataNerdFont" ];
-            forRelease = false;
-          };
-          packages.iosevkata-nerd-font-mono = buildIosevkata {
-            pkgs = x64LinuxPkgs;
-            variants = [ "IosevkataNerdFontMono" ];
-            forRelease = false;
-          };
-          packages.iosevkata-all = buildIosevkata {
             pkgs = x64LinuxPkgs;
             variants = [
               "Iosevkata"
@@ -213,7 +198,8 @@
             ];
             forRelease = false;
           };
-          packages.iosevkata-all-release = buildIosevkata {
+          # iosevkata-release builds all variants for zipballs
+          packages.iosevkata-release = buildIosevkata {
             pkgs = x64LinuxPkgs;
             variants = [
               "Iosevkata"
@@ -221,6 +207,24 @@
               "IosevkataNerdFontMono"
             ];
             forRelease = true;
+          };
+          # iosevkata-only builds Iosevkata for a nix package
+          packages.iosevkata-only = buildIosevkata {
+            pkgs = x64LinuxPkgs;
+            variants = [ "Iosevkata" ];
+            forRelease = false;
+          };
+          # iosevkata-nerd-font-only builds IosevkataNerdFont for a nix package
+          packages.iosevkata-nerd-font-only = buildIosevkata {
+            pkgs = x64LinuxPkgs;
+            variants = [ "IosevkataNerdFont" ];
+            forRelease = false;
+          };
+          # iosevkata-nerd-font-mono-only builds IosevkataNerdFontMono for a nix package
+          packages.iosevkata-nerd-font-mono-only = buildIosevkata {
+            pkgs = x64LinuxPkgs;
+            variants = [ "IosevkataNerdFontMono" ];
+            forRelease = false;
           };
 
           # Shells: default development shell, which is system specific.

@@ -50,20 +50,17 @@ This repository produces two types of artifact:
 You will need [Nix or NixOS](https://nixos.org/), and [Flake](https://nixos.wiki/wiki/Flakes).
 
 ```bash
-# Iosevkata, it's a nix package, not a zip
+# All variants at once for a nix package
 nix build .#iosevkata
+# All variants at once for zipballs
+nix build .#iosevkata-release
 
-# Iosevkata Nerd Font, also a nix package, not a zip
-nix build .#iosevkata-nerd-font
-
-# Iosevkata Nerd Font Mono, still a nix package, not a zip
-nix build .#iosevkata-nerd-font-mono
-
-# All variants at once for zip artifacts
-nix build .#iosevkata-all-release
-
-# All variants at once for nix package
-nix build .#iosevkata-all
+# Iosevkata, a nix package
+nix build .#iosevkata-only
+# Iosevkata Nerd Font, a nix package
+nix build .#iosevkata-nerd-font-only
+# Iosevkata Nerd Font Mono, a nix package
+nix build .#iosevkata-nerd-font-mono-only
 ```
 
 ## Update
