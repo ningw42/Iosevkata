@@ -84,6 +84,7 @@ Iosevkata has decoupled its version for calendar versioning from Iosevka's seman
 | Iosevkata | Iosevka | nerd-fonts |
 | :-------- | :------ | :--------- |
 | v25.03.0  | v33.0.1 | v3.3.0     |
+| v25.03.1  | v33.1.0 | v3.3.0     |
 
 
 ## References
