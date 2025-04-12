@@ -15,15 +15,15 @@
     }:
     let
       # Dependencies, Iosevka and NerdFonts
-      iosevkaVersion = "33.2.0";
-      hash = "sha256-p3Vs9KoqxMV6hUPlZiKu+TMhROZuMug9nz+JqmNpBUQ=";
-      npmDepsHash = "sha256-YLDdgjYAhDg1zam82oMP3i8X5V2xjMfai9fVVVDXnhM=";
+      iosevkaVersion = "33.2.1";
+      hash = "sha256-wcPWlkagVREYUI/ub7eA5rIfFmFm9vgXETW54D+SGzA=";
+      npmDepsHash = "sha256-la57MOeG6f0ArnUwTOCseevZDR+Qg7kbxNT3cIAr/xE=";
       fontPatcherVersion = "3.3.0";
       fontPatcherHash = "sha256-/LbO8+ZPLFIUjtZHeyh6bQuplqRfR6SZRu9qPfVZ0Mw=";
 
       # Build plans and version
       privateBuildPlan = builtins.readFile ./private-build-plans.toml;
-      version = "25.03.2";
+      version = "25.04.0";
 
       # This is the system specific (x86_64-linux) nixpkgs that builds Iosevkata as a system agnostic package
       x64LinuxPkgs = nixpkgs.legacyPackages.x86_64-linux;
