@@ -35,6 +35,7 @@ if [[ $# -eq 2 ]]; then
 fi
 
 # Current versions
+current_version=$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' < flake.nix | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 current_iosevka_version=$(grep -oE 'iosevkaVersion = "[0-9]+\.[0-9]+\.[0-9]+"' < flake.nix | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 current_nerdfontpatcher_version=$(grep -oE 'fontPatcherVersion = "[0-9]+\.[0-9]+\.[0-9]+"' < flake.nix | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
@@ -72,7 +73,7 @@ iosevka_npmdeps_checksum=$(prefetch-npm-deps "$filename")
 rm "$filename"
 
 # Asking for a new version
-printf "Name the new version:"
+printf "Name the new version (currently at $current_version):\n"
 read new_version
 
 # Updated metadata
