@@ -16,8 +16,8 @@ if [[ $# -ne 0 && $# -ne 2 ]]; then
 fi
 
 # Metadata line range
-metadata_begin_line=18
-metadata_end_line=22
+metadata_begin_linenumber=18
+metadata_end_linenumber=23
 
 # Requested versions
 iosevka_version=""
@@ -58,22 +58,26 @@ if [[ "$iosevka_needs_update" != true && "$nerdfontpatcher_needs_update" != true
   exit 0
 fi
 
-# Direct hashes
+# Calculate hashes for direct dependencies
 # remove --silent for debugging
 echo -e "${LIGHT_GRAY}Calculating hashes...${RESET}"
-# iosevka_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchFromGitHub --owner be5invis --repo iosevka --rev "v$iosevka_version" --check-store --silent)
 iosevka_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchzip --url "https://github.com/be5invis/Iosevka/archive/refs/tags/v$iosevka_version.zip" --check-store --silent)
 nerdfontpatcher_checksum=$(nix-prefetch --option extra-experimental-features flakes fetchzip --url "https://github.com/ryanoasis/nerd-fonts/releases/download/v$nerdfontpatcher_version/FontPatcher.zip" --no-stripRoot --check-store --silent)
 
-# NPM dependencies hash
+# Calculate hashes for NPM dependencies
 echo -e "${LIGHT_GRAY}Calculating dependency (NPM packages) hashes...${RESET}"
 filename=$(mktemp)
 curl -s -L "https://raw.githubusercontent.com/be5invis/Iosevka/v$iosevka_version/package-lock.json" -o "$filename"
 iosevka_npmdeps_checksum=$(prefetch-npm-deps "$filename")
 rm "$filename"
 
-# Updated hashes
-updated_hashes=$(cat << EOF
+# Asking for a new version
+printf "Name the new version:"
+read new_version
+
+# Updated metadata
+updated_metadata=$(cat << EOF
+      version = "$new_version";
       iosevkaVersion = "$iosevka_version";
       hash = "$iosevka_checksum";
       npmDepsHash = "$iosevka_npmdeps_checksum";
@@ -82,20 +86,20 @@ updated_hashes=$(cat << EOF
 EOF
 )
 
-# Original hashes
-original_hashes=$(sed -n "${metadata_begin_line},${metadata_end_line}p" flake.nix)
+# Original metadata
+original_metadata=$(sed -n "${metadata_begin_linenumber},${metadata_end_linenumber}p" flake.nix)
 
-# Show diff with difftastic
+# Show sources diff with difftastic
 echo -e "${LIGHT_GRAY}Changes to flake.nix${RESET}"
-difft <(echo "$original_hashes") <(echo "$updated_hashes")
+difft <(echo "$original_metadata") <(echo "$updated_metadata")
 
 # Asking for confirmation
 printf "Apply the changes above to flake.nix? [y/N]"
-read response
-if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+read confirmation
+if [[ "$confirmation" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   # Update flake.nix
   new_flake_file=$(mktemp)
-  awk -v start=$metadata_begin_line -v end=$metadata_end_line -v newlines="$updated_hashes" '
+  awk -v start=$metadata_begin_linenumber -v end=$metadata_end_linenumber -v newlines="$updated_metadata" '
   NR == start {
       print newlines
       next
