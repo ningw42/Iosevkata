@@ -43,7 +43,7 @@ This repository produces two types of artifact:
 - [x] Switch to [calendar versioning](https://calver.org/) to decouple from Iosevka's semantic versioning.
 - [ ] Add `zstd` compressed artifacts.
 - [ ] Generate preview automatically in GitHub Actions with colorscheme applied.
-- [ ] Put the glyphs from Nerd Fonts at the horizontal center of the cell/grid. See [ryanoasis/nerd-fonts#1644](https://github.com/ryanoasis/nerd-fonts/discussions/1644#discussioncomment-9600894).
+- [ ] Put the glyphs from Nerd Fonts at the horizontal center of the cell/grid. See [ryanoasis/nerd-fonts#1330](https://github.com/ryanoasis/nerd-fonts/issues/1330#issuecomment-1664025541).
 
 ## Build
 

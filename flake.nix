@@ -86,7 +86,7 @@
             cd ../nerd-fonts-patcher
             chmod -R +w .
           '';
-          patches = pkgs.lib.optionals needNerdFontPatcher [ ./patches/configargparse_v3.3.0.patch ];
+          patches = pkgs.lib.optionals needNerdFontPatcher [ ./patches/fontpatcher/v3.3.0/configargparse.patch ];
           postPatch = pkgs.lib.optionalString needNerdFontPatcher ''
             cd ../Iosevka
           '';
