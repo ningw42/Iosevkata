@@ -88,7 +88,10 @@
             cd ../nerd-fonts-patcher
             chmod -R +w .
           '';
-          patches = pkgs.lib.optionals needNerdFontPatcher [ ./patches/fontpatcher/v3.4.0/configargparse.patch ./patches/fontpatcher/v3.4.0/horizontal_centered.patch ];
+          patches = pkgs.lib.optionals needNerdFontPatcher [
+            ./patches/fontpatcher/v3.4.0/configargparse.patch
+            ./patches/fontpatcher/v3.4.0/horizontal_centered.patch
+          ];
           postPatch = pkgs.lib.optionalString needNerdFontPatcher ''
             cd ../Iosevka
           '';
