@@ -81,7 +81,9 @@
 
           sourceRoot = "Iosevka";
 
-          # Optional Patch Phase: replace `argparse` with `configargparse` because argparse isn't available in nixpkgs.
+          # Optional Patch Phase:
+          # 1. replace `argparse` with `configargparse` because argparse isn't available in nixpkgs.
+          # 2. put patched nerd-fonts glyphs at the horizontal center of two cells.
           prePatch = pkgs.lib.optionalString needNerdFontPatcher ''
             cd ../nerd-fonts-patcher
             chmod -R +w .
