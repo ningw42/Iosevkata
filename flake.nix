@@ -64,8 +64,10 @@
 
           nativeBuildInputs =
             [
-              pkgs.zip
+              pkgs.gnutar
               pkgs.ttfautohint-nox
+              pkgs.zip
+              pkgs.zstd
             ]
             ++ pkgs.lib.optionals needNerdFontPatcher [
               # optional build inputs for NerdFontPatcher
@@ -143,6 +145,7 @@
             # Iosevkata
             ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && forRelease) ''
               zip --recurse-paths --junk-paths "$out/Iosevkata-v${version}.zip" "dist/Iosevkata/TTF/"*
+              (cd dist/Iosevkata/TTF && tar --transform='s|.*/||' -cf - *) | zstd -o "$out/Iosevkata-v${version}.tar.zst"
             ''}
             ${pkgs.lib.optionalString (builtins.elem "Iosevkata" variants && !forRelease) ''
               install "dist/Iosevkata/TTF"/* "$fontdir"
@@ -151,6 +154,7 @@
             # IosevkataNerdFont
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && forRelease) ''
               zip --recurse-paths --junk-paths "$out/IosevkataNerdFont-v${version}.zip" "dist/Iosevkata/NerdFont"/*
+              (cd dist/Iosevkata/NerdFont && tar --transform='s|.*/||' -cf - *) | zstd -o "$out/IosevkataNerdFont-v${version}.tar.zst"
             ''}
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants && !forRelease) ''
               install "dist/Iosevkata/NerdFont"/* "$fontdir"
@@ -159,6 +163,7 @@
             # IosevkataNerdFontMono
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && forRelease) ''
               zip --recurse-paths --junk-paths "$out/IosevkataNerdFontMono-v${version}.zip" "dist/Iosevkata/NerdFontMono"/*
+              (cd dist/Iosevkata/NerdFontMono && tar --transform='s|.*/||' -cf - *) | zstd -o "$out/IosevkataNerdFontMono-v${version}.tar.zst"
             ''}
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && !forRelease) ''
               install "dist/Iosevkata/NerdFontMono"/* "$fontdir"
@@ -203,7 +208,7 @@
             ];
             forRelease = false;
           };
-          # iosevkata-release builds all variants for zipballs
+          # iosevkata-release builds all variants for zip and zstd
           packages.iosevkata-release = buildIosevkata {
             pkgs = x64LinuxPkgs;
             variants = [
