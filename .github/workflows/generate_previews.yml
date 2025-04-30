@@ -11,28 +11,35 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        path: Iosevkata
 
+    - run: ls -lR
     - name: Install Nix
       uses: cachix/install-nix-action@v27
       with:
         nix_path: nixpkgs=channel:nixos-unstable
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
+    - run: ls -lR
     - name: Download Fonts
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh release download --repo ${{ github.repository }} --pattern "Iosevkata-*.tar.zst" --dir ./artifacts
 
+    - run: ls -lR
     - name: Install Dependencies
       run: |
         nix develop .
 
+    - run: ls -lR
     - name: Extract Fonts
       run: |
         mkdir fonts
         tar --zstd -xf artifacts/Iosevkata-*.tar.zst -C ./fonts
 
+    - run: ls -lR
     - name: Install Fonts
       run: |
         mkdir -p ~/.fonts
@@ -40,15 +47,18 @@ jobs:
         fc-cache -fv
         fc-list | grep -i Iosevkata
 
+    - run: ls -lR
     - name: Generate Preview Images
       run: |
         ./generate_preview.sh
 
+    - run: ls -lR
     - name: Configure Git Credentials
       run: |
         git config user.name github-actions[bot]
         git config user.email github-actions[bot]@users.noreply.github.com
 
+    - run: ls -lR
     - name: Push Preview Images
       run: |
         git add previews/rust.png
