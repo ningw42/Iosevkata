@@ -36,13 +36,6 @@ jobs:
     - run: |
         echo $PWD
         ls -lR /home/runner/work/
-    - name: Install Dependencies
-      run: |
-        nix develop .
-
-    - run: |
-        echo $PWD
-        ls -lR /home/runner/work/
     - name: Extract Fonts
       run: |
         mkdir fonts
@@ -62,8 +55,11 @@ jobs:
         echo $PWD
         ls -lR /home/runner/work/
     - name: Generate Preview Images
-      run: |
-        ./generate_preview.sh
+      uses: workflow/nix-shell-action@v3
+      with:
+        packages: silicon
+        script: |
+          ./generate_preview.sh
 
     - run: |
         echo $PWD
