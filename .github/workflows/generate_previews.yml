@@ -1,0 +1,54 @@
+name: "Generate Previews"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  generate_preview:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v27
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download Fonts
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release download --repo ${{ github.repository }} --pattern "Iosevkata-*.tar.zst" --dir ./artifacts
+
+    - name: Extract Fonts
+      run: |
+        nix develop . # install dependencies (tar and zstd) with nix
+        mkdir fonts
+        tar --zstd -xf artifacts/Iosevkata-*.tar.zst -C ./fonts
+
+    - name: Install Fonts
+      run: |
+        mkdir -p ~/.fonts
+        cp ./fonts/*.ttf ~/.fonts/
+        fc-cache -fv
+        fc-list
+
+    - name: Generate Preview Images
+      run: |
+        nix develop . # install dependencies (silicon) with nix
+        silicon ./previews/rust.rs --output ./previews/rust.png --language rust --theme ./previews/themes/catppuccin-frappe.tmTheme --pad-horiz 0 --pad-vert 0 --background '#fff0' --font "Iosevkata=48" --no-window-controls --no-round-corner
+
+    - name: Configure Git Credentials
+      run: |
+        git config user.name github-actions[bot]
+        git config user.email github-actions[bot]@users.noreply.github.com
+
+    - name: Push Preview Images
+      run: |
+        git add previews/rust.png
+        git commit -m "Update preview images"
+        git push
