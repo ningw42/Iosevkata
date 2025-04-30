@@ -9,38 +9,48 @@ jobs:
   generate_preview:
     runs-on: ubuntu-latest
     steps:
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Checkout Repository
       uses: actions/checkout@v4
-      with:
-        path: Iosevkata
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Install Nix
       uses: cachix/install-nix-action@v27
       with:
         nix_path: nixpkgs=channel:nixos-unstable
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Download Fonts
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh release download --repo ${{ github.repository }} --pattern "Iosevkata-*.tar.zst" --dir ./artifacts
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Install Dependencies
       run: |
         nix develop .
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Extract Fonts
       run: |
         mkdir fonts
         tar --zstd -xf artifacts/Iosevkata-*.tar.zst -C ./fonts
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Install Fonts
       run: |
         mkdir -p ~/.fonts
@@ -48,18 +58,24 @@ jobs:
         fc-cache -fv
         fc-list | grep -i Iosevkata
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Generate Preview Images
       run: |
         ./generate_preview.sh
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Configure Git Credentials
       run: |
         git config user.name github-actions[bot]
         git config user.email github-actions[bot]@users.noreply.github.com
 
-    - run: ls -lR /home/runner/work/
+    - run: |
+        echo $PWD
+        ls -lR /home/runner/work/
     - name: Push Preview Images
       run: |
         git add previews/rust.png
