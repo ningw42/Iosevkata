@@ -41,7 +41,7 @@ jobs:
       with:
         flakes-from-devshell: true
         script: |
-          ./generate_preview.sh
+          silicon ./previews/rust.rs --output ./previews/rust.png --language rust --theme ./previews/themes/Catppuccin\ Frappe.tmTheme --pad-horiz 0 --pad-vert 0 --background '#fff0' --font "Iosevkata=48" --no-window-controls --no-round-corner
 
     - name: Configure Git Credentials
       run: |
