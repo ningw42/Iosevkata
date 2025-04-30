@@ -37,7 +37,7 @@ jobs:
         fc-list | grep -i Iosevkata
 
     - name: Generate Preview Images
-      uses: workflow/nix-shell-action@v3
+      uses: workflow/nix-shell-action@v3.4.0
       with:
         flakes-from-devshell: true
         script: |
