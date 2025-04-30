@@ -50,6 +50,11 @@ jobs:
 
     - name: Push Preview Images
       run: |
-        git add previews/rust.png
-        git commit -m "Update preview images"
-        git push
+        if git diff --quiet -- ./previews/rust.png; then
+          echo "Preview image unchanged, skipping commit."
+        else
+          echo "Preview image changed, committing..."
+          git add previews/rust.png
+          git commit -m "Update font preview"
+          git push
+        fi
