@@ -98,5 +98,5 @@ Iosevkata has decoupled its version for calendar versioning from Iosevka's seman
 
 ## Other Similar Fonts
 
-1. [Pragmasevka](https://github.com/shytikov/pragmasevka), a `Iosevka` variant solely intended to immitate `PragmataPro`.
-2. [Iosvmata](https://github.com/N-R-K/Iosvmata), a `Pragmasevka` based `Iosevka` variant.
+1. [Pragmasevka](https://github.com/shytikov/pragmasevka), Pragmata Pro doppelgänger made of Iosevka SS08.
+2. [Iosvmata](https://github.com/N-R-K/Iosvmata), Custom Iosevka build somewhat mimicking PragmataPro.
