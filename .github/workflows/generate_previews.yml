@@ -1,7 +1,13 @@
 name: "Generate Previews"
 
 on:
+  workflow_call:
+    secrets:
+      GITHUB_TOKEN:
+        required: true
   push:
+    paths:
+      - 'preview/**'
     branches:
       - master
 
@@ -41,7 +47,7 @@ jobs:
       with:
         flakes-from-devshell: true
         script: |
-          silicon ./previews/rust.rs --output ./previews/rust.png --language rust --theme ./previews/themes/Catppuccin\ Frappe.tmTheme --pad-horiz 0 --pad-vert 0 --background '#fff0' --font "Iosevkata=48" --no-window-controls --no-round-corner
+          silicon ./preview/sources/rust.rs --output ./preview/images/rust.png --language rust --theme ./preview/themes/Catppuccin\ Frappe.tmTheme --pad-horiz 0 --pad-vert 0 --background '#fff0' --font "Iosevkata=48" --no-window-controls --no-round-corner
 
     - name: Configure Git Credentials
       run: |

@@ -49,3 +49,8 @@ jobs:
             Iosevkata-${{ github.ref_name }}.tar.zst
             IosevkataNerdFont-${{ github.ref_name }}.tar.zst
             IosevkataNerdFontMono-${{ github.ref_name }}.tar.zst
+
+  preview:
+    needs: release
+    uses: ./.github/workflows/generate_previews.yml
+    secrets: inherit
