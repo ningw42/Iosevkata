@@ -17,7 +17,7 @@ for file in ./preview/sources/*; do
     --pad-horiz 0 \
     --pad-vert 0 \
     --background '#fff0' \
-    --font "Iosevkata=48" \
+    --font "Iosevkata Nerd Font=48" \
     --no-window-controls \
     --no-round-corner
 

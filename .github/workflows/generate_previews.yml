@@ -25,12 +25,14 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release download --repo ${{ github.repository }} --pattern "Iosevkata-*.tar.zst" --dir ./artifacts
+        gh release download --repo ${{ github.repository }} --pattern "*.tar.zst" --dir ./artifacts
 
     - name: Extract Fonts
       run: |
         mkdir fonts
-        tar --zstd -xf artifacts/Iosevkata-*.tar.zst -C ./fonts
+        tar --zstd -xf artifacts/Iosevkata-v*.tar.zst -C ./fonts
+        tar --zstd -xf artifacts/IosevkataNerdFont-v*.tar.zst -C ./fonts
+        tar --zstd -xf artifacts/IosevkataNerdFontMono-v*.tar.zst -C ./fonts
 
     - name: Install Fonts
       run: |
@@ -61,7 +63,7 @@ jobs:
               --pad-horiz 0 \
               --pad-vert 0 \
               --background '#fff0' \
-              --font "Iosevkata=48" \
+              --font "Iosevkata Nerd Font=48" \
               --no-window-controls \
               --no-round-corner
 
