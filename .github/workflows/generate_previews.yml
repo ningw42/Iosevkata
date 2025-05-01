@@ -2,9 +2,6 @@ name: "Generate Previews"
 
 on:
   workflow_call:
-    secrets:
-      GITHUB_TOKEN:
-        required: true
   push:
     paths:
       - 'preview/**'
