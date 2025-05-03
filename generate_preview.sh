@@ -20,7 +20,7 @@ font_version=$(echo "$font_file" | sed -n 's|.*Iosevkata-v\([0-9.]*\)\.tar\.zst|
 comment_prefix="//"
 
 # Build comment line
-comment="$comment_prefix Preview generated on $timestamp with Iosevkata Nerd Font v$font_version"
+comment="$comment_prefix Preview generated at $timestamp with Iosevkata Nerd Font v$font_version"
 
 for file in ./preview/sources/*; do
   filename=$(basename "$file")
