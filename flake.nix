@@ -15,10 +15,10 @@
     }:
     let
       # Metadata: version, dependency versions and hashes
-      version = "25.04.1";
-      iosevkaVersion = "33.2.2";
-      hash = "sha256-dhMTcceHru/uLHRY4eWzFV+73ckCBBnDlizP3iY5w5w=";
-      npmDepsHash = "sha256-5DcMV9N16pyQxRaK6RCoeghZqAvM5EY1jftceT/bP+o=";
+      version = "25.05.0";
+      iosevkaVersion = "33.2.3";
+      hash = "sha256-dCHJYGZYTvjDtM2V+NdwXNxHg4kkcVAQD0G3DPtu5ps=";
+      npmDepsHash = "sha256-eqWf5d9uCMkvDNPlICUt7QVT+2WsU0u+TE14ZraWXXE=";
       fontPatcherVersion = "3.4.0";
       fontPatcherHash = "sha256-JR4sxV2yOXtrnIjFBh4as304BjNIcKkBzxOKLxrjo2I=";
 
