@@ -41,7 +41,7 @@ This repository produces two types of artifact:
 - [x] Larger period size in punctuation.
 - [x] Build and release with GitHub Actions.
 - [x] Switch to [calendar versioning](https://calver.org/) to decouple from Iosevka's semantic versioning.
-- [x] Patch Nerd Fonts glyphs at the horizontal center of two cells, instead of the right aligned default. See [ryanoasis/nerd-fonts#1330](https://github.com/ryanoasis/nerd-fonts/issues/1330#issuecomment-1664025541).
+- [x] Patch Nerd Fonts glyphs at the horizontal center of two cells, instead of the left aligned default. See [ryanoasis/nerd-fonts#1330](https://github.com/ryanoasis/nerd-fonts/issues/1330#issuecomment-1664025541).
 - [x] Add `zstd` compressed artifacts.
 - [x] Generate preview automatically in GitHub Actions with colorscheme applied.
 
