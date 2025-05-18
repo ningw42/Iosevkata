@@ -6,6 +6,8 @@ on:
     paths:
       - '.github/workflows/generate_previews.yml'
       - 'preview/sources/**'
+      - 'flake.lock'
+      - 'flake.nix'
     branches:
       - master
 
