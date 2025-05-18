@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        ref: master # always checkout "master" even if we are triggered with a tag (detached HEAD), so we could commit to "master" later
 
     - name: Install Nix
       uses: cachix/install-nix-action@v27
