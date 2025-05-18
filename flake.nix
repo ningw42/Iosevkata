@@ -247,8 +247,10 @@
               pkgs.prefetch-npm-deps
               pkgs.silicon
               (pkgs.python3.withPackages (ps: [
-                ps.fontforge
                 ps.configargparse
+                ps.fontforge
+                ps.requests
+                ps.rich
               ]))
             ];
           };
