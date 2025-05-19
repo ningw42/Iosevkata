@@ -16,6 +16,7 @@ from rich.syntax import Syntax
 
 console = Console()
 FLAKE_PATH = Path("flake.nix")
+VERSIONS_PATH = Path("versions.md")
 METADATA_BEGIN = 18
 METADATA_END = 23
 
@@ -89,6 +90,47 @@ def show_diff(original: str, updated: str):
     console.print(Syntax("\n".join(diff), "diff", theme="ansi_dark"))
 
 
+def update_versions_md(iosevkata_version: str, iosevka_version: str, nerdfont_version: str, file_path: str = "versions.md"):
+    """
+    Insert a new row with the given versions at the top of the markdown table in versions.md
+    """
+    new_row = f"| v{iosevkata_version:<8} | v{iosevka_version} | v{nerdfont_version}     |"
+
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"{file_path} does not exist.")
+
+    lines = path.read_text().splitlines()
+
+    # Find the header separator line (should start with `| :`)
+    try:
+        separator_index = next(i for i, line in enumerate(lines) if line.startswith("| :"))
+    except StopIteration:
+        raise ValueError("Markdown table format invalid or missing header separator line.")
+
+    insert_index = separator_index + 1
+    new_lines = lines[:insert_index] + [new_row] + lines[insert_index:]
+
+    # Generate and show diff
+    diff = difflib.unified_diff(
+        lines, new_lines,
+        fromfile="versions.md (old)",
+        tofile="versions.md (new)",
+        lineterm=""
+    )
+
+    print("\n[bold grey]Changes to versions.md[/bold grey]")
+    print("\n".join(diff))
+
+    # Ask for confirmation
+    confirmation = input("Apply the changes above to versions.md? [y/N] ")
+    if confirmation.lower() in ("y", "yes"):
+        path.write_text("\n".join(new_lines) + "\n")
+        print("[green]versions.md updated[/green]")
+    else:
+        print("[yellow]Aborted without any change to versions.md[/yellow]")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Prefetch checksums for Iosevka and nerd-fonts")
     parser.add_argument("versions", nargs="*", help="Optional iosevka_version and nerdfontpatcher_version")
@@ -151,11 +193,17 @@ def main():
     console.print("[gray]Changes to flake.nix[/gray]")
     show_diff(original_metadata, updated_metadata)
 
-    if Confirm.ask("Apply the changes above to flake.nix?", default=False):
+    if Confirm.ask("Apply the changes above to flake.nix and versions.md?", default=False):
         write_updated_flake(FLAKE_PATH, METADATA_BEGIN, METADATA_END, updated_metadata)
         console.print("[green]Updated flake.nix[/green]")
     else:
         console.print("[yellow]Aborted without any change to flake.nix[/yellow]")
+
+    update_versions_md(
+        iosevkata_version=new_version,
+        iosevka_version=iosevka_version,
+        nerdfont_version=nerdfont_version
+    )
 
 
 if __name__ == "__main__":
