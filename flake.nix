@@ -251,6 +251,7 @@
                 ps.fontforge
                 ps.requests
                 ps.rich
+                ps.typer
               ]))
             ];
           };
