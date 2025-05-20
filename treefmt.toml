@@ -49,3 +49,7 @@
 [formatter.nixfmt-rfc-style]
 command = "nixfmt"
 includes = ["*.nix"]
+
+[formatter.python]
+command = "black"
+includes = ["*.py"]
