@@ -68,6 +68,8 @@ nix build .#iosevkata-nerd-font-mono-only
 ```bash
 # enter nix shell with necessary dependencies
 nix develop .
+# nix shell uses bash by default, if you want to use your shell
+nix develop . --command $YOUR_SHELL
 
 # print help message
 ./updater.py --help

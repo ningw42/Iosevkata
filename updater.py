@@ -163,7 +163,7 @@ def fetch_sri_hash_with_nix_prefetch(
     Returns an SRI hash string (e.g., "sha256-Abc...=").
     """
     console.print(
-        f"[dim]{SPINNER_ICON}Calculating SRI hash for [blue][link={url}]{name} v{version}[/link][/blue] (strip_root={strip_root}) using nix-prefetch fetchzip[white]...[/white][/dim]"
+        f"[dim]{SPINNER_ICON}Calculating SRI hash for [link={url}][blue]{name}[/blue][/link] [yellow not bold]v{version}[/yellow not bold] (strip_root={strip_root}) using nix-prefetch fetchzip[white]...[/white][/dim]"
     )
     command_parts = [
         "nix-prefetch",
@@ -187,7 +187,7 @@ def fetch_npm_deps_hash_for_iosevka(iosevka_version: str) -> str:
     """Fetches Iosevka's package-lock.json and calculates its prefetch hash using prefetch-npm-deps."""
     url = f"https://raw.githubusercontent.com/be5invis/Iosevka/v{iosevka_version}/package-lock.json"
     console.print(
-        f"[dim]{SPINNER_ICON}Calculating NPM dependencies hash for [blue][link={url}]be5invis/Iosevka v{iosevka_version}[/link][/blue] using prefetch-npm-deps[white]...[/white][/dim]"
+        f"[dim]{SPINNER_ICON}Calculating NPM dependencies hash for [link={url}][blue]be5invis/Iosevka[/blue][/link] [yellow not bold]v{iosevka_version}[/yellow not bold] using prefetch-npm-deps[white]...[/white][/dim]"
     )
 
     try:
