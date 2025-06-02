@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 
 import difflib
-import io
 import os
 import re
 import subprocess
-from sys import version
 import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 
 import requests
+from rich import box
 import typer
 from rich.console import Console
-from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 from rich.syntax import Syntax
 from rich.table import Table
@@ -28,29 +26,40 @@ VERSIONS_MD_PATH = Path("versions.md")
 FLAKE_METADATA_START_LINE = 18
 FLAKE_METADATA_END_LINE = 23
 FLAKE_METADATA_INDENT = "      "  # 6 spaces
+ERROR_ICON = "󰅙 "
+WARNING_ICON = " "
+SUCCESS_ICON = "󰗠 "
+INFO_ICON = "󰋼 "
+HINT_ICON = "󰌵 "
+SPINNER_ICON = " "
+
 
 console = Console()
 
 
 def get_latest_github_release(github_repo: str) -> str:
-    console.print(f"  Fetching latest tag for [cyan]{github_repo}...[/cyan]")
+    repo_url = f"https://api.github.com/repos/{github_repo}/releases/latest"
+    console.print(
+        f"[dim]{SPINNER_ICON}Fetching latest tag for [blue][link={repo_url}]{github_repo}[/link][/blue][white]...[/white][/dim]"
+    )
     try:
-        repo_url = f"https://api.github.com/repos/{github_repo}/releases/latest"
         response = requests.get(repo_url, timeout=10)
         response.raise_for_status()
         tag = response.json()["tag_name"]
         return tag.lstrip("v")
     except requests.Timeout:
         console.print(
-            f"[red]  Timeout while fetching tag for {github_repo} from {repo_url}[/red]"
+            f"[red]{ERROR_ICON}Timeout while fetching tag for {github_repo} from {repo_url}[/red]"
         )
         raise typer.Exit(1)
     except requests.RequestException as e:
-        console.print(f"[red]  Error fetching tag for {github_repo}: {e}[/red]")
+        console.print(
+            f"[red]{ERROR_ICON}Error fetching tag for {github_repo}: {e}[/red]"
+        )
         raise typer.Exit(1)
     except KeyError:
         console.print(
-            f"[red]  Error: 'tag_name' not found in response for {github_repo}. Response: {response.text}[/red]"
+            f"[red]{ERROR_ICON}Error: 'tag_name' not found in response for {github_repo}. Response: {response.text}[/red]"
         )
         raise typer.Exit(1)
 
@@ -90,7 +99,7 @@ def extract_sri_hash(key: str, flake_content: str) -> Optional[str]:
 
 def get_current_metadata(flake_path: Path) -> Dict[str, Optional[str]]:
     if not flake_path.exists():
-        console.print(f"[red]Error: {flake_path} not found.[/red]")
+        console.print(f"[red]{ERROR_ICON}Error: {flake_path} not found.[/red]")
         raise typer.Exit(1)
     with open(flake_path, "r") as flake:
         metadata_lines = flake.readlines()[
@@ -108,16 +117,16 @@ def get_current_metadata(flake_path: Path) -> Dict[str, Optional[str]]:
         }
 
 
-def get_highlighted_version_row(
-    name: str, current_version: str, target_version: str
+def get_highlighted_metadata_row(
+    name: str, current_value: str, target_value: str
 ) -> tuple[str, str, str]:
-    if current_version == target_version:
-        return (name, current_version, target_version)
+    if current_value == target_value:
+        return (name, f"[dim]{current_value}[/dim]", f"[dim]{target_value}[/dim]")
     else:
         return (
             name,
-            f"[red]{current_version}[/red]",
-            f"[green]{target_version}[/green]",
+            f"[red]{current_value}[/red]",
+            f"[green]{target_value}[/green]",
         )
 
 
@@ -130,7 +139,9 @@ def run_nix_command(command_parts: List[str]) -> str:
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        console.print(f"[red]Error running command: {' '.join(command_parts)}[/red]")
+        console.print(
+            f"[red]{ERROR_ICON}Error running command: {' '.join(command_parts)}[/red]"
+        )
         if e.stdout:
             console.print(f"[bold red]Stdout:[/bold red]\n{e.stdout}")
         if e.stderr:
@@ -138,19 +149,21 @@ def run_nix_command(command_parts: List[str]) -> str:
         raise typer.Exit(1)
     except FileNotFoundError:
         console.print(
-            f"[red]Error: Command '{command_parts[0]}' not found. Is it installed and in PATH?[/red]"
+            f"[red]{ERROR_ICON}Error: Command '{command_parts[0]}' not found. Is it installed and in PATH?[/red]"
         )
         raise typer.Exit(1)
 
 
-def fetch_sri_hash_with_nix_prefetch(url: str, strip_root: bool) -> str:
+def fetch_sri_hash_with_nix_prefetch(
+    name: str, version: str, url: str, strip_root: bool
+) -> str:
     """
     Fetches SRI hash for an archive's content using nix-prefetch fetchzip.
     Reproduces the behavior of the original script's nix-prefetch call.
     Returns an SRI hash string (e.g., "sha256-Abc...=").
     """
     console.print(
-        f"  Calculating SRI hash for [link={url}]{url}[/link] (strip_root={strip_root}) using nix-prefetch fetchzip..."
+        f"[dim]{SPINNER_ICON}Calculating SRI hash for [blue][link={url}]{name} v{version}[/link][/blue] (strip_root={strip_root}) using nix-prefetch fetchzip[white]...[/white][/dim]"
     )
     command_parts = [
         "nix-prefetch",
@@ -172,21 +185,21 @@ def fetch_sri_hash_with_nix_prefetch(url: str, strip_root: bool) -> str:
 
 def fetch_npm_deps_hash_for_iosevka(iosevka_version: str) -> str:
     """Fetches Iosevka's package-lock.json and calculates its prefetch hash using prefetch-npm-deps."""
-    console.print(
-        f"  Calculating NPM dependencies hash for Iosevka v{iosevka_version}..."
-    )
     url = f"https://raw.githubusercontent.com/be5invis/Iosevka/v{iosevka_version}/package-lock.json"
+    console.print(
+        f"[dim]{SPINNER_ICON}Calculating NPM dependencies hash for [blue][link={url}]be5invis/Iosevka v{iosevka_version}[/link][/blue] using prefetch-npm-deps[white]...[/white][/dim]"
+    )
 
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         package_lock_content = response.content
     except requests.Timeout:
-        console.print(f"[red]Error: Timeout while fetching {url}[/red]")
+        console.print(f"[red]{ERROR_ICON}Error: Timeout while fetching {url}[/red]")
         raise typer.Exit(1)
     except requests.RequestException as e:
         console.print(
-            f"[red]Error fetching package-lock.json for Iosevka v{iosevka_version}: {e}[/red]"
+            f"[red]{ERROR_ICON}Error fetching package-lock.json for Iosevka v{iosevka_version}: {e}[/red]"
         )
         raise typer.Exit(1)
 
@@ -257,10 +270,12 @@ def patch_flake(
         "target flake.nix",
     )
     if not Confirm.ask("Apply these changes to flake.nix?", default=True):
-        console.print("[yellow]  Aborted. flake.nix wasn't changed.[/yellow]")
+        console.print(
+            f"[yellow]{WARNING_ICON}Aborted. flake.nix wasn't changed.[/yellow]"
+        )
         raise typer.Exit()
     update_flake_metadata(target_metadata_str)
-    console.print("\n[green]  Successfully updated flake.nix.[/green]")
+    console.print(f"\n[green]{SUCCESS_ICON}Successfully updated flake.nix.[/green]")
 
 
 def patch_versions(
@@ -280,10 +295,14 @@ def patch_versions(
             "target versions.md",
         )
         if not Confirm.ask("Apply these changes to versions.md?", default=True):
-            console.print("[yellow]  Aborted. versions.md wasn't changed.[/yellow]")
+            console.print(
+                f"[yellow]{WARNING_ICON}Aborted. versions.md wasn't changed.[/yellow]"
+            )
             raise typer.Exit()
         versions.writelines(versions_lines)
-        console.print("\n[green]  Successfully updated versions.md.[/green]")
+        console.print(
+            f"\n[green]{SUCCESS_ICON}Successfully updated versions.md.[/green]"
+        )
 
 
 def main(
@@ -308,10 +327,14 @@ def main(
 
     # fetch target dependency hashes
     target_iosevka_hash = fetch_sri_hash_with_nix_prefetch(
+        "be5invis/Iosevka",
+        target_iosevka_version,
         f"https://github.com/be5invis/Iosevka/archive/refs/tags/v{target_iosevka_version}.zip",
         strip_root=True,
     )
     target_nerdfonts_hash = fetch_sri_hash_with_nix_prefetch(
+        "ryanoasis/nerd-fonts",
+        target_nerdfonts_version,
         f"https://github.com/ryanoasis/nerd-fonts/releases/download/v{target_nerdfonts_version}/FontPatcher.zip",
         strip_root=False,
     )
@@ -332,7 +355,7 @@ def main(
         or current_metadata["raw"] is None
     ):
         console.print(
-            f"[red]  Could not extract all required current versions from {FLAKE_NIX_PATH}. Check metadata format or line number constants.[/red]"
+            f"[red]{ERROR_ICON}Could not extract all required current versions from {FLAKE_NIX_PATH}. Check metadata format or line number constants.[/red]"
         )
         console.print(f"Extracted: {current_metadata}")
         raise typer.Exit(1)
@@ -346,32 +369,32 @@ def main(
 
     # print dependency metadata table
     dependency_metadata_table = Table(
-        "Dependency", "Current", "Target", title="Dependency Metadata"
+        "Dependency", "Current", "Target", title="Dependency Metadata", box=box.ROUNDED
     )
     dependency_metadata_table.add_row(
-        *get_highlighted_version_row(
+        *get_highlighted_metadata_row(
             "be5invis/Iosevka", current_iosevka_version, target_iosevka_version
         )
     )
     dependency_metadata_table.add_row(
-        *get_highlighted_version_row(
+        *get_highlighted_metadata_row(
             "  be5invis/Iosevka Hash", current_iosevka_hash, target_iosevka_hash
         )
     )
     dependency_metadata_table.add_row(
-        *get_highlighted_version_row(
+        *get_highlighted_metadata_row(
             "  be5invis/Iosevka NPM Deps Hash",
             current_iosevka_npm_deps_hash,
             target_iosevka_npm_deps_hash,
         )
     )
     dependency_metadata_table.add_row(
-        *get_highlighted_version_row(
+        *get_highlighted_metadata_row(
             "ryanoasis/nerd-fonts", current_nerdfonts_version, target_nerdfonts_version
         )
     )
     dependency_metadata_table.add_row(
-        *get_highlighted_version_row(
+        *get_highlighted_metadata_row(
             "  ryanoasis/nerd-fonts Hash", current_nerdfonts_hash, target_nerdfonts_hash
         )
     )
@@ -387,13 +410,13 @@ def main(
         and current_nerdfonts_hash == target_nerdfonts_hash
     ):
         console.print(
-            "\n[green]  All versions and hashes are already up-to-date. Nothing to do.[/green]"
+            f"\n[green]{SUCCESS_ICON}All versions and hashes are already up-to-date. Nothing to do.[/green]"
         )
         raise typer.Exit()
 
     # ask for the target Iosevkata version
     target_iosevkata_version = Prompt.ask(
-        f"Enter a new version for Iosevkata (currently [bold cyan]{current_iosevkata_version}[/bold cyan])",
+        f"{HINT_ICON}Enter a new version for Iosevkata (currently [bold cyan]{current_iosevkata_version}[/bold cyan])",
         default=get_next_version(current_iosevkata_version, datetime.now(timezone.utc)),
     )
 
