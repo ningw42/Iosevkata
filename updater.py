@@ -1,0 +1,418 @@
+#!/usr/bin/env python3
+
+import difflib
+import io
+import os
+import re
+import subprocess
+from sys import version
+import tempfile
+from pathlib import Path
+from typing import Dict, List, Optional
+from datetime import datetime, timezone
+
+import requests
+import typer
+from rich.console import Console
+from rich.panel import Panel
+from rich.prompt import Confirm, Prompt
+from rich.syntax import Syntax
+from rich.table import Table
+from typing_extensions import Annotated
+
+# --- Configuration ---
+FLAKE_NIX_PATH = Path("flake.nix")
+VERSIONS_MD_PATH = Path("versions.md")
+# Lines in flake.nix where metadata for versions/hashes is defined.
+# These are 1-based and inclusive.
+FLAKE_METADATA_START_LINE = 18
+FLAKE_METADATA_END_LINE = 23
+FLAKE_METADATA_INDENT = "      "  # 6 spaces
+
+console = Console()
+
+
+def get_latest_github_release(github_repo: str) -> str:
+    console.print(f"  Fetching latest tag for [cyan]{github_repo}...[/cyan]")
+    try:
+        repo_url = f"https://api.github.com/repos/{github_repo}/releases/latest"
+        response = requests.get(repo_url, timeout=10)
+        response.raise_for_status()
+        tag = response.json()["tag_name"]
+        return tag.lstrip("v")
+    except requests.Timeout:
+        console.print(
+            f"[red]  Timeout while fetching tag for {github_repo} from {repo_url}[/red]"
+        )
+        raise typer.Exit(1)
+    except requests.RequestException as e:
+        console.print(f"[red]  Error fetching tag for {github_repo}: {e}[/red]")
+        raise typer.Exit(1)
+    except KeyError:
+        console.print(
+            f"[red]  Error: 'tag_name' not found in response for {github_repo}. Response: {response.text}[/red]"
+        )
+        raise typer.Exit(1)
+
+
+def get_next_version(current_version: str, utc_now: datetime) -> str:
+    current_version_segments = current_version.split(".")
+    current_minor = int(current_version_segments[-1])
+    current_year_month = ".".join(current_version[0:2])
+    year_month = utc_now.strftime("%y.%m")
+    minor = 0
+    if current_year_month == year_month:
+        minor = current_minor + 1
+    return f"{year_month}.{minor}"
+
+
+def extract_value(regex: str, flake_content: str) -> Optional[str]:
+    """Extracts single value by key."""
+    match = re.search(regex, flake_content)
+    return match.group(1) if match else None
+
+
+def extract_version(key: str, flake_content: str) -> Optional[str]:
+    """Extracts a version string (e.g., "X.Y.Z" or "X.Y.Z-suffix") for a given key."""
+    return extract_value(
+        rf'{key}\s*=\s*"([0-9]+\.[0-9]+\.[0-9]+(?:-[a-zA-Z0-9.]+)?)"\s*;',
+        flake_content,
+    )
+
+
+def extract_sri_hash(key: str, flake_content: str) -> Optional[str]:
+    """Extracts a SRI hash string for a given key."""
+    return extract_value(
+        rf'{key}\s*=\s*"(sha256-[A-Za-z0-9+\/]{{43}}={{0,2}})"\s*;',
+        flake_content,
+    )
+
+
+def get_current_metadata(flake_path: Path) -> Dict[str, Optional[str]]:
+    if not flake_path.exists():
+        console.print(f"[red]Error: {flake_path} not found.[/red]")
+        raise typer.Exit(1)
+    with open(flake_path, "r") as flake:
+        metadata_lines = flake.readlines()[
+            FLAKE_METADATA_START_LINE - 1 : FLAKE_METADATA_END_LINE
+        ]
+        metadata_content = "".join(metadata_lines)
+        return {
+            "iosevkata": extract_version("version", metadata_content),
+            "iosevka": extract_version("iosevkaVersion", metadata_content),
+            "nerdfonts": extract_version("fontPatcherVersion", metadata_content),
+            "iosevka_hash": extract_sri_hash("hash", metadata_content),
+            "iosevka_npm_deps_hash": extract_sri_hash("npmDepsHash", metadata_content),
+            "nerdfonts_hash": extract_sri_hash("fontPatcherHash", metadata_content),
+            "raw": metadata_content,
+        }
+
+
+def get_highlighted_version_row(
+    name: str, current_version: str, target_version: str
+) -> tuple[str, str, str]:
+    if current_version == target_version:
+        return (name, current_version, target_version)
+    else:
+        return (
+            name,
+            f"[red]{current_version}[/red]",
+            f"[green]{target_version}[/green]",
+        )
+
+
+def run_nix_command(command_parts: List[str]) -> str:
+    """Runs a Nix command and returns its stripped stdout."""
+    try:
+        # For debugging: console.print(f"[dim]$ {' '.join(command_parts)}[/dim]")
+        result = subprocess.run(
+            command_parts, capture_output=True, text=True, check=True, shell=False
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        console.print(f"[red]Error running command: {' '.join(command_parts)}[/red]")
+        if e.stdout:
+            console.print(f"[bold red]Stdout:[/bold red]\n{e.stdout}")
+        if e.stderr:
+            console.print(f"[bold red]Stderr:[/bold red]\n{e.stderr}")
+        raise typer.Exit(1)
+    except FileNotFoundError:
+        console.print(
+            f"[red]Error: Command '{command_parts[0]}' not found. Is it installed and in PATH?[/red]"
+        )
+        raise typer.Exit(1)
+
+
+def fetch_sri_hash_with_nix_prefetch(url: str, strip_root: bool) -> str:
+    """
+    Fetches SRI hash for an archive's content using nix-prefetch fetchzip.
+    Reproduces the behavior of the original script's nix-prefetch call.
+    Returns an SRI hash string (e.g., "sha256-Abc...=").
+    """
+    console.print(
+        f"  Calculating SRI hash for [link={url}]{url}[/link] (strip_root={strip_root}) using nix-prefetch fetchzip..."
+    )
+    command_parts = [
+        "nix-prefetch",
+        "--option",
+        "extra-experimental-features",
+        "flakes",  # As per original script
+        "fetchzip",
+        "--url",
+        url,
+        "--check-store",  # As per original script
+        "--silent",  # As per original script
+    ]
+    if not strip_root:
+        command_parts.append("--no-stripRoot")
+
+    sri_hash = run_nix_command(command_parts)
+    return sri_hash
+
+
+def fetch_npm_deps_hash_for_iosevka(iosevka_version: str) -> str:
+    """Fetches Iosevka's package-lock.json and calculates its prefetch hash using prefetch-npm-deps."""
+    console.print(
+        f"  Calculating NPM dependencies hash for Iosevka v{iosevka_version}..."
+    )
+    url = f"https://raw.githubusercontent.com/be5invis/Iosevka/v{iosevka_version}/package-lock.json"
+
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        package_lock_content = response.content
+    except requests.Timeout:
+        console.print(f"[red]Error: Timeout while fetching {url}[/red]")
+        raise typer.Exit(1)
+    except requests.RequestException as e:
+        console.print(
+            f"[red]Error fetching package-lock.json for Iosevka v{iosevka_version}: {e}[/red]"
+        )
+        raise typer.Exit(1)
+
+    tmp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb", delete=False, suffix=".json"
+        ) as tmp_file:
+            tmp_file.write(package_lock_content)
+            tmp_file_path = tmp_file.name
+        sri_hash = run_nix_command(["prefetch-npm-deps", tmp_file_path])
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            os.unlink(tmp_file_path)
+    return sri_hash
+
+
+def show_diff(old_content: str, new_content: str, from_file: str, to_file: str):
+    diff_lines = difflib.unified_diff(
+        old_content.strip("\n").splitlines(),
+        new_content.strip("\n").splitlines(),
+        fromfile=from_file,
+        tofile=to_file,
+        lineterm="",
+    )
+    console.print(
+        Syntax(
+            "\n".join(diff_lines),
+            "diff",
+            theme="ansi_dark",
+            line_numbers=False,
+            background_color="default",
+        )
+    )
+
+
+def update_flake_metadata(metadata_content: str):
+    with open(FLAKE_NIX_PATH, "r") as flake:
+        lines = flake.readlines()
+    with open(FLAKE_NIX_PATH, "w") as flake:
+        lines[FLAKE_METADATA_START_LINE - 1 : FLAKE_METADATA_END_LINE] = (
+            metadata_content.splitlines(keepends=True)
+        )
+        flake.writelines(lines)
+
+
+def patch_flake(
+    current_metadata_str: str,
+    target_iosevkata_version: str,
+    target_iosevka_version: str,
+    target_nerdfonts_version: str,
+    target_iosevka_hash: str,
+    target_iosevka_npm_deps_hash: str,
+    target_nerdfonts_hash: str,
+):
+    target_metadata_str = f"""\
+{FLAKE_METADATA_INDENT}version = "{target_iosevkata_version}";
+{FLAKE_METADATA_INDENT}iosevkaVersion = "{target_iosevka_version}";
+{FLAKE_METADATA_INDENT}hash = "{target_iosevka_hash}";
+{FLAKE_METADATA_INDENT}npmDepsHash = "{target_iosevka_npm_deps_hash}";
+{FLAKE_METADATA_INDENT}fontPatcherVersion = "{target_nerdfonts_version}";
+{FLAKE_METADATA_INDENT}fontPatcherHash = "{target_nerdfonts_hash}";
+"""
+    show_diff(
+        current_metadata_str,
+        target_metadata_str,
+        "current flake.nix",
+        "target flake.nix",
+    )
+    if not Confirm.ask("Apply these changes to flake.nix?", default=True):
+        console.print("[yellow]  Aborted. flake.nix wasn't changed.[/yellow]")
+        raise typer.Exit()
+    update_flake_metadata(target_metadata_str)
+    console.print("\n[green]  Successfully updated flake.nix.[/green]")
+
+
+def patch_versions(
+    iosevkata_version: str, iosevka_version: str, nerdfonts_version: str
+):
+    with open(VERSIONS_MD_PATH, "r") as versions:
+        versions_lines = versions.readlines()
+    with open(VERSIONS_MD_PATH, "w") as versions:
+        current_versions_str = "".join(versions_lines)
+        line_to_insert = f"| v{iosevkata_version}  | v{iosevka_version} | v{nerdfonts_version}     |\n"
+        versions_lines.insert(2, line_to_insert)
+        target_versions_str = "".join(versions_lines)
+        show_diff(
+            current_versions_str,
+            target_versions_str,
+            "current versions.md",
+            "target versions.md",
+        )
+        if not Confirm.ask("Apply these changes to versions.md?", default=True):
+            console.print("[yellow]  Aborted. versions.md wasn't changed.[/yellow]")
+            raise typer.Exit()
+        versions.writelines(versions_lines)
+        console.print("\n[green]  Successfully updated versions.md.[/green]")
+
+
+def main(
+    target_iosevka_version: Annotated[
+        Optional[str],
+        typer.Option(
+            help="Iosevka version (e.g. 33.0.0). Fetches latest if not provided."
+        ),
+    ] = None,
+    target_nerdfonts_version: Annotated[
+        Optional[str],
+        typer.Option(
+            help="nerd-fonts version (e.g. 3.4.0). Fetches latest if not provided."
+        ),
+    ] = None,
+):
+    # figure out target dependency versions
+    if not target_iosevka_version:
+        target_iosevka_version = get_latest_github_release("be5invis/Iosevka")
+    if not target_nerdfonts_version:
+        target_nerdfonts_version = get_latest_github_release("ryanoasis/nerd-fonts")
+
+    # fetch target dependency hashes
+    target_iosevka_hash = fetch_sri_hash_with_nix_prefetch(
+        f"https://github.com/be5invis/Iosevka/archive/refs/tags/v{target_iosevka_version}.zip",
+        strip_root=True,
+    )
+    target_nerdfonts_hash = fetch_sri_hash_with_nix_prefetch(
+        f"https://github.com/ryanoasis/nerd-fonts/releases/download/v{target_nerdfonts_version}/FontPatcher.zip",
+        strip_root=False,
+    )
+    target_iosevka_npm_deps_hash = fetch_npm_deps_hash_for_iosevka(
+        target_iosevka_version
+    )
+
+    # extract current metadata from flake.nix
+    current_metadata = get_current_metadata(FLAKE_NIX_PATH)
+    if (
+        not all(current_metadata.values())
+        or current_metadata["iosevkata"] is None
+        or current_metadata["iosevka"] is None
+        or current_metadata["nerdfonts"] is None
+        or current_metadata["iosevka_hash"] is None
+        or current_metadata["iosevka_npm_deps_hash"] is None
+        or current_metadata["nerdfonts_hash"] is None
+        or current_metadata["raw"] is None
+    ):
+        console.print(
+            f"[red]  Could not extract all required current versions from {FLAKE_NIX_PATH}. Check metadata format or line number constants.[/red]"
+        )
+        console.print(f"Extracted: {current_metadata}")
+        raise typer.Exit(1)
+
+    current_iosevkata_version = current_metadata["iosevkata"]
+    current_iosevka_version = current_metadata["iosevka"]
+    current_nerdfonts_version = current_metadata["nerdfonts"]
+    current_iosevka_hash = current_metadata["iosevka_hash"]
+    current_iosevka_npm_deps_hash = current_metadata["iosevka_npm_deps_hash"]
+    current_nerdfonts_hash = current_metadata["nerdfonts_hash"]
+
+    # print dependency metadata table
+    dependency_metadata_table = Table(
+        "Dependency", "Current", "Target", title="Dependency Metadata"
+    )
+    dependency_metadata_table.add_row(
+        *get_highlighted_version_row(
+            "be5invis/Iosevka", current_iosevka_version, target_iosevka_version
+        )
+    )
+    dependency_metadata_table.add_row(
+        *get_highlighted_version_row(
+            "  be5invis/Iosevka Hash", current_iosevka_hash, target_iosevka_hash
+        )
+    )
+    dependency_metadata_table.add_row(
+        *get_highlighted_version_row(
+            "  be5invis/Iosevka NPM Deps Hash",
+            current_iosevka_npm_deps_hash,
+            target_iosevka_npm_deps_hash,
+        )
+    )
+    dependency_metadata_table.add_row(
+        *get_highlighted_version_row(
+            "ryanoasis/nerd-fonts", current_nerdfonts_version, target_nerdfonts_version
+        )
+    )
+    dependency_metadata_table.add_row(
+        *get_highlighted_version_row(
+            "  ryanoasis/nerd-fonts Hash", current_nerdfonts_hash, target_nerdfonts_hash
+        )
+    )
+    console.print(dependency_metadata_table)
+
+    # check if we need an update
+    # we need to check hashes even if the versions are equal, because sometimes, people update artifacts without bumping version
+    if (
+        current_iosevka_version == target_iosevka_version
+        and current_nerdfonts_version == target_nerdfonts_version
+        and current_iosevka_hash == target_iosevka_hash
+        and current_iosevka_npm_deps_hash == target_iosevka_npm_deps_hash
+        and current_nerdfonts_hash == target_nerdfonts_hash
+    ):
+        console.print(
+            "\n[green]  All versions and hashes are already up-to-date. Nothing to do.[/green]"
+        )
+        raise typer.Exit()
+
+    # ask for the target Iosevkata version
+    target_iosevkata_version = Prompt.ask(
+        f"Enter a new version for Iosevkata (currently [bold cyan]{current_iosevkata_version}[/bold cyan])",
+        default=get_next_version(current_iosevkata_version, datetime.now(timezone.utc)),
+    )
+
+    # edit flake.nix
+    patch_flake(
+        current_metadata["raw"],
+        target_iosevkata_version,
+        target_iosevka_version,
+        target_nerdfonts_version,
+        target_iosevka_hash,
+        target_iosevka_npm_deps_hash,
+        target_nerdfonts_hash,
+    )
+
+    # edit versions.md
+    patch_versions(
+        target_iosevkata_version, target_iosevka_version, target_nerdfonts_version
+    )
+
+
+if __name__ == "__main__":
+    typer.run(main)

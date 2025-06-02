@@ -70,12 +70,13 @@ nix build .#iosevkata-nerd-font-mono-only
 nix develop .
 
 # prefetch checksums with the latest Iosevka and nerd-fonts
-./prefetch_checksums.sh
+./updater.py
 
 # prefetch checksums with the specified Iosevka and nerd-fonts
-./prefetch_checksums.sh $iosevka_version $nerdfontpatcher_version # e.g. ./prefetch_checksums.sh 30.3.0 3.2.1
+# e.g. ./updater.py --target-iosevka-version 30.3.0 --target-nerdfonts-version 3.2.1
+./updater.py --target-iosevka-version $iosevka_version --target-nerdfonts-version $nerdfonts_version
 
-# review the updated flake.nix
+# review the updated flake.nix and versions.md
 ```
 
 ## Versions
