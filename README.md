@@ -11,7 +11,7 @@ A `PragmataPro` (ss08) styled `Iosevka` variant with my tweaks.
 ## Usage
 
 This repository produces two types of artifact:
-1. Zipballs with TTF fonts. [Download the latest release](https://github.com/ningw42/Iosevkata/releases/latest) and install on your system. This should be most common/universal use case.
+1. Compressed TTF fonts. [Download the latest release](https://github.com/ningw42/Iosevkata/releases/latest) and install on your system. This should be most common/universal use case.
 2. A nix package for `x86_64-linux`, `x86_64-darwin` and `aarch64-darwin`. Add `ningw42/Iosevkata` to your flake.
     1. Use the package `packages.<system>.iosevkata` directly, which comes with all the variants.
     2. Use overlay `overlays.default` from the flake when importing nixpkgs, which adds `iosevkata` (with all variants) to your nixpkgs.
@@ -68,6 +68,9 @@ nix build .#iosevkata-nerd-font-mono-only
 ```bash
 # enter nix shell with necessary dependencies
 nix develop .
+
+# print help message
+./updater.py --help
 
 # prefetch checksums with the latest Iosevka and nerd-fonts
 ./updater.py
