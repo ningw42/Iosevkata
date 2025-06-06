@@ -4,8 +4,9 @@ on:
   workflow_call:
   push:
     paths:
-      - '.github/workflows/generate_previews.yml'
-      - 'preview/sources/**'
+      - '.github/workflows/generate_previews.yml' # this action
+      - 'preview/sources/**'                      # source files
+      - 'generate_previews.py'                    # preview generation script
     branches:
       - master
 

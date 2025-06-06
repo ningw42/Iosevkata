@@ -105,14 +105,10 @@ def process_source_file(
 @app.command()
 def main(
     source: str = typer.Option(
-        "./preview/sources",
-        "--source",
-        help="Directory containing source files"
+        "./preview/sources", "--source", help="Directory containing source files"
     ),
     output: str = typer.Option(
-        "./preview/images",
-        "--output",
-        help="Directory for output images"
+        "./preview/images", "--output", help="Directory for output images"
     ),
     theme: str = typer.Option(
         "./preview/themes/Catppuccin Frappe.tmTheme",
@@ -138,7 +134,9 @@ def main(
     theme_path = Path(theme)
 
     if not source_path.exists():
-        console.print(f"[red]{ERROR_ICON}Source directory not found: {source_path}[/red]")
+        console.print(
+            f"[red]{ERROR_ICON}Source directory not found: {source_path}[/red]"
+        )
         raise typer.Exit(1)
 
     if not theme_path.exists():
@@ -176,7 +174,9 @@ def main(
     source_files = [f for f in source_path.iterdir() if f.is_file()]
 
     if not source_files:
-        console.print(f"[yellow]{WARNING_ICON}No source files found in {source_path}[/yellow]")
+        console.print(
+            f"[yellow]{WARNING_ICON}No source files found in {source_path}[/yellow]"
+        )
         return
 
     # Process files with progress bar
