@@ -78,10 +78,10 @@ def get_next_version(current_version: str, utc_now: datetime) -> str:
 def extract_metadata(nix_content: str) -> Dict[str, Optional[str]]:
     """
     Extract specific values from a Nix configuration snippet.
-    
+
     Args:
         nix_content (str): The Nix configuration content as a string
-        
+
     Returns:
         dict: Dictionary containing extracted values with keys:
               - version
@@ -92,47 +92,47 @@ def extract_metadata(nix_content: str) -> Dict[str, Optional[str]]:
               - nerdfonts.hash
     """
     result = {}
-    
+
     # Extract main version
     version_match = re.search(r'version\s*=\s*"([^"]+)"', nix_content)
     if version_match:
-        result['version'] = version_match.group(1)
-    
+        result["version"] = version_match.group(1)
+
     # Extract iosevka section values
-    iosevka_section = re.search(r'iosevka\s*=\s*{([^}]+)}', nix_content, re.DOTALL)
+    iosevka_section = re.search(r"iosevka\s*=\s*{([^}]+)}", nix_content, re.DOTALL)
     if iosevka_section:
         iosevka_content = iosevka_section.group(1)
-        
+
         # Extract iosevka version
         iosevka_version = re.search(r'version\s*=\s*"([^"]+)"', iosevka_content)
         if iosevka_version:
-            result['iosevka.version'] = iosevka_version.group(1)
-        
+            result["iosevka.version"] = iosevka_version.group(1)
+
         # Extract iosevka hash
         iosevka_hash = re.search(r'hash\s*=\s*"([^"]+)"', iosevka_content)
         if iosevka_hash:
-            result['iosevka.hash'] = iosevka_hash.group(1)
-        
+            result["iosevka.hash"] = iosevka_hash.group(1)
+
         # Extract iosevka npmDepsHash
         npm_deps_hash = re.search(r'npmDepsHash\s*=\s*"([^"]+)"', iosevka_content)
         if npm_deps_hash:
-            result['iosevka.npm_deps_hash'] = npm_deps_hash.group(1)
-    
+            result["iosevka.npm_deps_hash"] = npm_deps_hash.group(1)
+
     # Extract nerdfonts section values
-    nerdfonts_section = re.search(r'nerdfonts\s*=\s*{([^}]+)}', nix_content, re.DOTALL)
+    nerdfonts_section = re.search(r"nerdfonts\s*=\s*{([^}]+)}", nix_content, re.DOTALL)
     if nerdfonts_section:
         nerdfonts_content = nerdfonts_section.group(1)
-        
+
         # Extract nerdfonts version
         nerdfonts_version = re.search(r'version\s*=\s*"([^"]+)"', nerdfonts_content)
         if nerdfonts_version:
-            result['nerdfonts.version'] = nerdfonts_version.group(1)
-        
+            result["nerdfonts.version"] = nerdfonts_version.group(1)
+
         # Extract nerdfonts hash
         nerdfonts_hash = re.search(r'hash\s*=\s*"([^"]+)"', nerdfonts_content)
         if nerdfonts_hash:
-            result['nerdfonts.hash'] = nerdfonts_hash.group(1)
-    
+            result["nerdfonts.hash"] = nerdfonts_hash.group(1)
+
     return result
 
 
@@ -344,22 +344,24 @@ def patch_versions(
 ):
     with open(VERSIONS_MD_PATH, "r") as versions:
         versions_lines = versions.readlines()
-    with open(VERSIONS_MD_PATH, "w") as versions:
-        current_versions_str = "".join(versions_lines)
-        line_to_insert = f"| v{iosevkata_version}  | v{iosevka_version} | v{nerdfonts_version}     |\n"
-        versions_lines.insert(2, line_to_insert)
-        target_versions_str = "".join(versions_lines)
-        show_diff(
-            current_versions_str,
-            target_versions_str,
-            "current versions.md",
-            "target versions.md",
+    current_versions_str = "".join(versions_lines)
+    line_to_insert = (
+        f"| v{iosevkata_version}  | v{iosevka_version} | v{nerdfonts_version}     |\n"
+    )
+    versions_lines.insert(2, line_to_insert)
+    target_versions_str = "".join(versions_lines)
+    show_diff(
+        current_versions_str,
+        target_versions_str,
+        "current versions.md",
+        "target versions.md",
+    )
+    if not Confirm.ask("Apply these changes to versions.md?", default=True):
+        console.print(
+            f"[yellow]{WARNING_ICON}Aborted. versions.md wasn't changed.[/yellow]"
         )
-        if not Confirm.ask("Apply these changes to versions.md?", default=True):
-            console.print(
-                f"[yellow]{WARNING_ICON}Aborted. versions.md wasn't changed.[/yellow]"
-            )
-            raise typer.Exit()
+        raise typer.Exit()
+    with open(VERSIONS_MD_PATH, "w") as versions:
         versions.writelines(versions_lines)
         console.print(
             f"\n[green]{SUCCESS_ICON}Successfully updated versions.md.[/green]"
