@@ -24,7 +24,7 @@ VERSIONS_MD_PATH = Path("versions.md")
 # Lines in flake.nix where metadata for versions/hashes is defined.
 # These are 1-based and inclusive.
 FLAKE_METADATA_START_LINE = 18
-FLAKE_METADATA_END_LINE = 23
+FLAKE_METADATA_END_LINE = 29
 FLAKE_METADATA_INDENT = "      "  # 6 spaces
 ERROR_ICON = "󰅙 "
 WARNING_ICON = " "
@@ -75,6 +75,67 @@ def get_next_version(current_version: str, utc_now: datetime) -> str:
     return f"{year_month}.{minor}"
 
 
+def extract_metadata(nix_content: str) -> Dict[str, Optional[str]]:
+    """
+    Extract specific values from a Nix configuration snippet.
+    
+    Args:
+        nix_content (str): The Nix configuration content as a string
+        
+    Returns:
+        dict: Dictionary containing extracted values with keys:
+              - version
+              - iosevka.version
+              - iosevka.hash
+              - iosevka.npm_deps_hash
+              - nerdfonts.version
+              - nerdfonts.hash
+    """
+    result = {}
+    
+    # Extract main version
+    version_match = re.search(r'version\s*=\s*"([^"]+)"', nix_content)
+    if version_match:
+        result['version'] = version_match.group(1)
+    
+    # Extract iosevka section values
+    iosevka_section = re.search(r'iosevka\s*=\s*{([^}]+)}', nix_content, re.DOTALL)
+    if iosevka_section:
+        iosevka_content = iosevka_section.group(1)
+        
+        # Extract iosevka version
+        iosevka_version = re.search(r'version\s*=\s*"([^"]+)"', iosevka_content)
+        if iosevka_version:
+            result['iosevka.version'] = iosevka_version.group(1)
+        
+        # Extract iosevka hash
+        iosevka_hash = re.search(r'hash\s*=\s*"([^"]+)"', iosevka_content)
+        if iosevka_hash:
+            result['iosevka.hash'] = iosevka_hash.group(1)
+        
+        # Extract iosevka npmDepsHash
+        npm_deps_hash = re.search(r'npmDepsHash\s*=\s*"([^"]+)"', iosevka_content)
+        if npm_deps_hash:
+            result['iosevka.npm_deps_hash'] = npm_deps_hash.group(1)
+    
+    # Extract nerdfonts section values
+    nerdfonts_section = re.search(r'nerdfonts\s*=\s*{([^}]+)}', nix_content, re.DOTALL)
+    if nerdfonts_section:
+        nerdfonts_content = nerdfonts_section.group(1)
+        
+        # Extract nerdfonts version
+        nerdfonts_version = re.search(r'version\s*=\s*"([^"]+)"', nerdfonts_content)
+        if nerdfonts_version:
+            result['nerdfonts.version'] = nerdfonts_version.group(1)
+        
+        # Extract nerdfonts hash
+        nerdfonts_hash = re.search(r'hash\s*=\s*"([^"]+)"', nerdfonts_content)
+        if nerdfonts_hash:
+            result['nerdfonts.hash'] = nerdfonts_hash.group(1)
+    
+    return result
+
+
 def extract_value(regex: str, flake_content: str) -> Optional[str]:
     """Extracts single value by key."""
     match = re.search(regex, flake_content)
@@ -106,15 +167,9 @@ def get_current_metadata(flake_path: Path) -> Dict[str, Optional[str]]:
             FLAKE_METADATA_START_LINE - 1 : FLAKE_METADATA_END_LINE
         ]
         metadata_content = "".join(metadata_lines)
-        return {
-            "iosevkata": extract_version("version", metadata_content),
-            "iosevka": extract_version("iosevkaVersion", metadata_content),
-            "nerdfonts": extract_version("fontPatcherVersion", metadata_content),
-            "iosevka_hash": extract_sri_hash("hash", metadata_content),
-            "iosevka_npm_deps_hash": extract_sri_hash("npmDepsHash", metadata_content),
-            "nerdfonts_hash": extract_sri_hash("fontPatcherHash", metadata_content),
-            "raw": metadata_content,
-        }
+        metadata = extract_metadata(metadata_content)
+        metadata["raw"] = metadata_content
+        return metadata
 
 
 def get_highlighted_metadata_row(
@@ -257,11 +312,17 @@ def patch_flake(
 ):
     target_metadata_str = f"""\
 {FLAKE_METADATA_INDENT}version = "{target_iosevkata_version}";
-{FLAKE_METADATA_INDENT}iosevkaVersion = "{target_iosevka_version}";
-{FLAKE_METADATA_INDENT}hash = "{target_iosevka_hash}";
-{FLAKE_METADATA_INDENT}npmDepsHash = "{target_iosevka_npm_deps_hash}";
-{FLAKE_METADATA_INDENT}fontPatcherVersion = "{target_nerdfonts_version}";
-{FLAKE_METADATA_INDENT}fontPatcherHash = "{target_nerdfonts_hash}";
+{FLAKE_METADATA_INDENT}dependencies = {{
+{FLAKE_METADATA_INDENT}  iosevka = {{
+{FLAKE_METADATA_INDENT}    version = "{target_iosevka_version}";
+{FLAKE_METADATA_INDENT}    hash = "{target_iosevka_hash}";
+{FLAKE_METADATA_INDENT}    npmDepsHash = "{target_iosevka_npm_deps_hash}";
+{FLAKE_METADATA_INDENT}  }};
+{FLAKE_METADATA_INDENT}  nerdfonts = {{
+{FLAKE_METADATA_INDENT}    version = "{target_nerdfonts_version}";
+{FLAKE_METADATA_INDENT}    hash = "{target_nerdfonts_hash}";
+{FLAKE_METADATA_INDENT}  }};
+{FLAKE_METADATA_INDENT}}};
 """
     show_diff(
         current_metadata_str,
@@ -346,12 +407,12 @@ def main(
     current_metadata = get_current_metadata(FLAKE_NIX_PATH)
     if (
         not all(current_metadata.values())
-        or current_metadata["iosevkata"] is None
-        or current_metadata["iosevka"] is None
-        or current_metadata["nerdfonts"] is None
-        or current_metadata["iosevka_hash"] is None
-        or current_metadata["iosevka_npm_deps_hash"] is None
-        or current_metadata["nerdfonts_hash"] is None
+        or current_metadata["version"] is None
+        or current_metadata["iosevka.version"] is None
+        or current_metadata["iosevka.hash"] is None
+        or current_metadata["iosevka.npm_deps_hash"] is None
+        or current_metadata["nerdfonts.version"] is None
+        or current_metadata["nerdfonts.hash"] is None
         or current_metadata["raw"] is None
     ):
         console.print(
@@ -360,12 +421,12 @@ def main(
         console.print(f"Extracted: {current_metadata}")
         raise typer.Exit(1)
 
-    current_iosevkata_version = current_metadata["iosevkata"]
-    current_iosevka_version = current_metadata["iosevka"]
-    current_nerdfonts_version = current_metadata["nerdfonts"]
-    current_iosevka_hash = current_metadata["iosevka_hash"]
-    current_iosevka_npm_deps_hash = current_metadata["iosevka_npm_deps_hash"]
-    current_nerdfonts_hash = current_metadata["nerdfonts_hash"]
+    current_iosevkata_version = current_metadata["version"]
+    current_iosevka_version = current_metadata["iosevka.version"]
+    current_iosevka_hash = current_metadata["iosevka.hash"]
+    current_iosevka_npm_deps_hash = current_metadata["iosevka.npm_deps_hash"]
+    current_nerdfonts_version = current_metadata["nerdfonts.version"]
+    current_nerdfonts_hash = current_metadata["nerdfonts.hash"]
 
     # print dependency metadata table
     dependency_metadata_table = Table(
@@ -378,12 +439,12 @@ def main(
     )
     dependency_metadata_table.add_row(
         *get_highlighted_metadata_row(
-            "  be5invis/Iosevka Hash", current_iosevka_hash, target_iosevka_hash
+            "  Hash", current_iosevka_hash, target_iosevka_hash
         )
     )
     dependency_metadata_table.add_row(
         *get_highlighted_metadata_row(
-            "  be5invis/Iosevka NPM Deps Hash",
+            "  NPM Deps Hash",
             current_iosevka_npm_deps_hash,
             target_iosevka_npm_deps_hash,
         )
@@ -395,7 +456,7 @@ def main(
     )
     dependency_metadata_table.add_row(
         *get_highlighted_metadata_row(
-            "  ryanoasis/nerd-fonts Hash", current_nerdfonts_hash, target_nerdfonts_hash
+            "  Hash", current_nerdfonts_hash, target_nerdfonts_hash
         )
     )
     console.print(dependency_metadata_table)

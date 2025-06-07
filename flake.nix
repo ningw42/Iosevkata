@@ -14,13 +14,19 @@
       ...
     }:
     let
-      # Metadata: version, dependency versions and hashes
+      # Metadata: version and dependencies
       version = "25.06.0";
-      iosevkaVersion = "33.2.4";
-      hash = "sha256-1QxM9PWZirAKIdd/kzHLDStXbkxTGr0q8GQSER2NEXc=";
-      npmDepsHash = "sha256-1XRbwd1x7ofQGnEth7U8QAHX92QDHMm4OmQAQgZZLTw=";
-      fontPatcherVersion = "3.4.0";
-      fontPatcherHash = "sha256-koZj0Tn1HtvvSbQGTc3RbXQdUU4qJwgClOVq1RXW6aM=";
+      dependencies = {
+        iosevka = {
+          version = "33.2.4";
+          hash = "sha256-1QxM9PWZirAKIdd/kzHLDStXbkxTGr0q8GQSER2NEXc=";
+          npmDepsHash = "sha256-1XRbwd1x7ofQGnEth7U8QAHX92QDHMm4OmQAQgZZLTw=";
+        };
+        nerdfonts = {
+          version = "3.4.0";
+          hash = "sha256-koZj0Tn1HtvvSbQGTc3RbXQdUU4qJwgClOVq1RXW6aM=";
+        };
+      };
 
       # Build plans
       privateBuildPlan = builtins.readFile ./private-build-plans.toml;
@@ -36,7 +42,8 @@
           forRelease,
         }:
         pkgs.buildNpmPackage rec {
-          inherit version npmDepsHash privateBuildPlan;
+          inherit version privateBuildPlan;
+          npmDepsHash = dependencies.iosevka.npmDepsHash;
           needNerdFontPatcher =
             builtins.elem "IosevkataNerdFont" variants || builtins.elem "IosevkataNerdFontMono" variants;
 
@@ -45,19 +52,19 @@
           srcs =
             [
               (pkgs.fetchFromGitHub {
-                inherit hash;
+                hash = dependencies.iosevka.hash;
                 name = "Iosevka";
                 owner = "be5invis";
                 repo = "Iosevka";
-                rev = "v${iosevkaVersion}";
+                rev = "v${dependencies.iosevka.version}";
               })
             ]
             ++ pkgs.lib.optionals needNerdFontPatcher [
               # optional source for NerdFontPatcher
               (pkgs.fetchzip {
                 name = "nerd-fonts-patcher";
-                url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${fontPatcherVersion}/FontPatcher.zip";
-                hash = fontPatcherHash;
+                url = "https://github.com/ryanoasid/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
+                hash = dependencies.nerdfonts.hash;
                 stripRoot = false; # assume flat structure from the zip file.
               })
             ];
