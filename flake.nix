@@ -63,7 +63,7 @@
               # optional source for NerdFontPatcher
               (pkgs.fetchzip {
                 name = "nerd-fonts-patcher";
-                url = "https://github.com/ryanoasid/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
+                url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
                 hash = dependencies.nerdfonts.hash;
                 stripRoot = false; # assume flat structure from the zip file.
               })
