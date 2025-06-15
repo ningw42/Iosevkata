@@ -44,7 +44,7 @@
         pkgs.buildNpmPackage rec {
           inherit version privateBuildPlan;
           npmDepsHash = dependencies.iosevka.npmDepsHash;
-          needNerdFontPatcher =
+          requiresNerdFonts =
             builtins.elem "IosevkataNerdFont" variants || builtins.elem "IosevkataNerdFontMono" variants;
 
           pname = "iosevkata";
@@ -59,10 +59,10 @@
                 rev = "v${dependencies.iosevka.version}";
               })
             ]
-            ++ pkgs.lib.optionals needNerdFontPatcher [
-              # optional source for NerdFontPatcher
+            ++ pkgs.lib.optionals requiresNerdFonts [
+              # optional source for nerd-fonts
               (pkgs.fetchzip {
-                name = "nerd-fonts-patcher";
+                name = "nerd-fonts";
                 url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
                 hash = dependencies.nerdfonts.hash;
                 stripRoot = false; # assume flat structure from the zip file.
@@ -76,8 +76,8 @@
               pkgs.zip
               pkgs.zstd
             ]
-            ++ pkgs.lib.optionals needNerdFontPatcher [
-              # optional build inputs for NerdFontPatcher
+            ++ pkgs.lib.optionals requiresNerdFonts [
+              # optional build inputs for nerd-fonts
               pkgs.parallel # for parallel font patching
               pkgs.fontforge
               (pkgs.python3.withPackages (ps: [
@@ -93,15 +93,15 @@
           # Optional Patch Phase:
           # 1. replace `argparse` with `configargparse` because argparse isn't available in nixpkgs.
           # 2. put patched nerd-fonts glyphs at the horizontal center of two cells.
-          prePatch = pkgs.lib.optionalString needNerdFontPatcher ''
-            cd ../nerd-fonts-patcher
+          prePatch = pkgs.lib.optionalString requiresNerdFonts ''
+            cd ../nerd-fonts
             chmod -R +w .
           '';
-          patches = pkgs.lib.optionals needNerdFontPatcher [
-            ./patches/fontpatcher/v3.4.0/configargparse.patch
-            ./patches/fontpatcher/v3.4.0/horizontal_centered.patch
+          patches = pkgs.lib.optionals requiresNerdFonts [
+            ./patches/nerd-fonts/v3.4.0/configargparse.patch
+            ./patches/nerd-fonts/v3.4.0/horizontal_centered.patch
           ];
-          postPatch = pkgs.lib.optionalString needNerdFontPatcher ''
+          postPatch = pkgs.lib.optionalString requiresNerdFonts ''
             cd ../Iosevka
           '';
 
@@ -128,14 +128,14 @@
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants) ''
               nerdfontdir="dist/Iosevkata/NerdFont"
               mkdir $nerdfontdir
-              parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
+              parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts/font-patcher --glyphdir ../nerd-fonts/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
             ''}
 
             # patch nerd font mono if necessary
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants) ''
               nerdfontmonodir="dist/Iosevkata/NerdFontMono"
               mkdir $nerdfontmonodir
-              parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts-patcher/font-patcher --glyphdir ../nerd-fonts-patcher/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
+              parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts/font-patcher --glyphdir ../nerd-fonts/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
             ''}
 
             runHook postBuild
