@@ -67,7 +67,7 @@ def get_latest_github_release(github_repo: str) -> str:
 def get_next_version(current_version: str, utc_now: datetime) -> str:
     current_version_segments = current_version.split(".")
     current_minor = int(current_version_segments[-1])
-    current_year_month = ".".join(current_version[0:2])
+    current_year_month = ".".join(current_version_segments[0:2])
     year_month = utc_now.strftime("%y.%m")
     minor = 0
     if current_year_month == year_month:
