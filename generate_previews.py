@@ -153,7 +153,9 @@ def main(
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Assemble the comment to prepend
-    comment = f"{comment_string} Generated at {timestamp} with Iosevkata Nerd Font v{version}"
+    comment = (
+        f"{comment_string} Generated at {timestamp} with Iosevkata Nerd Font v{version}"
+    )
 
     # Display info
     info_text = Text()
