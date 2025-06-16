@@ -3,8 +3,10 @@
 A `PragmataPro` (ss08) styled `Iosevka` variant with my tweaks.
 
 [![Garnix Build](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fningw42%2FIosevkata%3Fbranch%3Dmaster)](https://garnix.io/repo/ningw42/Iosevkata)
-![GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml/badge.svg)
-![GitHub Preview](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml/badge.svg)
+[![GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml)
+[![GitHub Preview](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml)
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ningw42/Iosevkata/total)](https://github.com/ningw42/Iosevkata/releases)
+[![GitHub Latest Release](https://img.shields.io/github/downloads/ningw42/Iosevkata/total)](https://github.com/ningw42/Iosevkata/releases/latest)
 
 ![Preview](preview/images/rust.png)
 
