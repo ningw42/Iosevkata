@@ -49,42 +49,40 @@
 
           pname = "iosevkata";
 
-          srcs =
-            [
-              (pkgs.fetchFromGitHub {
-                hash = dependencies.iosevka.hash;
-                name = "Iosevka";
-                owner = "be5invis";
-                repo = "Iosevka";
-                rev = "v${dependencies.iosevka.version}";
-              })
-            ]
-            ++ pkgs.lib.optionals requiresNerdFonts [
-              # optional source for nerd-fonts
-              (pkgs.fetchzip {
-                name = "nerd-fonts";
-                url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
-                hash = dependencies.nerdfonts.hash;
-                stripRoot = false; # assume flat structure from the zip file.
-              })
-            ];
+          srcs = [
+            (pkgs.fetchFromGitHub {
+              hash = dependencies.iosevka.hash;
+              name = "Iosevka";
+              owner = "be5invis";
+              repo = "Iosevka";
+              rev = "v${dependencies.iosevka.version}";
+            })
+          ]
+          ++ pkgs.lib.optionals requiresNerdFonts [
+            # optional source for nerd-fonts
+            (pkgs.fetchzip {
+              name = "nerd-fonts";
+              url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
+              hash = dependencies.nerdfonts.hash;
+              stripRoot = false; # assume flat structure from the zip file.
+            })
+          ];
 
-          nativeBuildInputs =
-            [
-              pkgs.gnutar
-              pkgs.ttfautohint-nox
-              pkgs.zip
-              pkgs.zstd
-            ]
-            ++ pkgs.lib.optionals requiresNerdFonts [
-              # optional build inputs for nerd-fonts
-              pkgs.parallel # for parallel font patching
-              pkgs.fontforge
-              (pkgs.python3.withPackages (ps: [
-                ps.fontforge
-                ps.configargparse
-              ]))
-            ];
+          nativeBuildInputs = [
+            pkgs.gnutar
+            pkgs.ttfautohint-nox
+            pkgs.zip
+            pkgs.zstd
+          ]
+          ++ pkgs.lib.optionals requiresNerdFonts [
+            # optional build inputs for nerd-fonts
+            pkgs.parallel # for parallel font patching
+            pkgs.fontforge
+            (pkgs.python3.withPackages (ps: [
+              ps.fontforge
+              ps.configargparse
+            ]))
+          ];
 
           passAsFile = [ "privateBuildPlan" ];
 
