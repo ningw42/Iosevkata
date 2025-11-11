@@ -237,6 +237,7 @@ def fetch_sri_hash_with_nix_prefetch(
     sri_hash = run_nix_command(command_parts)
     return sri_hash
 
+
 def fetch_sri_hash_with_nix_prefetch_url(
     name: str, version: str, url: str, strip_root: bool
 ) -> str:
@@ -255,12 +256,8 @@ def fetch_sri_hash_with_nix_prefetch_url(
     ]
 
     sha_hash = run_nix_command(command_parts)
-    return run_nix_command([
-        "nix",
-        "hash",
-        "convert",
-        f"sha256:{sha_hash}"
-    ])
+    return run_nix_command(["nix", "hash", "convert", f"sha256:{sha_hash}"])
+
 
 def fetch_npm_deps_hash_for_iosevka(iosevka_version: str) -> str:
     """Fetches Iosevka's package-lock.json and calculates its prefetch hash using prefetch-npm-deps."""
