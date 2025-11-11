@@ -237,6 +237,30 @@ def fetch_sri_hash_with_nix_prefetch(
     sri_hash = run_nix_command(command_parts)
     return sri_hash
 
+def fetch_sri_hash_with_nix_prefetch_url(
+    name: str, version: str, url: str, strip_root: bool
+) -> str:
+    """
+    Fetches SRI hash for an archive's content using nix-prefetch-url.
+    Reproduces the behavior of the original script's nix-prefetch call.
+    Returns an SRI hash string (e.g., "sha256-Abc...=").
+    """
+    console.print(
+        f"[dim]{SPINNER_ICON}Calculating SRI hash for [link={url}][blue]{name}[/blue][/link] [yellow not bold]v{version}[/yellow not bold] (strip_root={strip_root}) using nix-prefetch-url and nix hash convert[white]...[/white][/dim]"
+    )
+    command_parts = [
+        "nix-prefetch-url",
+        "--unpack",
+        url,
+    ]
+
+    sha_hash = run_nix_command(command_parts)
+    return run_nix_command([
+        "nix",
+        "hash",
+        "convert",
+        f"sha256:{sha_hash}"
+    ])
 
 def fetch_npm_deps_hash_for_iosevka(iosevka_version: str) -> str:
     """Fetches Iosevka's package-lock.json and calculates its prefetch hash using prefetch-npm-deps."""
@@ -389,13 +413,13 @@ def main(
         target_nerdfonts_version = get_latest_github_release("ryanoasis/nerd-fonts")
 
     # fetch target dependency hashes
-    target_iosevka_hash = fetch_sri_hash_with_nix_prefetch(
+    target_iosevka_hash = fetch_sri_hash_with_nix_prefetch_url(
         "be5invis/Iosevka",
         target_iosevka_version,
         f"https://github.com/be5invis/Iosevka/archive/refs/tags/v{target_iosevka_version}.zip",
         strip_root=True,
     )
-    target_nerdfonts_hash = fetch_sri_hash_with_nix_prefetch(
+    target_nerdfonts_hash = fetch_sri_hash_with_nix_prefetch_url(
         "ryanoasis/nerd-fonts",
         target_nerdfonts_version,
         f"https://github.com/ryanoasis/nerd-fonts/releases/download/v{target_nerdfonts_version}/FontPatcher.zip",
