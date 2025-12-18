@@ -184,7 +184,7 @@
       flake = {
         overlays = {
           # a default flake to add all variants
-          default = final: prev: { iosevkata = self.packages.${prev.system}.iosevkata; };
+          default = final: prev: { iosevkata = self.packages.${prev.stdenv.hostPlatform.system}.iosevkata; };
         };
       };
       systems = [
