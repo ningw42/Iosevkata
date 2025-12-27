@@ -244,6 +244,7 @@
 
           # Shells: default development shell, which is system specific.
           devShells.default = pkgs.mkShell {
+            name = "IosevkataDevShell";
             packages = [
               pkgs.busybox
               pkgs.difftastic
