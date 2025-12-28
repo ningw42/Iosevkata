@@ -53,11 +53,11 @@ def get_latest_github_release(github_repo: str) -> str:
 
 
 def process_source_file(
-    source_file: Path, output_dir: Path, comment: str, theme_path: Path
+    source_file: Path, theme_file: Path, output_dir: Path, comment: str
 ) -> bool:
     """Process a single source file to generate preview image."""
 
-    output_file = output_dir / f"{source_file.stem}.png"
+    output_file = output_dir / f"{source_file.stem}_{theme_file.stem}.png"
 
     # Create temporary file with same extension
     with tempfile.NamedTemporaryFile(
@@ -76,7 +76,7 @@ def process_source_file(
             "--output",
             str(output_file),
             "--theme",
-            str(theme_path),
+            str(theme_file),
             "--pad-horiz",
             "0",
             "--pad-vert",
@@ -111,9 +111,9 @@ def main(
         "./preview/images", "--output", help="Directory for output images"
     ),
     theme: str = typer.Option(
-        "./preview/themes/Catppuccin Frappe.tmTheme",
+        "./preview/themes"
         "--theme",
-        help="Theme file",
+        help="Directory containing theme files",
     ),
     version: Optional[str] = typer.Option(
         None,
@@ -140,7 +140,9 @@ def main(
         raise typer.Exit(1)
 
     if not theme_path.exists():
-        console.print(f"[red]{ERROR_ICON}Theme file not found: {theme_path}[/red]")
+        console.print(
+            f"[red]{ERROR_ICON}Theme directory not found: {source_path}[/red]"
+        )
         raise typer.Exit(1)
 
     if version is None:
@@ -174,10 +176,17 @@ def main(
 
     # Get source files
     source_files = [f for f in source_path.iterdir() if f.is_file()]
+    theme_files = [f for f in theme_path.iterdir() if f.is_file()]
 
     if not source_files:
         console.print(
-            f"[yellow]{WARNING_ICON}No source files found in {source_path}[/yellow]"
+            f"[yellow]{WARNING_ICON}No source file found in {source_path}[/yellow]"
+        )
+        return
+
+    if not theme_files:
+        console.print(
+            f"[yellow]{WARNING_ICON}No theme file found in {theme_path}[/yellow]"
         )
         return
 
@@ -192,23 +201,24 @@ def main(
     ) as progress:
 
         for source_file in source_files:
-            task = progress.add_task(f"Processing {source_file.name}...", total=None)
+            for theme_file in theme_files:
+                task = progress.add_task(f"Processing {source_file.name}...", total=None)
 
-            console.print(f"\n[bold]Processing:[/bold] {source_file.name}")
-            output_file = output_path / f"{source_file.stem}.png"
-            console.print(f"  [dim]Output:[/dim] {output_file}")
-            console.print(f"  [dim]Adding comment:[/dim] {comment}")
+                console.print(f"\n[bold]Processing:[/bold] {source_file.name}")
+                output_file = output_path / f"{source_file.stem}.png"
+                console.print(f"  [dim]Output:[/dim] {output_file}")
+                console.print(f"  [dim]Adding comment:[/dim] {comment}")
 
-            success = process_source_file(source_file, output_path, comment, theme_path)
+                success = process_source_file(source_file, theme_file, output_path, comment)
 
-            if success:
-                console.print(f"[green]{SUCCESS_ICON}Success[/green]")
-                successful += 1
-            else:
-                console.print(f"[red]{ERROR_ICON}Failed[/red]")
-                failed += 1
+                if success:
+                    console.print(f"[green]{SUCCESS_ICON}Success[/green]")
+                    successful += 1
+                else:
+                    console.print(f"[red]{ERROR_ICON}Failed[/red]")
+                    failed += 1
 
-            progress.remove_task(task)
+                progress.remove_task(task)
 
     # Print summary
     summary_text = Text()

@@ -8,7 +8,24 @@ A `PragmataPro` (ss08) styled `Iosevka` variant with my tweaks.
 [![GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml)
 [![GitHub Preview](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml)
 
-![Preview](preview/images/rust.png)
+## Previews
+
+<details>
+<summary>🌻 Catppuccin Latte</summary>
+<img src="preview/images/rust_catppuccin_latte.png">
+</details>
+<details>
+<summary>🪴 Catppuccin Frappé</summary>
+<img src="preview/images/rust_catppuccin_frappe.png">
+</details>
+<details>
+<summary>🌺 Catppuccin Macchiato</summary>
+<img src="preview/images/rust_catppuccin_macchiato.png">
+</details>
+<details>
+<summary>🌿 Catppuccin Mocha</summary>
+<img src="preview/images/rust_catppuccin_mocha.png">
+</details>
 
 ## Usage
 

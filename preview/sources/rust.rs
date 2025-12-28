@@ -1,6 +1,6 @@
 fn main() {
     // Decorative Nerd Font glyphs
-    println!("Nerd Font test:           󰊢 󰈚 󰙅 󰌠 󱑽 󰀘 󰗃 󰍛 󱎓  󰡘 ");
+    println!("Nerd Font test:           󰊢 󰈚 󰙅 󰌠 󱑽 󰀘 󰗃 󰍛 󱎓  󰡘  ");
 
     // Variables and types
     let greeting: &str = "Hello, world!";

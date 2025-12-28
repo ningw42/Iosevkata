@@ -50,7 +50,7 @@ jobs:
       with:
         flakes-from-devshell: true
         script: |
-          ./generate_previews.py --source ./preview/sources/ --theme ./preview/themes/Catppuccin\ Frappe.tmTheme --output ./preview/images/
+          ./generate_previews.py --source ./preview/sources/ --theme ./preview/themes/ --output ./preview/images/
 
     - name: Configure Git Credentials
       run: |
