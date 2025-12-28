@@ -111,8 +111,7 @@ def main(
         "./preview/images", "--output", help="Directory for output images"
     ),
     theme: str = typer.Option(
-        "./preview/themes"
-        "--theme",
+        "./preview/themes" "--theme",
         help="Directory containing theme files",
     ),
     version: Optional[str] = typer.Option(
@@ -202,14 +201,18 @@ def main(
 
         for source_file in source_files:
             for theme_file in theme_files:
-                task = progress.add_task(f"Processing {source_file.name}...", total=None)
+                task = progress.add_task(
+                    f"Processing {source_file.name}...", total=None
+                )
 
                 console.print(f"\n[bold]Processing:[/bold] {source_file.name}")
                 output_file = output_path / f"{source_file.stem}.png"
                 console.print(f"  [dim]Output:[/dim] {output_file}")
                 console.print(f"  [dim]Adding comment:[/dim] {comment}")
 
-                success = process_source_file(source_file, theme_file, output_path, comment)
+                success = process_source_file(
+                    source_file, theme_file, output_path, comment
+                )
 
                 if success:
                     console.print(f"[green]{SUCCESS_ICON}Success[/green]")
