@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/generate_previews.yml' # this action
       - 'preview/sources/**'                      # source files
+      - 'preview/themes/**'                       # theme files
       - 'generate_previews.py'                    # preview generation script
     branches:
       - master
