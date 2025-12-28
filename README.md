@@ -11,20 +11,48 @@ A `PragmataPro` (ss08) styled `Iosevka` variant with my tweaks.
 ## Previews
 
 <details>
-<summary>🌻 Catppuccin Latte</summary>
-<img src="preview/images/rust_catppuccin_latte.png">
+    <summary>Catppuccin 🌻 Latte</summary>
+    <img src="preview/images/rust_catppuccin_latte.png">
 </details>
 <details>
-<summary>🪴 Catppuccin Frappé</summary>
-<img src="preview/images/rust_catppuccin_frappe.png">
+    <summary>Catppuccin 🪴 Frappé</summary>
+    <img src="preview/images/rust_catppuccin_frappe.png">
 </details>
 <details>
-<summary>🌺 Catppuccin Macchiato</summary>
-<img src="preview/images/rust_catppuccin_macchiato.png">
+    <summary>Catppuccin 🌺 Macchiato</summary>
+    <img src="preview/images/rust_catppuccin_macchiato.png">
 </details>
 <details>
-<summary>🌿 Catppuccin Mocha</summary>
-<img src="preview/images/rust_catppuccin_mocha.png">
+    <summary>Catppuccin 🌿 Mocha</summary>
+    <img src="preview/images/rust_catppuccin_mocha.png">
+</details>
+<details>
+    <summary>Everforest Light</summary>
+    <img src="preview/images/rust_everforest_light.png">
+</details>
+<details>
+    <summary>Everforest Dark</summary>
+    <img src="preview/images/rust_everforest_dark.png">
+</details>
+<details>
+    <summary>Gruvbox Light</summary>
+    <img src="preview/images/rust_gruvbox_light.png">
+</details>
+<details>
+    <summary>Gruvbox Dark</summary>
+    <img src="preview/images/rust_gruvbox_dark.png">
+</details>
+<details>
+    <summary>Rosé Pine Dawn</summary>
+    <img src="preview/images/rust_rose_pine_dawn.png">
+</details>
+<details>
+    <summary>Rosé Pine Moon</summary>
+    <img src="preview/images/rust_rose_pine_moon.png">
+</details>
+<details>
+    <summary>Rosé Pine</summary>
+    <img src="preview/images/rust_rose_pine.png">
 </details>
 
 ## Usage
