@@ -69,7 +69,7 @@ This repository produces two types of artifact:
 1. **A fixed spacing, no ligature.** I once liked ligature, but it's distracting.
 2. **A higher underscore.** To make underscore-connected characters feels connected, like `Menlo`.
 3. **A lower hex asterisk.** To place asterisk at the vertical center of the line, like `Menlo`.
-4. **An oval-dotted zero.** `PragmataPro`'s diamond shaped zero is too sharp for me.
+4. **An oval-reverse-slashed-split zero.** `PragmataPro`'s diamond-reverse-slashed-split is too sharp for me.
 5. **A few decorations mimicking `mononoki`.** For 'B', 'D', 'P' and 'R'.
 
 ## Variants
