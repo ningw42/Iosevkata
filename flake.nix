@@ -15,7 +15,7 @@
     }:
     let
       # Metadata: version and dependencies
-      version = "26.01.0";
+      version = "26.01.1";
       dependencies = {
         iosevka = {
           version = "34.0.0";
