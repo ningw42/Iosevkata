@@ -15,12 +15,12 @@
     }:
     let
       # Metadata: version and dependencies
-      version = "26.01.1";
+      version = "26.01.2";
       dependencies = {
         iosevka = {
-          version = "34.0.0";
-          hash = "sha256-fASlzL/7pVDIs5wCkEUJaU0r0Gy5YGZ9kxiAskZHWcI=";
-          npmDepsHash = "sha256-uujfgTv2QEhywQNmglZusgikGEZvVtWL/lYFq6Q1VFc=";
+          version = "34.1.0";
+          hash = "sha256-vdjf2MkKP9DHl/hrz9xJMWMuT2AsonRdt14xQTSsVmU=";
+          npmDepsHash = "sha256-YMfePtKg4kpZ4iCpkq7PxfyDB4MIRg/tgCNmLD31zKo=";
         };
         nerdfonts = {
           version = "3.4.0";
