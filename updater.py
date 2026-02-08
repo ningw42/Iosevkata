@@ -481,9 +481,7 @@ def main(
     )
 
     # edit versions.md
-    patch_versions(
-        target_iosevkata_version, target_iosevka_version, nerdfonts_version
-    )
+    patch_versions(target_iosevkata_version, target_iosevka_version, nerdfonts_version)
 
 
 if __name__ == "__main__":
