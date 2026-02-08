@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    nerd-font-patcher.url = "github:ningw42/nerd-font-patcher/v3.4.0";
   };
 
   outputs =
@@ -11,6 +12,7 @@
       self,
       nixpkgs,
       flake-parts,
+      nerd-font-patcher,
       ...
     }:
     let
@@ -21,10 +23,6 @@
           version = "34.1.0";
           hash = "sha256-vdjf2MkKP9DHl/hrz9xJMWMuT2AsonRdt14xQTSsVmU=";
           npmDepsHash = "sha256-YMfePtKg4kpZ4iCpkq7PxfyDB4MIRg/tgCNmLD31zKo=";
-        };
-        nerdfonts = {
-          version = "3.4.0";
-          hash = "sha256-koZj0Tn1HtvvSbQGTc3RbXQdUU4qJwgClOVq1RXW6aM=";
         };
       };
 
@@ -49,24 +47,13 @@
 
           pname = "iosevkata";
 
-          srcs = [
-            (pkgs.fetchFromGitHub {
-              hash = dependencies.iosevka.hash;
-              name = "Iosevka";
-              owner = "be5invis";
-              repo = "Iosevka";
-              rev = "v${dependencies.iosevka.version}";
-            })
-          ]
-          ++ pkgs.lib.optionals requiresNerdFonts [
-            # optional source for nerd-fonts
-            (pkgs.fetchzip {
-              name = "nerd-fonts";
-              url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${dependencies.nerdfonts.version}/FontPatcher.zip";
-              hash = dependencies.nerdfonts.hash;
-              stripRoot = false; # assume flat structure from the zip file.
-            })
-          ];
+          src = pkgs.fetchFromGitHub {
+            hash = dependencies.iosevka.hash;
+            name = "Iosevka";
+            owner = "be5invis";
+            repo = "Iosevka";
+            rev = "v${dependencies.iosevka.version}";
+          };
 
           nativeBuildInputs = [
             pkgs.gnutar
@@ -77,29 +64,10 @@
           ++ pkgs.lib.optionals requiresNerdFonts [
             # optional build inputs for nerd-fonts
             pkgs.parallel # for parallel font patching
-            pkgs.fontforge
-            (pkgs.python3.withPackages (ps: [
-              ps.fontforge
-            ]))
+            nerd-font-patcher.packages.${pkgs.stdenv.hostPlatform.system}.default
           ];
 
           passAsFile = [ "privateBuildPlan" ];
-
-          sourceRoot = "Iosevka";
-
-          # Optional Patch Phase:
-          # 1. put patched nerd-fonts glyphs at the horizontal center of two cells.
-          #    https://github.com/ryanoasis/nerd-fonts/issues/1330
-          prePatch = pkgs.lib.optionalString requiresNerdFonts ''
-            cd ../nerd-fonts
-            chmod -R +w .
-          '';
-          patches = pkgs.lib.optionals requiresNerdFonts [
-            ./patches/nerd-fonts/horizontal_centered.patch
-          ];
-          postPatch = pkgs.lib.optionalString requiresNerdFonts ''
-            cd ../Iosevka
-          '';
 
           # Configure Phase: simply copy the build plan file.
           configurePhase = ''
@@ -124,14 +92,14 @@
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants) ''
               nerdfontdir="dist/Iosevkata/NerdFont"
               mkdir $nerdfontdir
-              parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts/font-patcher --glyphdir ../nerd-fonts/src/glyphs --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
+              parallel -j $NIX_BUILD_CORES nerd-font-patcher --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
             ''}
 
             # patch nerd font mono if necessary
             ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants) ''
               nerdfontmonodir="dist/Iosevkata/NerdFontMono"
               mkdir $nerdfontmonodir
-              parallel -j $NIX_BUILD_CORES python3 ../nerd-fonts/font-patcher --glyphdir ../nerd-fonts/src/glyphs --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
+              parallel -j $NIX_BUILD_CORES nerd-font-patcher --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
             ''}
 
             runHook postBuild

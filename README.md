@@ -121,12 +121,15 @@ nix develop . --command $YOUR_SHELL
 # print help message
 ./updater.py --help
 
-# prefetch checksums with the latest Iosevka and nerd-fonts
+# prefetch checksums with the latest Iosevka
 ./updater.py
 
-# prefetch checksums with the specified Iosevka and nerd-fonts
-# e.g. ./updater.py --target-iosevka-version 30.3.0 --target-nerdfonts-version 3.2.1
-./updater.py --target-iosevka-version $iosevka_version --target-nerdfonts-version $nerdfonts_version
+# prefetch checksums with the specified Iosevka version
+# e.g. ./updater.py --target-iosevka-version 30.3.0
+./updater.py --target-iosevka-version $iosevka_version
+
+# update nerd-font-patcher flake input
+nix flake update nerd-font-patcher
 
 # review the updated flake.nix and versions.md
 ```

@@ -23,8 +23,8 @@ FLAKE_NIX_PATH = Path("flake.nix")
 VERSIONS_MD_PATH = Path("versions.md")
 # Lines in flake.nix where metadata for versions/hashes is defined.
 # These are 1-based and inclusive.
-FLAKE_METADATA_START_LINE = 18
-FLAKE_METADATA_END_LINE = 29
+FLAKE_METADATA_START_LINE = 20
+FLAKE_METADATA_END_LINE = 27
 FLAKE_METADATA_INDENT = "      "  # 6 spaces
 ERROR_ICON = "󰅙 "
 WARNING_ICON = " "
@@ -88,8 +88,6 @@ def extract_metadata(nix_content: str) -> Dict[str, Optional[str]]:
               - iosevka.version
               - iosevka.hash
               - iosevka.npm_deps_hash
-              - nerdfonts.version
-              - nerdfonts.hash
     """
     result = {}
 
@@ -118,21 +116,6 @@ def extract_metadata(nix_content: str) -> Dict[str, Optional[str]]:
         if npm_deps_hash:
             result["iosevka.npm_deps_hash"] = npm_deps_hash.group(1)
 
-    # Extract nerdfonts section values
-    nerdfonts_section = re.search(r"nerdfonts\s*=\s*{([^}]+)}", nix_content, re.DOTALL)
-    if nerdfonts_section:
-        nerdfonts_content = nerdfonts_section.group(1)
-
-        # Extract nerdfonts version
-        nerdfonts_version = re.search(r'version\s*=\s*"([^"]+)"', nerdfonts_content)
-        if nerdfonts_version:
-            result["nerdfonts.version"] = nerdfonts_version.group(1)
-
-        # Extract nerdfonts hash
-        nerdfonts_hash = re.search(r'hash\s*=\s*"([^"]+)"', nerdfonts_content)
-        if nerdfonts_hash:
-            result["nerdfonts.hash"] = nerdfonts_hash.group(1)
-
     return result
 
 
@@ -156,6 +139,23 @@ def extract_sri_hash(key: str, flake_content: str) -> Optional[str]:
         rf'{key}\s*=\s*"(sha256-[A-Za-z0-9+\/]{{43}}={{0,2}})"\s*;',
         flake_content,
     )
+
+
+def get_nerdfonts_version(flake_path: Path) -> str:
+    """Extracts the nerd-fonts version from the nerd-font-patcher input URL tag in flake.nix."""
+    with open(flake_path, "r") as flake:
+        content = flake.read()
+    match = re.search(
+        r'nerd-font-patcher\.url\s*=\s*"github:ningw42/nerd-font-patcher/v([^"]+)"',
+        content,
+    )
+    if not match:
+        console.print(
+            f"[red]{ERROR_ICON}Could not extract nerd-font-patcher version from {flake_path}. "
+            f"Expected input URL format: github:ningw42/nerd-font-patcher/vX.Y.Z[/red]"
+        )
+        raise typer.Exit(1)
+    return match.group(1)
 
 
 def get_current_metadata(flake_path: Path) -> Dict[str, Optional[str]]:
@@ -326,10 +326,8 @@ def patch_flake(
     current_metadata_str: str,
     target_iosevkata_version: str,
     target_iosevka_version: str,
-    target_nerdfonts_version: str,
     target_iosevka_hash: str,
     target_iosevka_npm_deps_hash: str,
-    target_nerdfonts_hash: str,
 ):
     target_metadata_str = f"""\
 {FLAKE_METADATA_INDENT}version = "{target_iosevkata_version}";
@@ -338,10 +336,6 @@ def patch_flake(
 {FLAKE_METADATA_INDENT}    version = "{target_iosevka_version}";
 {FLAKE_METADATA_INDENT}    hash = "{target_iosevka_hash}";
 {FLAKE_METADATA_INDENT}    npmDepsHash = "{target_iosevka_npm_deps_hash}";
-{FLAKE_METADATA_INDENT}  }};
-{FLAKE_METADATA_INDENT}  nerdfonts = {{
-{FLAKE_METADATA_INDENT}    version = "{target_nerdfonts_version}";
-{FLAKE_METADATA_INDENT}    hash = "{target_nerdfonts_hash}";
 {FLAKE_METADATA_INDENT}  }};
 {FLAKE_METADATA_INDENT}}};
 """
@@ -396,18 +390,13 @@ def main(
             help="Iosevka version (e.g. 33.0.0). Fetches latest if not provided."
         ),
     ] = None,
-    target_nerdfonts_version: Annotated[
-        Optional[str],
-        typer.Option(
-            help="nerd-fonts version (e.g. 3.4.0). Fetches latest if not provided."
-        ),
-    ] = None,
 ):
     # figure out target dependency versions
     if not target_iosevka_version:
         target_iosevka_version = get_latest_github_release("be5invis/Iosevka")
-    if not target_nerdfonts_version:
-        target_nerdfonts_version = get_latest_github_release("ryanoasis/nerd-fonts")
+
+    # nerd-fonts version is determined by the nerd-font-patcher flake input tag
+    nerdfonts_version = get_nerdfonts_version(FLAKE_NIX_PATH)
 
     # fetch target dependency hashes
     target_iosevka_hash = fetch_sri_hash_with_nix_prefetch_url(
@@ -415,12 +404,6 @@ def main(
         target_iosevka_version,
         f"https://github.com/be5invis/Iosevka/archive/refs/tags/v{target_iosevka_version}.zip",
         strip_root=True,
-    )
-    target_nerdfonts_hash = fetch_sri_hash_with_nix_prefetch_url(
-        "ryanoasis/nerd-fonts",
-        target_nerdfonts_version,
-        f"https://github.com/ryanoasis/nerd-fonts/releases/download/v{target_nerdfonts_version}/FontPatcher.zip",
-        strip_root=False,
     )
     target_iosevka_npm_deps_hash = fetch_npm_deps_hash_for_iosevka(
         target_iosevka_version
@@ -434,8 +417,6 @@ def main(
         or current_metadata["iosevka.version"] is None
         or current_metadata["iosevka.hash"] is None
         or current_metadata["iosevka.npm_deps_hash"] is None
-        or current_metadata["nerdfonts.version"] is None
-        or current_metadata["nerdfonts.hash"] is None
         or current_metadata["raw"] is None
     ):
         console.print(
@@ -448,8 +429,6 @@ def main(
     current_iosevka_version = current_metadata["iosevka.version"]
     current_iosevka_hash = current_metadata["iosevka.hash"]
     current_iosevka_npm_deps_hash = current_metadata["iosevka.npm_deps_hash"]
-    current_nerdfonts_version = current_metadata["nerdfonts.version"]
-    current_nerdfonts_hash = current_metadata["nerdfonts.hash"]
 
     # print dependency metadata table
     dependency_metadata_table = Table(
@@ -472,26 +451,14 @@ def main(
             target_iosevka_npm_deps_hash,
         )
     )
-    dependency_metadata_table.add_row(
-        *get_highlighted_metadata_row(
-            "ryanoasis/nerd-fonts", current_nerdfonts_version, target_nerdfonts_version
-        )
-    )
-    dependency_metadata_table.add_row(
-        *get_highlighted_metadata_row(
-            "  Hash", current_nerdfonts_hash, target_nerdfonts_hash
-        )
-    )
     console.print(dependency_metadata_table)
 
     # check if we need an update
     # we need to check hashes even if the versions are equal, because sometimes, people update artifacts without bumping version
     if (
         current_iosevka_version == target_iosevka_version
-        and current_nerdfonts_version == target_nerdfonts_version
         and current_iosevka_hash == target_iosevka_hash
         and current_iosevka_npm_deps_hash == target_iosevka_npm_deps_hash
-        and current_nerdfonts_hash == target_nerdfonts_hash
     ):
         console.print(
             f"\n[green]{SUCCESS_ICON}All versions and hashes are already up-to-date. Nothing to do.[/green]"
@@ -509,15 +476,13 @@ def main(
         current_metadata["raw"],
         target_iosevkata_version,
         target_iosevka_version,
-        target_nerdfonts_version,
         target_iosevka_hash,
         target_iosevka_npm_deps_hash,
-        target_nerdfonts_hash,
     )
 
     # edit versions.md
     patch_versions(
-        target_iosevkata_version, target_iosevka_version, target_nerdfonts_version
+        target_iosevkata_version, target_iosevka_version, nerdfonts_version
     )
 
 
