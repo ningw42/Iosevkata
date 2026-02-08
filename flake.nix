@@ -80,7 +80,6 @@
             pkgs.fontforge
             (pkgs.python3.withPackages (ps: [
               ps.fontforge
-              ps.configargparse
             ]))
           ];
 
@@ -89,15 +88,14 @@
           sourceRoot = "Iosevka";
 
           # Optional Patch Phase:
-          # 1. replace `argparse` with `configargparse` because argparse isn't available in nixpkgs.
-          # 2. put patched nerd-fonts glyphs at the horizontal center of two cells.
+          # 1. put patched nerd-fonts glyphs at the horizontal center of two cells.
+          #    https://github.com/ryanoasis/nerd-fonts/issues/1330
           prePatch = pkgs.lib.optionalString requiresNerdFonts ''
             cd ../nerd-fonts
             chmod -R +w .
           '';
           patches = pkgs.lib.optionals requiresNerdFonts [
-            ./patches/nerd-fonts/v3.4.0/configargparse.patch
-            ./patches/nerd-fonts/v3.4.0/horizontal_centered.patch
+            ./patches/nerd-fonts/horizontal_centered.patch
           ];
           postPatch = pkgs.lib.optionalString requiresNerdFonts ''
             cd ../Iosevka
@@ -253,7 +251,6 @@
               pkgs.prefetch-npm-deps
               pkgs.silicon
               (pkgs.python3.withPackages (ps: [
-                ps.configargparse
                 ps.fontforge
                 ps.requests
                 ps.rich
