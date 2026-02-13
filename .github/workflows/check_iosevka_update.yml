@@ -1,0 +1,72 @@
+name: "Check Iosevka Update"
+
+on:
+  schedule:
+    - cron: "0 8 * * *" # daily at 08:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Check for New Iosevka Release
+      id: check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        new_version=$(./scripts/check-iosevka-update.sh)
+        if [[ -n "$new_version" ]]; then
+          echo "update_available=true" >> "$GITHUB_OUTPUT"
+          echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
+          echo "New Iosevka version available: $new_version"
+        else
+          echo "update_available=false" >> "$GITHUB_OUTPUT"
+          echo "Iosevka is up-to-date."
+        fi
+
+    - name: Install Nix
+      if: steps.check.outputs.update_available == 'true'
+      uses: cachix/install-nix-action@v31
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Updater
+      if: steps.check.outputs.update_available == 'true'
+      uses: workflow/nix-shell-action@v3.4.0
+      with:
+        flakes-from-devshell: true
+        script: |
+          ./updater.py --no-confirm
+
+    - name: Format with treefmt
+      if: steps.check.outputs.update_available == 'true'
+      uses: workflow/nix-shell-action@v3.4.0
+      with:
+        flakes-from-devshell: true
+        script: |
+          treefmt
+
+    - name: Create Pull Request
+      if: steps.check.outputs.update_available == 'true'
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Update Iosevka to v${{ steps.check.outputs.new_version }}"
+        branch: "auto-update/iosevka-${{ steps.check.outputs.new_version }}"
+        title: "Update Iosevka to v${{ steps.check.outputs.new_version }}"
+        body: |
+          Automated update of Iosevka to v${{ steps.check.outputs.new_version }}.
+
+          Changes:
+          - Updated `flake.nix` with new version, hash, and npmDepsHash
+          - Updated `versions.md` with new version entry
+
+          After merging, tag the commit to trigger the build & release workflow.

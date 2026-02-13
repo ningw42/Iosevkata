@@ -212,6 +212,10 @@
           devShells.default = pkgs.mkShell {
             name = "IosevkataDevShell";
             packages = [
+              # formatter
+              pkgs.nixfmt # nix
+              pkgs.black # python
+
               pkgs.busybox
               pkgs.difftastic
               pkgs.fontforge

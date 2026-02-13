@@ -328,6 +328,7 @@ def patch_flake(
     target_iosevka_version: str,
     target_iosevka_hash: str,
     target_iosevka_npm_deps_hash: str,
+    no_confirm: bool = False,
 ):
     target_metadata_str = f"""\
 {FLAKE_METADATA_INDENT}version = "{target_iosevkata_version}";
@@ -345,7 +346,9 @@ def patch_flake(
         "current flake.nix",
         "target flake.nix",
     )
-    if not Confirm.ask("Apply these changes to flake.nix?", default=True):
+    if not no_confirm and not Confirm.ask(
+        "Apply these changes to flake.nix?", default=True
+    ):
         console.print(
             f"[yellow]{WARNING_ICON}Aborted. flake.nix wasn't changed.[/yellow]"
         )
@@ -355,7 +358,10 @@ def patch_flake(
 
 
 def patch_versions(
-    iosevkata_version: str, iosevka_version: str, nerdfonts_version: str
+    iosevkata_version: str,
+    iosevka_version: str,
+    nerdfonts_version: str,
+    no_confirm: bool = False,
 ):
     with open(VERSIONS_MD_PATH, "r") as versions:
         versions_lines = versions.readlines()
@@ -371,7 +377,9 @@ def patch_versions(
         "current versions.md",
         "target versions.md",
     )
-    if not Confirm.ask("Apply these changes to versions.md?", default=True):
+    if not no_confirm and not Confirm.ask(
+        "Apply these changes to versions.md?", default=True
+    ):
         console.print(
             f"[yellow]{WARNING_ICON}Aborted. versions.md wasn't changed.[/yellow]"
         )
@@ -390,6 +398,12 @@ def main(
             help="Iosevka version (e.g. 33.0.0). Fetches latest if not provided."
         ),
     ] = None,
+    no_confirm: Annotated[
+        bool,
+        typer.Option(
+            help="Skip all interactive prompts, auto-accepting defaults. Useful for CI."
+        ),
+    ] = False,
 ):
     # figure out target dependency versions
     if not target_iosevka_version:
@@ -466,10 +480,19 @@ def main(
         raise typer.Exit()
 
     # ask for the target Iosevkata version
-    target_iosevkata_version = Prompt.ask(
-        f"{HINT_ICON}Enter a new version for Iosevkata (currently [bold cyan]{current_iosevkata_version}[/bold cyan])",
-        default=get_next_version(current_iosevkata_version, datetime.now(timezone.utc)),
+    default_version = get_next_version(
+        current_iosevkata_version, datetime.now(timezone.utc)
     )
+    if no_confirm:
+        target_iosevkata_version = default_version
+        console.print(
+            f"{INFO_ICON}Auto-accepting version [bold cyan]{target_iosevkata_version}[/bold cyan] (--no-confirm)"
+        )
+    else:
+        target_iosevkata_version = Prompt.ask(
+            f"{HINT_ICON}Enter a new version for Iosevkata (currently [bold cyan]{current_iosevkata_version}[/bold cyan])",
+            default=default_version,
+        )
 
     # edit flake.nix
     patch_flake(
@@ -478,10 +501,13 @@ def main(
         target_iosevka_version,
         target_iosevka_hash,
         target_iosevka_npm_deps_hash,
+        no_confirm,
     )
 
     # edit versions.md
-    patch_versions(target_iosevkata_version, target_iosevka_version, nerdfonts_version)
+    patch_versions(
+        target_iosevkata_version, target_iosevka_version, nerdfonts_version, no_confirm
+    )
 
 
 if __name__ == "__main__":
