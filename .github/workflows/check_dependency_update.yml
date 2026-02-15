@@ -1,0 +1,131 @@
+name: "Check Dependency Updates"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/check_dependency_update.yml' # this action
+  schedule:
+    - cron: "0 2/14 * * *" # twice a day at 02:00 UTC and 14:00 UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v6
+
+    - name: Check for New Iosevka Release
+      id: check-iosevka
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        new_version=$(./scripts/check-iosevka-update.sh)
+        if [[ -n "$new_version" ]]; then
+          echo "update_available=true" >> "$GITHUB_OUTPUT"
+          echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
+          echo "New Iosevka version available: $new_version"
+        else
+          echo "update_available=false" >> "$GITHUB_OUTPUT"
+          echo "Iosevka is up-to-date."
+        fi
+
+    - name: Check for New nerd-font-patcher Release
+      id: check-nerd-font-patcher
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        new_version=$(./scripts/check-nerd-font-patcher-update.sh)
+        if [[ -n "$new_version" ]]; then
+          echo "update_available=true" >> "$GITHUB_OUTPUT"
+          echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
+          echo "New nerd-font-patcher version available: $new_version"
+        else
+          echo "update_available=false" >> "$GITHUB_OUTPUT"
+          echo "nerd-font-patcher is up-to-date."
+        fi
+
+    - name: Install Nix
+      if: steps.check-iosevka.outputs.update_available == 'true' || steps.check-nerd-font-patcher.outputs.update_available == 'true'
+      uses: cachix/install-nix-action@v31.9.1 # this action doesn't "backport" vX.Y.Z changes to vX tag
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Updater
+      if: steps.check-iosevka.outputs.update_available == 'true' || steps.check-nerd-font-patcher.outputs.update_available == 'true'
+      uses: workflow/nix-shell-action@v3.4.0 # this action doesn't "backport" vX.Y.Z changes to vX tag
+      with:
+        flakes-from-devshell: true
+        script: ./updater.py --no-confirm
+
+    - name: Update Flake Lock and Format
+      if: steps.check-iosevka.outputs.update_available == 'true' || steps.check-nerd-font-patcher.outputs.update_available == 'true'
+      uses: workflow/nix-shell-action@v3.4.0 # this action doesn't "backport" vX.Y.Z changes to vX tag
+      with:
+        flakes-from-devshell: true
+        script: |
+          nix flake update
+          treefmt
+
+    - name: Determine PR metadata
+      if: steps.check-iosevka.outputs.update_available == 'true' || steps.check-nerd-font-patcher.outputs.update_available == 'true'
+      id: pr-metadata
+      run: |
+        parts=()
+        if [[ "${{ steps.check-iosevka.outputs.update_available }}" == "true" ]]; then
+          parts+=("Iosevka to v${{ steps.check-iosevka.outputs.new_version }}")
+        fi
+        if [[ "${{ steps.check-nerd-font-patcher.outputs.update_available }}" == "true" ]]; then
+          parts+=("nerd-font-patcher to v${{ steps.check-nerd-font-patcher.outputs.new_version }}")
+        fi
+
+        title="Update $(IFS=', '; echo "${parts[*]}")"
+        # branch name: use both versions if both updated, otherwise just the one that changed
+        branch_parts=()
+        if [[ "${{ steps.check-iosevka.outputs.update_available }}" == "true" ]]; then
+          branch_parts+=("iosevka-${{ steps.check-iosevka.outputs.new_version }}")
+        fi
+        if [[ "${{ steps.check-nerd-font-patcher.outputs.update_available }}" == "true" ]]; then
+          branch_parts+=("nfp-${{ steps.check-nerd-font-patcher.outputs.new_version }}")
+        fi
+        branch="auto-update/$(IFS=_; echo "${branch_parts[*]}")"
+
+        body_lines=()
+        body_lines+=("Automated dependency update.")
+        body_lines+=("")
+        body_lines+=("Changes:")
+        if [[ "${{ steps.check-iosevka.outputs.update_available }}" == "true" ]]; then
+          body_lines+=("- Updated Iosevka to v${{ steps.check-iosevka.outputs.new_version }}")
+        fi
+        if [[ "${{ steps.check-nerd-font-patcher.outputs.update_available }}" == "true" ]]; then
+          body_lines+=("- Updated nerd-font-patcher to v${{ steps.check-nerd-font-patcher.outputs.new_version }}")
+        fi
+        body_lines+=("- Updated \`flake.nix\` and \`versions.md\`")
+        body_lines+=("")
+        body_lines+=("After merging, tag the commit to trigger the build & release workflow.")
+
+        echo "title=$title" >> "$GITHUB_OUTPUT"
+        echo "branch=$branch" >> "$GITHUB_OUTPUT"
+        # Use heredoc for multiline body
+        {
+          echo "body<<BODY_EOF"
+          printf '%s\n' "${body_lines[@]}"
+          echo "BODY_EOF"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Create Pull Request
+      if: steps.check-iosevka.outputs.update_available == 'true' || steps.check-nerd-font-patcher.outputs.update_available == 'true'
+      uses: peter-evans/create-pull-request@v8
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "${{ steps.pr-metadata.outputs.title }}"
+        branch: "${{ steps.pr-metadata.outputs.branch }}"
+        title: "${{ steps.pr-metadata.outputs.title }}"
+        body: "${{ steps.pr-metadata.outputs.body }}"
