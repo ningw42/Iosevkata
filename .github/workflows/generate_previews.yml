@@ -2,14 +2,15 @@ name: "Generate Previews"
 
 on:
   workflow_call:
+  workflow_dispatch:
   push:
+    branches:
+      - master
     paths:
       - '.github/workflows/generate_previews.yml' # this action
       - 'preview/sources/**'                      # source files
       - 'preview/themes/**'                       # theme files
       - 'generate_previews.py'                    # preview generation script
-    branches:
-      - master
 
 jobs:
   generate_preview:
@@ -47,7 +48,7 @@ jobs:
         fc-list | grep -i Iosevkata
 
     - name: Generate Preview Images
-      uses: workflow/nix-shell-action@v3.4.0
+      uses: workflow/nix-shell-action@v3
       with:
         flakes-from-devshell: true
         script: |

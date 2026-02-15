@@ -1,9 +1,14 @@
 name: "Check Iosevka Update"
 
 on:
-  schedule:
-    - cron: "0 8 * * *" # daily at 08:00 UTC
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/check_iosevka_update.yml' # this action
+  schedule:
+    - cron: "0 0 * * *" # daily at 00:00 UTC
 
 permissions:
   contents: write
@@ -14,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Check for New Iosevka Release
       id: check
@@ -40,7 +45,7 @@ jobs:
 
     - name: Run Updater
       if: steps.check.outputs.update_available == 'true'
-      uses: workflow/nix-shell-action@v3.4.0
+      uses: workflow/nix-shell-action@v3
       with:
         flakes-from-devshell: true
         script: |
@@ -48,7 +53,7 @@ jobs:
 
     - name: Format with treefmt
       if: steps.check.outputs.update_available == 'true'
-      uses: workflow/nix-shell-action@v3.4.0
+      uses: workflow/nix-shell-action@v3
       with:
         flakes-from-devshell: true
         script: |
@@ -56,7 +61,7 @@ jobs:
 
     - name: Create Pull Request
       if: steps.check.outputs.update_available == 'true'
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: "Update Iosevka to v${{ steps.check.outputs.new_version }}"
