@@ -8,7 +8,7 @@ on:
     paths:
       - '.github/workflows/check_dependency_update.yml' # this action
   schedule:
-    - cron: "0 2/14 * * *" # twice a day at 02:00 UTC and 14:00 UTC
+    - cron: "0 2,14 * * *" # twice a day at 02:00 UTC and 14:00 UTC
 
 permissions:
   contents: write
