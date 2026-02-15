@@ -26,6 +26,7 @@ if [[ -z "$latest_version" ]]; then
   echo "Error: failed to fetch latest nerd-font-patcher version from GitHub API" >&2
   exit 1
 fi
+echo "Latest nerd-font-patcher version: $latest_version" >&2
 
 # Extract current nerd-font-patcher version from flake.nix input URL
 current_version=$(
@@ -36,7 +37,11 @@ if [[ -z "$current_version" ]]; then
   echo "Error: failed to extract current nerd-font-patcher version from $FLAKE_NIX" >&2
   exit 1
 fi
+echo "Current nerd-font-patcher version: $current_version" >&2
 
 if [[ "$current_version" != "$latest_version" ]]; then
+  echo "Update available: $current_version -> $latest_version" >&2
   echo "$latest_version"
+else
+  echo "Up-to-date." >&2
 fi
