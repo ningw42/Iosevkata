@@ -22,7 +22,7 @@ jobs:
         ref: master # always checkout "master" even if we are triggered with a tag (detached HEAD), so we could commit to "master" later
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v31
+      uses: cachix/install-nix-action@v31 # this action doesn't "backport" vX.Y.Z changes to vX tag
       with:
         nix_path: nixpkgs=channel:nixos-unstable
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
         fc-list | grep -i Iosevkata
 
     - name: Generate Preview Images
-      uses: workflow/nix-shell-action@v3
+      uses: workflow/nix-shell-action@v3.4.0 # this action doesn't "backport" vX.Y.Z changes to vX tag
       with:
         flakes-from-devshell: true
         script: |
