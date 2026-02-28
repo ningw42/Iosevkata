@@ -213,6 +213,7 @@
             name = "IosevkataDevShell";
             packages = [
               # formatter
+              pkgs.treefmt # treefmt
               pkgs.nixfmt # nix
               pkgs.black # python
 
