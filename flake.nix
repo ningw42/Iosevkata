@@ -5,6 +5,14 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     nerd-font-patcher.url = "github:ningw42/nerd-font-patcher/v3.4.0";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -147,6 +155,10 @@
         };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        inputs.treefmt-nix.flakeModule
+        inputs.git-hooks.flakeModule
+      ];
       flake = {
         overlays = {
           # a default flake to add all variants
@@ -168,6 +180,19 @@
           ...
         }:
         {
+          # Treefmt configuration
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs.nixfmt.enable = true;
+            programs.black.enable = true;
+          };
+
+          # Git hooks configuration
+          pre-commit.settings.hooks.treefmt = {
+            enable = true;
+            package = config.treefmt.build.wrapper;
+          };
+
           # They are system agnostic, so, they are built with a specific system (x86_64-linux), and aliased to other systems.
           # iosevkata builds all variants for a nix package
           packages.iosevkata = buildIosevkata {
@@ -211,12 +236,11 @@
           # Shells: default development shell, which is system specific.
           devShells.default = pkgs.mkShell {
             name = "IosevkataDevShell";
+            inputsFrom = [
+              config.pre-commit.devShell
+              config.treefmt.build.devShell
+            ];
             packages = [
-              # formatter
-              pkgs.treefmt # treefmt
-              pkgs.nixfmt # nix
-              pkgs.black # python
-
               pkgs.busybox
               pkgs.difftastic
               pkgs.fontforge

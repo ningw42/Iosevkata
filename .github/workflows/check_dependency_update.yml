@@ -72,7 +72,7 @@ jobs:
         flakes-from-devshell: true
         script: |
           nix flake update
-          treefmt
+          nix fmt
 
     - name: Determine PR metadata
       if: steps.check-iosevka.outputs.update_available == 'true' || steps.check-nerd-font-patcher.outputs.update_available == 'true'
