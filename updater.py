@@ -6,7 +6,7 @@ import re
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Annotated, Dict, List, Optional
 from datetime import datetime, timezone
 
 import requests
@@ -16,15 +16,14 @@ from rich.console import Console
 from rich.prompt import Confirm, Prompt
 from rich.syntax import Syntax
 from rich.table import Table
-from typing_extensions import Annotated
 
 # --- Configuration ---
 FLAKE_NIX_PATH = Path("flake.nix")
 VERSIONS_MD_PATH = Path("versions.md")
 # Lines in flake.nix where metadata for versions/hashes is defined.
 # These are 1-based and inclusive.
-FLAKE_METADATA_START_LINE = 20
-FLAKE_METADATA_END_LINE = 27
+FLAKE_METADATA_START_LINE = 28
+FLAKE_METADATA_END_LINE = 35
 FLAKE_METADATA_INDENT = "      "  # 6 spaces
 ERROR_ICON = "󰅙 "
 WARNING_ICON = " "
