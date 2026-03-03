@@ -23,7 +23,7 @@ VERSIONS_MD_PATH = Path("versions.md")
 # Lines in flake.nix where metadata for versions/hashes is defined.
 # These are 1-based and inclusive.
 FLAKE_METADATA_START_LINE = 28
-FLAKE_METADATA_END_LINE = 35
+FLAKE_METADATA_END_LINE = 33
 FLAKE_METADATA_INDENT = "      "  # 6 spaces
 ERROR_ICON = "󰅙 "
 WARNING_ICON = " "
@@ -347,12 +347,10 @@ def patch_flake(
 ):
     target_metadata_str = f"""\
 {FLAKE_METADATA_INDENT}version = "{target_iosevkata_version}";
-{FLAKE_METADATA_INDENT}dependencies = {{
-{FLAKE_METADATA_INDENT}  iosevka = {{
-{FLAKE_METADATA_INDENT}    version = "{target_iosevka_version}";
-{FLAKE_METADATA_INDENT}    hash = "{target_iosevka_hash}";
-{FLAKE_METADATA_INDENT}    npmDepsHash = "{target_iosevka_npm_deps_hash}";
-{FLAKE_METADATA_INDENT}  }};
+{FLAKE_METADATA_INDENT}iosevka = {{
+{FLAKE_METADATA_INDENT}  version = "{target_iosevka_version}";
+{FLAKE_METADATA_INDENT}  hash = "{target_iosevka_hash}";
+{FLAKE_METADATA_INDENT}  npmDepsHash = "{target_iosevka_npm_deps_hash}";
 {FLAKE_METADATA_INDENT}}};
 """
     show_diff(
