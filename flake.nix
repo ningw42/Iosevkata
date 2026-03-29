@@ -25,7 +25,7 @@
     }:
     let
       # Metadata: version and dependencies
-      version = "26.03.1";
+      version = "26.03.2";
       iosevka = {
         version = "34.3.0";
         hash = "sha256-Se+GIx+Uea/lMOdTDhbt/H+F0yeyMHclpSp52U+pmtA=";
@@ -99,6 +99,7 @@
               "Iosevkata"
               "IosevkataNerdFont"
               "IosevkataNerdFontMono"
+              "IosevkataSymbolsNerdFont"
             ];
             forRelease = false;
           };
@@ -108,6 +109,7 @@
               "Iosevkata"
               "IosevkataNerdFont"
               "IosevkataNerdFontMono"
+              "IosevkataSymbolsNerdFont"
             ];
             forRelease = true;
           };
@@ -124,6 +126,11 @@
           # iosevkata-nerd-font-mono-only builds IosevkataNerdFontMono for a nix package
           packages.iosevkata-nerd-font-mono-only = buildIosevkata {
             variants = [ "IosevkataNerdFontMono" ];
+            forRelease = false;
+          };
+          # iosevkata-symbols-nerd-font-only builds IosevkataSymbolsNerdFont for a nix package
+          packages.iosevkata-symbols-nerd-font-only = buildIosevkata {
+            variants = [ "IosevkataSymbolsNerdFont" ];
             forRelease = false;
           };
 

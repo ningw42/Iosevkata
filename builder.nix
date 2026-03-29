@@ -18,7 +18,9 @@ pkgs.buildNpmPackage rec {
   inherit version privateBuildPlan;
   npmDepsHash = iosevka.npmDepsHash;
   requiresNerdFonts =
-    builtins.elem "IosevkataNerdFont" variants || builtins.elem "IosevkataNerdFontMono" variants;
+    builtins.elem "IosevkataNerdFont" variants
+    || builtins.elem "IosevkataNerdFontMono" variants
+    || builtins.elem "IosevkataSymbolsNerdFont" variants;
 
   pname = "iosevkata";
 
@@ -80,6 +82,13 @@ pkgs.buildNpmPackage rec {
       parallel -j $NIX_BUILD_CORES nerd-font-patcher --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
     ''}
 
+    # build symbols-only nerd font if necessary
+    ${pkgs.lib.optionalString (builtins.elem "IosevkataSymbolsNerdFont" variants) ''
+      symbolsdir="dist/Iosevkata/SymbolsNerdFont"
+      mkdir $symbolsdir
+      nerd-font-patcher-symbols -n SymbolsNerdFontIosevkata -o $symbolsdir dist/Iosevkata/TTF/Iosevkata-Regular.ttf
+    ''}
+
     runHook postBuild
   '';
 
@@ -116,6 +125,15 @@ pkgs.buildNpmPackage rec {
     ''}
     ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants && !forRelease) ''
       install "dist/Iosevkata/NerdFontMono"/* "$fontdir"
+    ''}
+
+    # IosevkataSymbolsNerdFont
+    ${pkgs.lib.optionalString (builtins.elem "IosevkataSymbolsNerdFont" variants && forRelease) ''
+      zip --recurse-paths --junk-paths "$out/IosevkataSymbolsNerdFont-v${version}.zip" "dist/Iosevkata/SymbolsNerdFont"/*
+      (cd dist/Iosevkata/SymbolsNerdFont && tar --transform='s|.*/||' -cf - *) | zstd -o "$out/IosevkataSymbolsNerdFont-v${version}.tar.zst"
+    ''}
+    ${pkgs.lib.optionalString (builtins.elem "IosevkataSymbolsNerdFont" variants && !forRelease) ''
+      install "dist/Iosevkata/SymbolsNerdFont"/* "$fontdir"
     ''}
 
     runHook postInstall

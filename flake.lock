@@ -101,11 +101,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1770544722,
-        "narHash": "sha256-zQf6sWsFAO7MsXPa7ZYdJ/J0jEkqBt/ZslxPmoH1+YY=",
+        "lastModified": 1774789997,
+        "narHash": "sha256-VBsOgSPUeIOQAHn2h3M/3Jpk3CiTJkHVfiR4MEMiVMM=",
         "owner": "ningw42",
         "repo": "nerd-font-patcher",
-        "rev": "7d2e73db7a1cb5abc49437ff7cfb022c0a476e88",
+        "rev": "3aa8ec617b2f0921d32e955e68463a4617955e8f",
         "type": "github"
       },
       "original": {
