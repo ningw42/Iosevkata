@@ -25,11 +25,11 @@
     }:
     let
       # Metadata: version and dependencies
-      version = "26.05.0";
+      version = "26.05.1";
       iosevka = {
-        version = "34.5.0";
-        hash = "sha256-HysJR7mTaDZneWPL53znDSL5Wzy4nFvedVgbDQdk/lg=";
-        npmDepsHash = "sha256-B8ZLe6oWbTdrTtav3tQo38LQqbrPU8PD766lWpeB518=";
+        version = "34.6.0";
+        hash = "sha256-fkTXZtuIMm6N4KeBjjs2DM5V/1hbJ2GGLraNzO8mhQE=";
+        npmDepsHash = "sha256-+YolL7ZtmisgQ5ZI5X8YGvPAYU9iEseRLDTOz8QIkvk=";
       };
 
       # Build plans
