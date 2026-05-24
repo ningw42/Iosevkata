@@ -86,7 +86,7 @@ jobs:
           parts+=("nerd-font-patcher to v${{ steps.check-nerd-font-patcher.outputs.new_version }}")
         fi
 
-        title="Update $(IFS=', '; echo "${parts[*]}")"
+        title="build(deps): update $(IFS=', '; echo "${parts[*]}")"
         # branch name: use both versions if both updated, otherwise just the one that changed
         branch_parts=()
         if [[ "${{ steps.check-iosevka.outputs.update_available }}" == "true" ]]; then
