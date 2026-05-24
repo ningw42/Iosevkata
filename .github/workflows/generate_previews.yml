@@ -64,7 +64,7 @@ jobs:
         if git status --porcelain preview/images | grep -E '^\s*[M?]'; then
           echo "Preview image changed, committing..."
           git add preview/images
-          git commit -m "Update font preview"
+          git commit -m "docs(preview): update images"
           git push
         else
           echo "Preview image unchanged, skipping commit."
