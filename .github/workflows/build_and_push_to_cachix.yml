@@ -1,4 +1,4 @@
-name: "Push to Cachix"
+name: "Build & Push to Cachix"
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: "Build & Release Iosevkata"
+name: "Build & Public GitHub Release"
 
 on:
   push:
