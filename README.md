@@ -62,7 +62,7 @@ This repository produces two types of artifact:
 2. A nix package for `x86_64-linux`, `x86_64-darwin` and `aarch64-darwin`. Add `ningw42/Iosevkata` to your flake.
     1. Use the package `packages.<system>.iosevkata` directly, which comes with all the variants.
     2. Use overlay `overlays.default` from the flake when importing nixpkgs, which adds `iosevkata` (with all variants) to your nixpkgs.
-    3. If you want pre-built packages, follow [garnix's guide for adding garnix's public binary caching server](https://garnix.io/docs/caching). **DO NOT** override `nixpkgs` with `inputs.nixpkgs.follows`, otherwise you will have to build the package your self.
+    3. If you want pre-built packages, follow [garnix's guide for adding garnix's public binary caching server](https://garnix.io/docs/caching), or add [`iosevkata.cachix.org`](https://app.cachix.org/cache/iosevkata) as a substituter (public key: `iosevkata.cachix.org-1:TJHxbWCX5n7lt4pL2E5ES4cminyhovx1LOJx2FJ2SE4=`). **DO NOT** override `nixpkgs` with `inputs.nixpkgs.follows`, otherwise you will have to build the package your self.
 
 ## Customization
 
