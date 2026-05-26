@@ -1,0 +1,48 @@
+name: "Push to Cachix"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  push:
+    if: github.actor == 'ningw42'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v6
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31.9.1
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Cachix
+      uses: cachix/cachix-action@v17
+      with:
+        name: iosevkata
+        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+    - name: Check if Output is Already Cached
+      id: cache-check
+      run: |
+        out_path=$(nix eval --raw .#packages.x86_64-linux.iosevkata)
+        echo "Output path: $out_path"
+        hash=$(basename "$out_path" | cut -d- -f1)
+        echo "Store hash: $hash"
+        status=$(curl -sSI -o /dev/null -w "%{http_code}" "https://iosevkata.cachix.org/$hash.narinfo")
+        echo "Narinfo HTTP status: $status"
+        if [[ "$status" == "200" ]]; then
+          echo "Already cached, skipping build."
+          echo "cached=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "Not cached, will build and push."
+          echo "cached=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Build Iosevkata
+      if: steps.cache-check.outputs.cached != 'true'
+      run: nix build .#iosevkata

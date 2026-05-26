@@ -111,6 +111,16 @@ nix build .#iosevkata-nerd-font-only
 nix build .#iosevkata-nerd-font-mono-only
 ```
 
+## Cache
+
+Binaries are pushed to [iosevkata.cachix.org](https://app.cachix.org/cache/iosevkata). To push from local after running `cachix authtoken <token>` once:
+
+```bash
+cachix watch-exec iosevkata -- nix build .#iosevkata
+# or, without installing cachix:
+nix run nixpkgs#cachix -- watch-exec iosevkata -- nix build .#iosevkata
+```
+
 ## Update
 ```bash
 # enter nix shell with necessary dependencies
