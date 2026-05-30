@@ -1,4 +1,4 @@
-name: "Build & Public GitHub Release"
+name: "Build & Publish GitHub Release"
 
 on:
   push:
