@@ -1,0 +1,40 @@
+name: "Tag on Auto-Update Merge"
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  tag:
+    # only when an auto-update PR is actually MERGED (not merely closed)
+    if: >
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'auto-update/')
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Merged Commit
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.pull_request.merge_commit_sha }}
+        token: ${{ secrets.RELEASE_PAT }}  # PAT so the tag push triggers build_and_publish_release.yml
+        fetch-depth: 0                      # need existing tags for the idempotency check
+
+    - name: Extract Iosevkata Version
+      id: version
+      run: echo "version=$(./scripts/get-iosevkata-version.sh)" >> "$GITHUB_OUTPUT"
+
+    - name: Create and Push Tag
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        tag="v$VERSION"
+        git fetch --tags --quiet
+        if git rev-parse "$tag" >/dev/null 2>&1; then
+          echo "Tag $tag already exists, skipping."
+          exit 0
+        fi
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git tag -a "$tag" -m "Release $tag"
+        git push origin "$tag"
+        echo "Created and pushed $tag."

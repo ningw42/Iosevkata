@@ -109,7 +109,7 @@ jobs:
         fi
         body_lines+=("- Updated \`flake.nix\` and \`versions.md\`")
         body_lines+=("")
-        body_lines+=("After merging, tag the commit to trigger the build & release workflow.")
+        body_lines+=("After merging, the [auto-tag workflow](https://github.com/${{ github.repository }}/actions/workflows/tag_on_auto_update_merge.yml) creates a tag automatically, which triggers the build & release workflow.")
 
         echo "title=$title" >> "$GITHUB_OUTPUT"
         echo "branch=$branch" >> "$GITHUB_OUTPUT"
