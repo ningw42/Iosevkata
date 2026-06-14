@@ -4,9 +4,14 @@ A `PragmataPro` (ss08) styled `Iosevka` variant with my tweaks.
 
 [![GitHub Latest Release](https://img.shields.io/github/v/release/ningw42/Iosevkata)](https://github.com/ningw42/Iosevkata/releases/latest)
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ningw42/Iosevkata/total)](https://github.com/ningw42/Iosevkata/releases)
+
 [![Garnix Build](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fningw42%2FIosevkata%3Fbranch%3Dmaster)](https://garnix.io/repo/ningw42/Iosevkata)
-[![GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_release.yml)
-[![GitHub Preview](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml)
+
+[![Check Dependency Updates](https://github.com/ningw42/Iosevkata/actions/workflows/check_dependency_update.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/check_dependency_update.yml)
+[![Tag on Auto-Update Merge](https://github.com/ningw42/Iosevkata/actions/workflows/tag_on_auto_update_merge.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/tag_on_auto_update_merge.yml)
+[![Build & Publish GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_publish_release.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_publish_release.yml)
+[![Build & Push to Cachix](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_push_to_cachix.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_push_to_cachix.yml)
+[![Generate Previews](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/generate_previews.yml)
 
 ## Previews
 
