@@ -5,8 +5,6 @@ A `PragmataPro` (ss08) styled `Iosevka` variant with my tweaks.
 [![GitHub Latest Release](https://img.shields.io/github/v/release/ningw42/Iosevkata)](https://github.com/ningw42/Iosevkata/releases/latest)
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ningw42/Iosevkata/total)](https://github.com/ningw42/Iosevkata/releases)
 
-[![Garnix Build](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fningw42%2FIosevkata%3Fbranch%3Dmaster)](https://garnix.io/repo/ningw42/Iosevkata)
-
 [![Check Dependency Updates](https://github.com/ningw42/Iosevkata/actions/workflows/check_dependency_update.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/check_dependency_update.yml)
 [![Tag on Auto-Update Merge](https://github.com/ningw42/Iosevkata/actions/workflows/tag_on_auto_update_merge.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/tag_on_auto_update_merge.yml)
 [![Build & Publish GitHub Release](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_publish_release.yml/badge.svg)](https://github.com/ningw42/Iosevkata/actions/workflows/build_and_publish_release.yml)
@@ -67,7 +65,7 @@ This repository produces two types of artifact:
 2. A nix package for `x86_64-linux`, `x86_64-darwin` and `aarch64-darwin`. Add `ningw42/Iosevkata` to your flake.
     1. Use the package `packages.<system>.iosevkata` directly, which comes with all the variants.
     2. Use overlay `overlays.default` from the flake when importing nixpkgs, which adds `iosevkata` (with all variants) to your nixpkgs.
-    3. If you want pre-built packages, follow [garnix's guide for adding garnix's public binary caching server](https://garnix.io/docs/caching), or add [`iosevkata.cachix.org`](https://app.cachix.org/cache/iosevkata) as a substituter (public key: `iosevkata.cachix.org-1:TJHxbWCX5n7lt4pL2E5ES4cminyhovx1LOJx2FJ2SE4=`). **DO NOT** override `nixpkgs` with `inputs.nixpkgs.follows`, otherwise you will have to build the package your self.
+    3. If you want pre-built packages, add [`iosevkata.cachix.org`](https://app.cachix.org/cache/iosevkata) as a substituter (public key: `iosevkata.cachix.org-1:TJHxbWCX5n7lt4pL2E5ES4cminyhovx1LOJx2FJ2SE4=`). **DO NOT** override `nixpkgs` with `inputs.nixpkgs.follows`, otherwise you will have to build the package your self.
 
 ## Customization
 

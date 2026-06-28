@@ -1,7 +1,0 @@
-builds:
-  exclude: []
-  include:
-  - packages.x86_64-linux.iosevkata
-  - packages.x86_64-darwin.iosevkata
-  - packages.aarch64-darwin.iosevkata
-  branch: master
