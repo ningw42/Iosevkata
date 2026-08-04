@@ -86,7 +86,7 @@ pkgs.buildNpmPackage rec {
     ${pkgs.lib.optionalString (builtins.elem "IosevkataSymbolsNerdFont" variants) ''
       symbolsdir="dist/Iosevkata/SymbolsNerdFont"
       mkdir $symbolsdir
-      nerd-font-patcher-symbols -n SymbolsNerdFontIosevkata -o $symbolsdir dist/Iosevkata/TTF/Iosevkata-Regular.ttf
+      nerd-font-patcher-symbols --square-metrics -n SymbolsNerdFontIosevkata -o $symbolsdir dist/Iosevkata/TTF/Iosevkata-Regular.ttf
     ''}
 
     runHook postBuild
