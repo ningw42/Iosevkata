@@ -25,7 +25,7 @@
     }:
     let
       # Metadata: version and dependencies
-      version = "26.07.0";
+      version = "26.07.1";
       iosevka = {
         version = "34.8.0";
         hash = "sha256-Vql44qexuYxiCGmjiQUMilIR488KSHpCDjOgPIEl8L8=";
