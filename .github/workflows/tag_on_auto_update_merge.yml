@@ -23,9 +23,15 @@ jobs:
       id: version
       run: echo "version=$(./scripts/get-iosevkata-version.sh)" >> "$GITHUB_OUTPUT"
 
+    - name: Extract Dependency Versions
+      id: deps
+      run: ./scripts/get-dependency-versions.sh >> "$GITHUB_OUTPUT"
+
     - name: Create and Push Tag
       env:
         VERSION: ${{ steps.version.outputs.version }}
+        IOSEVKA_VERSION: ${{ steps.deps.outputs.iosevka }}
+        NERDFONTS_VERSION: ${{ steps.deps.outputs.nerdfonts }}
       run: |
         tag="v$VERSION"
         git fetch --tags --quiet
@@ -35,6 +41,9 @@ jobs:
         fi
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag -a "$tag" -m "Release $tag"
+        # The tag annotation is what GitHub renders as the release notes,
+        # since build_and_publish_release.yml creates the release without a body.
+        printf 'Iosevka v%s\nnerd-fonts v%s\n' "$IOSEVKA_VERSION" "$NERDFONTS_VERSION" \
+          | git tag -a "$tag" -F -
         git push origin "$tag"
         echo "Created and pushed $tag."
