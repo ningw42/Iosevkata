@@ -8,9 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      iosevka: ${{ steps.deps.outputs.iosevka }}
+      nerdfonts: ${{ steps.deps.outputs.nerdfonts }}
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v6
+
+    - name: Extract Dependency Versions
+      id: deps
+      run: ./scripts/get-dependency-versions.sh >> "$GITHUB_OUTPUT"
 
     - name: Install Nix
       uses: cachix/install-nix-action@v31.9.1 # this action doesn't "backport" vX.Y.Z changes to vX tag
@@ -42,6 +49,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          body: |
+            Iosevka v${{ needs.build.outputs.iosevka }}
+            nerd-fonts v${{ needs.build.outputs.nerdfonts }}
           files: |
             Iosevkata-${{ github.ref_name }}.zip
             IosevkataNerdFont-${{ github.ref_name }}.zip
