@@ -14,6 +14,12 @@
   variants,
   forRelease,
 }:
+let
+  nerdFontPatcher = nerd-font-patcher.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hasUpstreamIosevkataPatches = pkgs.lib.versionAtLeast nerdFontPatcher.version "3.5.0";
+  centerWideArgs = pkgs.lib.optionalString hasUpstreamIosevkataPatches "--experimental center-wide";
+  symbolsCenterWideArgs = pkgs.lib.optionalString hasUpstreamIosevkataPatches "--center-wide";
+in
 pkgs.buildNpmPackage rec {
   inherit version privateBuildPlan;
   npmDepsHash = iosevka.npmDepsHash;
@@ -42,9 +48,10 @@ pkgs.buildNpmPackage rec {
     # optional build inputs for nerd-fonts
     # for parallel font patching
     pkgs.parallel
-    # for patching nerd font glyphs
-    # hostPlatform.system resolves to `pkgs` platform, not the current platform we are running on
-    nerd-font-patcher.packages.${pkgs.stdenv.hostPlatform.system}.default
+    # For v3.4, this package carries the cellopt reorder and horizontal-centering
+    # patches. In v3.5+, cellopt is upstream and horizontal centering is enabled
+    # through the upstream center-wide option below.
+    nerdFontPatcher
   ];
 
   passAsFile = [ "privateBuildPlan" ];
@@ -72,21 +79,21 @@ pkgs.buildNpmPackage rec {
     ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFont" variants) ''
       nerdfontdir="dist/Iosevkata/NerdFont"
       mkdir $nerdfontdir
-      parallel -j $NIX_BUILD_CORES nerd-font-patcher --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
+      parallel -j $NIX_BUILD_CORES nerd-font-patcher ${centerWideArgs} --careful --complete --outputdir $nerdfontdir ::: dist/Iosevkata/TTF/*
     ''}
 
     # patch nerd font mono if necessary
     ${pkgs.lib.optionalString (builtins.elem "IosevkataNerdFontMono" variants) ''
       nerdfontmonodir="dist/Iosevkata/NerdFontMono"
       mkdir $nerdfontmonodir
-      parallel -j $NIX_BUILD_CORES nerd-font-patcher --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
+      parallel -j $NIX_BUILD_CORES nerd-font-patcher ${centerWideArgs} --careful --mono --complete --outputdir $nerdfontmonodir ::: dist/Iosevkata/TTF/*
     ''}
 
     # build symbols-only nerd font if necessary
     ${pkgs.lib.optionalString (builtins.elem "IosevkataSymbolsNerdFont" variants) ''
       symbolsdir="dist/Iosevkata/SymbolsNerdFont"
       mkdir $symbolsdir
-      nerd-font-patcher-symbols --square-metrics -n SymbolsNerdFontIosevkata -o $symbolsdir dist/Iosevkata/TTF/Iosevkata-Regular.ttf
+      nerd-font-patcher-symbols ${symbolsCenterWideArgs} --square-metrics -n SymbolsNerdFontIosevkata -o $symbolsdir dist/Iosevkata/TTF/Iosevkata-Regular.ttf
     ''}
 
     runHook postBuild
