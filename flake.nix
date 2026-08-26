@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nerd-font-patcher.url = "github:ningw42/nerd-font-patcher/v3.4.0";
+    nerd-font-patcher.url = "github:ningw42/nerd-font-patcher/v3.5.1";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,7 +25,7 @@
     }:
     let
       # Metadata: version and dependencies
-      version = "26.08.0";
+      version = "26.08.1";
       iosevka = {
         version = "34.8.1";
         hash = "sha256-1uczmW/DwSGXRXNob76AEHFcMPnodEiI9DzI8KSFJ8w=";
